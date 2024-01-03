@@ -30,6 +30,6 @@ namespace PartsManager.Model.Entities
 
         public override string ToString() => $"{PartType} {Name} {Article}";
         [NotMapped]
-        public string Info => $"{PartType} {Name} {Article}";
+        public string FullInfo => $"{PartType} {Name} {Article}";
     }
 }

@@ -18,7 +18,7 @@ namespace PartsManager.Model.Entities
         public DateTime Date { get; set; }
         public decimal DeliveryPrice { get; set; }
         public bool IsPayed { get; set; }
-        public bool IsPayed2 { get; set; } // розрахунок між партнерами
+        public bool IsPartnerPayed { get; set; } // розрахунок між партнерами
         public decimal Prepayment { get; set; } // скільки заплатили завдатку
 
         [Required]
@@ -26,5 +26,10 @@ namespace PartsManager.Model.Entities
         public virtual Car Car { get; set; }
 
         public virtual ICollection<InvoicePart> InvoiceParts { get; set; }
+
+        [NotMapped]
+        public decimal SumIn => InvoiceParts.Sum(x => x.SumIn);
+        [NotMapped]
+        public decimal SumOut => InvoiceParts.Sum(x => x.SumOut);
     }
 }

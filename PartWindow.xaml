@@ -73,7 +73,7 @@
                   FontSize="14" MinWidth="100" IsEditable="True" 
                   ShouldPreserveUserEnteredPrefix="False"></ComboBox>
         <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Назва:" Width="Auto"/>
-        <TextBox Name="NameBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100">
+        <TextBox Name="NameBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
             <TextBox.Text>
                 <Binding Path="Name">
                     <Binding.ValidationRules>
@@ -84,7 +84,7 @@
             </TextBox.Text>
         </TextBox>
         <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Артикул:" Width="Auto"/>
-        <TextBox Name="ArticleBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
+        <TextBox Name="ArticleBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="25">
             <TextBox.Text>
                 <Binding Path="Article">
                     <Binding.ValidationRules>
@@ -95,7 +95,7 @@
             </TextBox.Text>
         </TextBox>
         <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Опис:" Width="Auto"/>
-        <TextBox Name="DescriptionBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100">
+        <TextBox Name="DescriptionBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
             <TextBox.Text>
                 <Binding Path="Description">
                     <Binding.ValidationRules>

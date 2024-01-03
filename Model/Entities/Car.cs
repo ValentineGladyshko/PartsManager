@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PartsManager.Model.Entities
 {
@@ -22,6 +23,8 @@ namespace PartsManager.Model.Entities
         public int ModelId { get; set; }
         public virtual Model Model { get; set; }
 
-        public virtual ICollection<Invoice> Invoices { get; set; }      
+        public virtual ICollection<Invoice> Invoices { get; set; }
+        [NotMapped]
+        public string FullInfo => $"{Model.Mark.Name} {Model.Name} {VINCode} {Info}";
     }
 }

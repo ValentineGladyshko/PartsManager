@@ -1,5 +1,6 @@
 ﻿using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
+using PartsManager.Model.Interfaces;
 using PartsManager.Model.Repositories;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,20 @@ namespace PartsManager
 
                 markWindow.Show();
             };
+            MarkListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            {
+                var mark = MarkListBox.SelectedItem as Mark;
+                if (mark != null)
+                {
+                    var invoices = unitOfWork.Invoices.GetAll().Where(item => item.Car.Model.MarkId == mark.Id).ToList();
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
+                    invoiceSelectionWindow.Owner = this;
+
+                    invoiceSelectionWindow.Show();
+                }
+
+                MarkListBox.UnselectAll();
+            };
         }
         public void SetModelHandlers()
         {
@@ -95,6 +110,20 @@ namespace PartsManager
                 };
 
                 modelWindow.Show();
+            };
+            ModelListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            {
+                var model = ModelListBox.SelectedItem as Model.Entities.Model;
+                if (model != null)
+                {
+                    var invoices = unitOfWork.Invoices.GetAll().Where(item => item.Car.ModelId == model.Id).ToList();
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
+                    invoiceSelectionWindow.Owner = this;
+
+                    invoiceSelectionWindow.Show();
+                }
+
+                ModelListBox.UnselectAll();
             };
         }
         public void SetCarHandlers()
@@ -138,6 +167,20 @@ namespace PartsManager
 
                 carWindow.Show();
             };
+            CarListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            {
+                var car = CarListBox.SelectedItem as Car;
+                if (car != null)
+                {
+                    var invoices = unitOfWork.Invoices.GetAll().Where(item => item.CarId == car.Id).ToList();
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
+                    invoiceSelectionWindow.Owner = this;
+
+                    invoiceSelectionWindow.Show();
+                }
+
+                CarListBox.UnselectAll();
+            };
         }
         public void SetPartTypeHandlers()
         {
@@ -163,6 +206,21 @@ namespace PartsManager
                 };
 
                 partTypeWindow.Show();
+            };
+            PartTypeListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            {
+                var partType = PartTypeListBox.SelectedItem as PartType;
+                if (partType != null)
+                {
+                    var invoices = unitOfWork.Invoices.GetAll().Where(item => item.InvoiceParts
+                        .Any(item2 => item2.Part.PartTypeId == partType.Id)).ToList();
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
+                    invoiceSelectionWindow.Owner = this;
+
+                    invoiceSelectionWindow.Show();
+                }
+
+                PartTypeListBox.UnselectAll();
             };
         }
         public void SetPartHandlers()
@@ -202,18 +260,28 @@ namespace PartsManager
 
                 partWindow.Show();
             };
+            PartListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            {
+                var part = PartListBox.SelectedItem as Part;
+                if (part != null)
+                {
+                    var invoices = unitOfWork.Invoices.GetAll().Where(item => item.InvoiceParts
+                        .Any(item2 => item2.PartId == part.Id)).ToList();
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
+                    invoiceSelectionWindow.Owner = this;
+
+                    invoiceSelectionWindow.Show();
+                }
+            };
+
+            PartListBox.UnselectAll();
         }
         public void SetInvoiceHandlers()
         {
             InvoiceCreateButton.Click += (object sender, RoutedEventArgs args) =>
             {
-                var invoice = unitOfWork.Invoices.Get(6);
-                InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
+                InvoiceWindow invoiceWindow = new InvoiceWindow();
                 invoiceWindow.Owner = this;
-                invoiceWindow.Closed += (object o, EventArgs eventArgs) =>
-                {
-                    //PartTypeSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                };
 
                 invoiceWindow.Show();
             };

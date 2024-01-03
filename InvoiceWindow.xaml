@@ -88,7 +88,7 @@
                           ShouldPreserveUserEnteredPrefix="False"/>
                 
                 <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="VIN код:" Width="Auto"/>
-                <TextBox Name="CarVINCodeBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100">
+                <TextBox Name="CarVINCodeBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="17">
                     <TextBox.Text>
                         <Binding Path="LocalInvoice.Car.VINCode">
                             <Binding.ValidationRules>
@@ -100,7 +100,7 @@
                 </TextBox>
                 
                 <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Опис авто:" Width="Auto"/>
-                <TextBox Name="CarInfoBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
+                <TextBox Name="CarInfoBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
                     <TextBox.Text>
                         <Binding Path="LocalInvoice.Car.Info">
                             <Binding.ValidationRules>
@@ -112,7 +112,7 @@
                 </TextBox>
                 
                 <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Опис накладної:" Width="Auto"/>
-                <TextBox Name="InvoiceInfoBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100">
+                <TextBox Name="InvoiceInfoBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
                     <TextBox.Text>
                         <Binding Path="LocalInvoice.Info">
                             <Binding.ValidationRules>
@@ -126,7 +126,7 @@
                 <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" Text="Ціна доставки:" Width="Auto"/>
                 <TextBox Name="InvoiceDeliveryPriceBox" Grid.Row="5" Grid.Column="1" FontSize="14" MinWidth="100">
                     <TextBox.Text>
-                        <Binding Path="LocalInvoice.DeliveryPrice">
+                        <Binding Path="LocalInvoice.DeliveryPrice" StringFormat="F2">
                             <Binding.ValidationRules>
                                 <ExceptionValidationRule />
                                 <DataErrorValidationRule />
@@ -171,7 +171,7 @@
                     <TextBlock Grid.Column="0" FontSize="14"
                                Text="Запчастина:" Width="Auto"/>
                     <TextBox Name="PartBox" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
-                             FontSize="14" Text="{Binding Path=LocalInvoicePart.Part.Info, Mode=OneWay}" MinWidth="100"/>
+                             FontSize="14" Text="{Binding Path=LocalInvoicePart.Part.FullInfo, Mode=OneWay}" MinWidth="100"/>
                 </Grid>
                 
                 <Button MinWidth="100" Name="SelectPartButton" Grid.Row="1" Grid.Column="0" 
@@ -193,7 +193,7 @@
                 <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Ціна закупівлі:" Width="Auto"/>
                 <TextBox Name="PriceInBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
                     <TextBox.Text>
-                        <Binding Path="LocalInvoicePart.PriceIn">
+                        <Binding Path="LocalInvoicePart.PriceIn" StringFormat="F2">
                             <Binding.ValidationRules>
                                 <ExceptionValidationRule />
                                 <DataErrorValidationRule />
@@ -205,7 +205,7 @@
                 <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Ціна продажу:" Width="Auto"/>
                 <TextBox Name="PriceOutBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100">
                     <TextBox.Text>
-                        <Binding Path="LocalInvoicePart.PriceOut">
+                        <Binding Path="LocalInvoicePart.PriceOut" StringFormat="F2">
                             <Binding.ValidationRules>
                                 <ExceptionValidationRule />
                                 <DataErrorValidationRule />
@@ -216,15 +216,15 @@
                 
                 <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" Text="Рекомендована ціна:" Width="Auto"/>
                 <TextBox Name="RecommendedPriceBox" IsEnabled="False" Grid.Row="5" Grid.Column="1" 
-                         FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.RecommendedPrice, Mode=OneWay}"/>
+                         FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.RecommendedPrice, Mode=OneWay, StringFormat=C2}"/>
 
                 <TextBlock Grid.Row="6" Grid.Column="0" FontSize="14" Text="Сумарна ціна закупівлі:" Width="Auto"/>
                 <TextBox Name="SumInBox" IsEnabled="False" Grid.Row="6" Grid.Column="1" 
-                         FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.SumIn, Mode=OneWay}"/>
+                         FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.SumIn, Mode=OneWay, StringFormat=C2}"/>
 
                 <TextBlock Grid.Row="7" Grid.Column="0" FontSize="14" Text="Сумарна ціна продажу:" Width="Auto"/>
                 <TextBox Name="SumOutBox" IsEnabled="False" Grid.Row="7" Grid.Column="1" 
-                         FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.SumOut, Mode=OneWay}"/>
+                         FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.SumOut, Mode=OneWay, StringFormat=C2}"/>
 
                 <Button MinWidth="100" Name="CreateInvoicePartButton" Grid.Row="9" Grid.Column="0"
                         Grid.ColumnSpan="2" Content="Додати запчастину в накладну" VerticalAlignment="Top"
@@ -256,34 +256,34 @@
                             <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" Margin="3" Grid.ColumnSpan="3"
                                        Text="Запчастина:" Width="Auto"/>
                             <TextBlock Grid.Row="0" Grid.Column="3" FontSize="14" Margin="3"
-                                       Text="{Binding Path=Part.Info, Mode=OneWay}" Width="Auto"/>
+                                       Text="{Binding Path=Part.FullInfo, Mode=OneWay}" Width="Auto"/>
                             
                             <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" FontSize="14" Margin="3"
                                        Text="Кількість:" Width="Auto"/>
                             <TextBlock Grid.Row="1" Grid.Column="3" FontSize="14" Margin="3"
-                                       Text="{Binding Path=Count}" Width="Auto"/>
+                                       Text="{Binding Path=Count, Mode=OneWay}" Width="Auto"/>
                             
                             <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Margin="3"
                                        Text="Ціна закупівлі:" Width="Auto"/>
                             <TextBlock Grid.Row="2" Grid.Column="1" FontSize="14" Margin="3"
-                                       Text="{Binding Path=PriceIn}" Width="Auto"/>
+                                       Text="{Binding Path=PriceIn, Mode=OneWay, StringFormat=C2}" Width="Auto"/>
                             <TextBlock Grid.Row="2" Grid.Column="2" FontSize="14" Margin="3"
                                        Text="Сумарна ціна:" Width="Auto"/>
                             <TextBlock Grid.Row="2" Grid.Column="3" FontSize="14" Margin="3"
-                                       Text="{Binding Path=SumIn}" Width="Auto"/>
+                                       Text="{Binding Path=SumIn, Mode=OneWay, StringFormat=C2}" Width="Auto"/>
                             
                             <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Margin="3"
                                        Text="Ціна продажу:" Width="Auto"/>
                             <TextBlock Grid.Row="3" Grid.Column="1" FontSize="14" Margin="3"
-                                       Text="{Binding Path=PriceOut}" Width="Auto"/>
+                                       Text="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}" Width="Auto"/>
                             <TextBlock Grid.Row="3" Grid.Column="2" FontSize="14" Margin="3"
                                        Text="Сумарна ціна:" Width="Auto"/>
                             <TextBlock Grid.Row="3" Grid.Column="3" FontSize="14" Margin="3"
-                                       Text="{Binding Path=SumOut}" Width="Auto"/>
+                                       Text="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}" Width="Auto"/>
                             
                             <Button MinWidth="100" Click="DeleteInvoicePartOnClick" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4"
                                     Margin="3" Content="Видалити запчастину з накладної" VerticalAlignment="Top" 
-                                    Tag="{Binding Path=Id}" HorizontalAlignment="Center"/>
+                                    Tag="{Binding Path=Id, Mode=OneWay}" HorizontalAlignment="Center"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
