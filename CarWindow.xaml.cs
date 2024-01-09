@@ -66,16 +66,13 @@ namespace PartsManager
                 WorkButton.Content = "Створити";
             }
 
-            VINCodeBox.Text = LocalCar.VINCode; 
-            CarModelNameBox.Text = LocalCar.Model.Name;
-            CarMarkNameBox.Text = LocalCar.Model.Mark.Name;
+            VINCodeBox.Text = LocalCar.VINCode.ToUpper(); 
+            CarModelNameBox.Text = LocalCar.Model.Name.FirstCharToUpper();
+            CarMarkNameBox.Text = LocalCar.Model.Mark.Name.FirstCharToUpper();
         }
 
         public void SetHandlers()
-        {
-            ComboBoxHelper.SetDropDownOpened(CarModelNameBox, unitOfWork.Models.GetAll());
-            ComboBoxHelper.SetDropDownOpened(CarMarkNameBox, unitOfWork.Marks.GetAll());
-
+        {     
             CancelButton.Click += (object sender, RoutedEventArgs e) => { Close(); };
 
             WorkButton.Click += (object sender, RoutedEventArgs e) =>
@@ -165,6 +162,12 @@ namespace PartsManager
                     Close();
                 }
             };
+
+            CarModelNameBox.SetDropDownOpened(unitOfWork.Models.GetAll());
+            CarMarkNameBox.SetDropDownOpened(unitOfWork.Marks.GetAll());
+            CarModelNameBox.SetTextChangedFirstCharToUpper();
+            CarMarkNameBox.SetTextChangedFirstCharToUpper();
+            VINCodeBox.SetTextChangedToUpper();
         }
     }
 }

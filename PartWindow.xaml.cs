@@ -40,7 +40,7 @@ namespace PartsManager
             Action = ActionType.Create;
 
             SetContent();
-            SetButtonHandlers();
+            SetHandlers();
         }
 
         public PartWindow(Part part, ActionType action)
@@ -52,7 +52,7 @@ namespace PartsManager
             DataContext = LocalPart;
 
             SetContent();
-            SetButtonHandlers();
+            SetHandlers();
         }
 
         public void SetContent()
@@ -70,10 +70,8 @@ namespace PartsManager
             PartTypeNameBox.Text = LocalPart.PartType.Name;
         }
 
-        public void SetButtonHandlers()
+        public void SetHandlers()
         {
-            ComboBoxHelper.SetDropDownOpened(PartTypeNameBox, unitOfWork.PartTypes.GetAll());
-
             CancelButton.Click += (object sender, RoutedEventArgs e) => { Close(); };
 
             WorkButton.Click += (object sender, RoutedEventArgs e) =>
@@ -121,6 +119,12 @@ namespace PartsManager
                     Close();
                 }
             };
+
+            PartTypeNameBox.SetDropDownOpened(unitOfWork.PartTypes.GetAll());
+            PartTypeNameBox.SetTextChangedFirstCharToUpper();
+            NameBox.SetTextChangedFirstCharToUpper();
+            FullNameBox.SetTextChangedFirstCharToUpper();
+            ArticleBox.SetTextChangedToUpper();
         }
     }
 }

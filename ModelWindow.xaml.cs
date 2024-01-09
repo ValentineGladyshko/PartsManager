@@ -35,8 +35,9 @@ namespace PartsManager
             };
 
             Action = ActionType.Create;
-            SetContent();
+
             SetHandlers();
+            SetContent();
         }
 
         public ModelWindow(Model.Entities.Model model, ActionType action)
@@ -46,8 +47,8 @@ namespace PartsManager
             LocalModel = model;
             Action = action;
 
-            SetContent();
             SetHandlers();
+            SetContent();
         }
 
         public void SetContent()
@@ -64,13 +65,11 @@ namespace PartsManager
             }
 
             NameBox.Text = LocalModel.Name;
-            ModelMarkNameBox.Text = LocalModel.Mark.Name;
+            ModelMarkNameBox.Text = LocalModel.Mark.Name.FirstCharToUpper();
         }
 
         public void SetHandlers()
         {
-            ComboBoxHelper.SetDropDownOpened(ModelMarkNameBox, unitOfWork.Marks.GetAll());
-            
             CancelButton.Click += (object sender, RoutedEventArgs e) => { Close(); };
 
             WorkButton.Click += (object sender, RoutedEventArgs e) =>
@@ -119,6 +118,10 @@ namespace PartsManager
                     Close();
                 }
             };
+
+            ModelMarkNameBox.SetDropDownOpened(unitOfWork.Marks.GetAll());
+            NameBox.SetTextChangedFirstCharToUpper();
+            ModelMarkNameBox.SetTextChangedFirstCharToUpper();
         }
     }
 }

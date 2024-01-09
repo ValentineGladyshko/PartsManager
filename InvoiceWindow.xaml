@@ -65,54 +65,31 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" FontSize="14"
+                               Text="Авто:" Width="Auto"/>
+                    <TextBox Name="CarBox" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
+                             FontSize="14" Text="{Binding Path=LocalInvoice.Car.FullInfo, Mode=OneWay}" MinWidth="100"/>
+                </Grid>
+                <Button MinWidth="100" Name="SelectCarButton" Grid.Row="1" Grid.Column="0"
+                        Grid.ColumnSpan="2" Content="Обрати автомобіль" VerticalAlignment="Top"
+                        HorizontalAlignment="Center" Margin="5"/>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                           Text="Марка:" Width="Auto"/>
-                <ComboBox Name="CarMarkNameBox" Grid.Row="0" Grid.Column="1"
-                          FontSize="14" MinWidth="100" IsEditable="True" 
-                          ShouldPreserveUserEnteredPrefix="False"/>
-
-                <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
-                           Text="Модель:" Width="Auto"/>
-                <ComboBox Name="CarModelNameBox" Grid.Row="1" Grid.Column="1"
-                          FontSize="14" MinWidth="100" IsEditable="True" 
-                          ShouldPreserveUserEnteredPrefix="False"/>
-                
-                <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="VIN код:" Width="Auto"/>
-                <TextBox Name="CarVINCodeBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="17">
-                    <TextBox.Text>
-                        <Binding Path="LocalInvoice.Car.VINCode">
-                            <Binding.ValidationRules>
-                                <ExceptionValidationRule />
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                
-                <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Опис авто:" Width="Auto"/>
-                <TextBox Name="CarInfoBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
-                    <TextBox.Text>
-                        <Binding Path="LocalInvoice.Car.Info">
-                            <Binding.ValidationRules>
-                                <ExceptionValidationRule />
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                
-                <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Опис накладної:" Width="Auto"/>
-                <TextBox Name="InvoiceInfoBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
+                <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Опис накладної:" Width="Auto"/>
+                <TextBox Name="InvoiceInfoBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
                     <TextBox.Text>
                         <Binding Path="LocalInvoice.Info">
                             <Binding.ValidationRules>
@@ -123,8 +100,8 @@
                     </TextBox.Text>
                 </TextBox>
                 
-                <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" Text="Ціна доставки:" Width="Auto"/>
-                <TextBox Name="InvoiceDeliveryPriceBox" Grid.Row="5" Grid.Column="1" FontSize="14" MinWidth="100">
+                <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Ціна доставки:" Width="Auto"/>
+                <TextBox Name="InvoiceDeliveryPriceBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
                     <TextBox.Text>
                         <Binding Path="LocalInvoice.DeliveryPrice" StringFormat="F2">
                             <Binding.ValidationRules>
@@ -134,12 +111,14 @@
                         </Binding>
                     </TextBox.Text>
                 </TextBox>
-                
-                <TextBlock Grid.Row="6" Grid.Column="0" FontSize="14" Text="Дата:" Width="Auto"></TextBlock>
-                <DatePicker Name="DatePicker" Grid.Row="6" Grid.Column="1" Language="uk-UA" 
+
+                <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Дата:" Width="Auto"/>
+                <DatePicker Name="DatePicker" Grid.Row="4" Grid.Column="1" Language="uk-UA" 
                             SelectedDate="{Binding Path=LocalInvoice.Date, Mode=TwoWay}"/>
-                
-                <Button MinWidth="100" Name="WorkButton" Grid.Row="8" Grid.Column="0" 
+
+                <TextBlock Name="InvoiceNotificationBlock" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+                            TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Width="Auto"/>
+                <Button MinWidth="100" Name="WorkButton" Grid.Row="7" Grid.Column="0" 
                         Grid.ColumnSpan="2" Content="Створити накладну" VerticalAlignment="Top"
                         HorizontalAlignment="Center"></Button>
 
@@ -157,6 +136,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -226,7 +206,9 @@
                 <TextBox Name="SumOutBox" IsEnabled="False" Grid.Row="7" Grid.Column="1" 
                          FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.SumOut, Mode=OneWay, StringFormat=C2}"/>
 
-                <Button MinWidth="100" Name="CreateInvoicePartButton" Grid.Row="9" Grid.Column="0"
+                <TextBlock Name="InvoicePartNotificationBlock" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" 
+                           TextAlignment="Center" FontSize="14" TextWrapping="Wrap" Width="Auto"/>
+                <Button MinWidth="100" Name="CreateInvoicePartButton" Grid.Row="10" Grid.Column="0"
                         Grid.ColumnSpan="2" Content="Додати запчастину в накладну" VerticalAlignment="Top"
                         HorizontalAlignment="Center"></Button>
 

@@ -1,4 +1,5 @@
-﻿using PartsManager.Model.Entities;
+﻿using PartsManager.BaseHandlers;
+using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace PartsManager
             Action = ActionType.Create;
 
             SetContent();
-            SetButtonHandlers();
+            SetHandlers();
         }
 
         public PartTypeWindow(PartType partType, ActionType action)
@@ -45,7 +46,7 @@ namespace PartsManager
             Action = action;
 
             SetContent();
-            SetButtonHandlers();
+            SetHandlers();
         }
 
         public void SetContent()
@@ -64,7 +65,7 @@ namespace PartsManager
             NameBox.Text = LocalPartType.Name;
         }
 
-        public void SetButtonHandlers()
+        public void SetHandlers()
         {
             CancelButton.Click += (object sender, RoutedEventArgs e) => { Close(); };
 
@@ -85,6 +86,8 @@ namespace PartsManager
                     Close();
                 }
             };
+
+            NameBox.SetTextChangedFirstCharToUpper();
         }
     }
 }

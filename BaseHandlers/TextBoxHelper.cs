@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace PartsManager.BaseHandlers
 {
@@ -39,6 +40,39 @@ namespace PartsManager.BaseHandlers
             }          
 
             return 0;
+        }
+
+        public static string FirstCharToUpper(this string input)
+        {
+            switch (input)
+            {
+                case null: return input;
+                case "": return input;
+                default: return input[0].ToString().ToUpper() + input.Substring(1);
+            }
+        }
+
+        public static void SetTextChangedFirstCharToUpper(this TextBox textBox)
+        {
+            textBox.TextChanged += (object sender, TextChangedEventArgs e) =>
+            {
+                var cursorPosition = textBox.SelectionStart;
+                var selectionLength = textBox.SelectionLength;
+                textBox.Text = textBox.Text.FirstCharToUpper();
+                textBox.Select(cursorPosition, selectionLength);
+            };
+        }
+
+        public static void SetTextChangedToUpper(this TextBox textBox)
+        {
+            textBox.TextChanged += (object sender, TextChangedEventArgs e) =>
+            {
+                var cursorPosition = textBox.SelectionStart;
+                var selectionLength = textBox.SelectionLength;
+                if (textBox.Text.Length > 0)
+                    textBox.Text = textBox.Text.ToUpper();
+                textBox.Select(cursorPosition, selectionLength);
+            };
         }
     }
 }

@@ -17,7 +17,9 @@ namespace PartsManager.Model.Entities
         public int Id { get; set; }
         [Required, MaxLength(255)]
         public string Name { get; set; }
-        [Index(IsUnique = true), Required, MaxLength(25)]
+        [Required, MaxLength(255)]
+        public string FullName { get; set; }
+        [Index(IsUnique = true), Required, MaxLength(63)]
         public string Article { get; set; }
         [MaxLength(255)]
         public string Description { get; set; }
@@ -30,6 +32,6 @@ namespace PartsManager.Model.Entities
 
         public override string ToString() => $"{PartType} {Name} {Article}";
         [NotMapped]
-        public string FullInfo => $"{PartType} {Name} {Article}";
+        public string FullInfo => $"{PartType} {FullName} {Article}";
     }
 }

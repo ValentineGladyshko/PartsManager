@@ -65,11 +65,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CarSelectionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CarWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DialogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InvoiceInfoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -91,11 +99,17 @@
     </Compile>
     <Compile Include="BaseHandlers\ComboBoxHelper.cs" />
     <Compile Include="BaseHandlers\TextBoxHelper.cs" />
+    <Compile Include="CarSelectionWindow.xaml.cs">
+      <DependentUpon>CarSelectionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CarWindow.xaml.cs">
       <DependentUpon>CarWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceInfoWindow.xaml.cs">
+      <DependentUpon>InvoiceInfoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="InvoiceSelectionWindow.xaml.cs">
       <DependentUpon>InvoiceSelectionWindow.xaml</DependentUpon>
@@ -112,10 +126,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ModelWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ModelWindow2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -138,9 +148,6 @@
     </Compile>
     <Compile Include="ModelWindow.xaml.cs">
       <DependentUpon>ModelWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ModelWindow2.xaml.cs">
-      <DependentUpon>ModelWindow2.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Context\DataContext.cs" />
     <Compile Include="Model\Entities\ActionType.cs" />

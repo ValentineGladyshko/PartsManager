@@ -14,12 +14,12 @@ namespace PartsManager.Model.Entities
         [Key]
         public int Id { get; set; }
         [MaxLength(255)]
-        public string Info { get; set; }
-        public DateTime Date { get; set; }
+        public string Info { get; set; } // можна змінити
+        public DateTime Date { get; set; } // можна змінити
         public decimal DeliveryPrice { get; set; }
-        public bool IsPayed { get; set; }
-        public bool IsPartnerPayed { get; set; } // розрахунок між партнерами
-        public decimal Prepayment { get; set; } // скільки заплатили завдатку
+        public bool IsPayed { get; set; } // 
+        public bool IsPartnerPayed { get; set; } // розрахунок між партнерами можна змінити
+        public decimal Prepayment { get; set; } // скільки заплатили завдатку можна змінити
 
         [Required]
         public int CarId { get; set; }
@@ -31,5 +31,7 @@ namespace PartsManager.Model.Entities
         public decimal SumIn => InvoiceParts.Sum(x => x.SumIn);
         [NotMapped]
         public decimal SumOut => InvoiceParts.Sum(x => x.SumOut);
+        [NotMapped]
+        public decimal SumTotal => SumOut + DeliveryPrice;
     }
 }

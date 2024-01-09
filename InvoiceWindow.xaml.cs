@@ -4,7 +4,9 @@ using PartsManager.Model.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,16 +18,49 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace PartsManager
 {
     /// <summary>
     /// Interaction logic for InvoiceWindow.xaml
     /// </summary>
-    public partial class InvoiceWindow : Window
+    public partial class InvoiceWindow : Window, INotifyPropertyChanged
     {
-        private bool IsInvoiceCreated { get; set; }
-        private bool IsPartSelected { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool isInvoiceCreated;
+        private bool isPartSelected;
+        private bool isCarSelected;
+
+        public bool IsInvoiceCreated
+        {
+            get { return isInvoiceCreated; }
+            set
+            {
+                isInvoiceCreated = value;
+                OnPropertyChanged("IsInvoiceCreated");
+            }
+        }
+        public bool IsPartSelected
+        {
+            get { return isPartSelected; }
+            set
+            {
+                isPartSelected = value;
+                OnPropertyChanged("IsPartSelected");
+            }
+        }
+        public bool IsCarSelected
+        {
+            get { return isCarSelected; }
+            set
+            {
+                isCarSelected = value;
+                OnPropertyChanged("IsCarSelected");
+            }
+        }
+
         public Invoice LocalInvoice { get; set; }
         public ICollection<InvoicePart> LocalInvoiceParts { get; set; }
         public InvoicePart LocalInvoicePart { get; set; }
@@ -39,6 +74,10 @@ namespace PartsManager
             {
                 Car = new Car()
                 {
+                    Model = new Model.Entities.Model()
+                    {
+                        Mark = new Mark()
+                    },
                     VINCode = string.Empty,
                     Info = string.Empty,
                 },
@@ -53,18 +92,23 @@ namespace PartsManager
                 PriceIn = 0,
                 PriceOut = 0,
             };
+            SetContent();
             Action = ActionType.Create;
             IsInvoiceCreated = false;
             IsPartSelected = false;
+            IsCarSelected = false;
             DataContext = this;
-            SetContent();
+            WorkButton.IsEnabled = false;
+            InvoiceNotificationBlock.Text = "Для створення накладної спочатку необхідно обрати автомобіль";
+            InvoicePartNotificationBlock.Text = "Для додавання запчастини спочатку необхідно створити накладну та обрати запчастину";
+            InvoiceNotificationBlock.Foreground = Brushes.DarkRed;
+            InvoicePartNotificationBlock.Foreground = Brushes.DarkRed;
             SetHandlers();
         }
         public InvoiceWindow(Invoice invoice)
         {
             InitializeComponent();
-            LocalInvoice = invoice;
-            
+            LocalInvoice = invoice;           
             LocalInvoicePart = new InvoicePart()
             {
                 Part = new Part(),
@@ -73,135 +117,89 @@ namespace PartsManager
                 PriceIn = 0,
                 PriceOut = 0,
             };
-
-            OnInvoiceCreated();
-
+            SetContent();
+            IsInvoiceCreated = true;
             IsPartSelected = false;
+            IsCarSelected = true;
             LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
                 .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
 
             DataContext = this;
-            SetContent();
             SetHandlers();
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
         public void SetContent()
         {
             CreateInvoicePartButton.IsEnabled = false;
+
+            PropertyChanged += ChangeButtons;
+        }
+
+        private void ChangeButtons(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsCarSelected")
+            {
+                if (!IsCarSelected)
+                {
+                    InvoiceNotificationBlock.Text = "Для створення накладної спочатку необхідно обрати автомобіль";
+                    InvoiceNotificationBlock.Foreground = Brushes.DarkRed;
+                }
+                else
+                {
+                    InvoiceNotificationBlock.Text = "Автомобіль обраний";
+                    InvoiceNotificationBlock.Foreground = Brushes.DarkGreen;
+                }
+            }
+
+            if (!IsInvoiceCreated)
+            {
+                if (!IsPartSelected)
+                {
+                    InvoicePartNotificationBlock.Text = "Для додавання запчастини спочатку необхідно створити накладну та обрати запчастину";
+                    InvoicePartNotificationBlock.Foreground = Brushes.DarkRed;
+                }
+                else
+                {
+                    InvoicePartNotificationBlock.Text = "Для додавання запчастини спочатку необхідно створити накладну";
+                    InvoicePartNotificationBlock.Foreground = Brushes.DarkRed;
+                }
+            }
+            else
+            {
+                if (!IsPartSelected)
+                {
+                    InvoicePartNotificationBlock.Text = "Для додавання запчастини спочатку необхідно обрати запчастину";
+                    InvoicePartNotificationBlock.Foreground = Brushes.DarkRed;
+                }
+                else
+                {
+                    InvoicePartNotificationBlock.Text = "Запчастина обрана";
+                    InvoicePartNotificationBlock.Foreground = Brushes.DarkGreen;
+                    CreateInvoicePartButton.IsEnabled = true;
+                }
+            }
+
+            if (e.PropertyName == "IsInvoiceCreated" && IsInvoiceCreated)
+            {
+                WorkButton.Content = "Редагувати накладну";
+                Action = ActionType.Edit;
+            }        
         }
 
         public void SetHandlers()
         {
-            ComboBoxHelper.SetDropDownOpened(CarModelNameBox, unitOfWork.Models.GetAll());
-            ComboBoxHelper.SetDropDownOpened(CarMarkNameBox, unitOfWork.Marks.GetAll());
-
             WorkButton.Click += (object sender, RoutedEventArgs e) =>
             {
                 if (Action == ActionType.Create)
                 {
-                    if (CarMarkNameBox.Text == string.Empty || CarModelNameBox.Text == string.Empty
-                        || LocalInvoice.Car.VINCode == string.Empty || LocalInvoice.Car.VINCode == null)
-                        return;
-
-                    var marks = unitOfWork.Marks.Find(item => item.Name == CarMarkNameBox.Text).ToList();
-                    var models = unitOfWork.Models.Find(item => item.Name == CarModelNameBox.Text).ToList();
-                    var cars = unitOfWork.Cars.Find(item => item.VINCode == LocalInvoice.Car.VINCode).ToList();
-
-                    if (cars.Count == 0)
-                    {
-                        if (models.Count == 0)
-                        {
-                            if (marks.Count == 0)
-                            {
-                                string message = "Для " + TextBoxHelper.ActionText(Action) + " даної накладної також треба створити марку \""
-                                        + CarMarkNameBox.Text + "\", модель \""
-                                        + CarModelNameBox.Text + "\" та авто \""
-                                        + CarVINCodeBox.Text + "\".\nВи згодні з створенням марки, моделі та авто?";
-                                DialogWindow dialogWindow = new DialogWindow(message);
-                                bool? dialogResult = dialogWindow.ShowDialog();
-                                if (dialogResult != true)
-                                    return;
-
-                                var mark = new Mark()
-                                {
-                                    Name = CarMarkNameBox.Text,
-                                };
-
-                                unitOfWork.Marks.Create(mark);
-                                unitOfWork.Save();
-
-                                var model = new Model.Entities.Model()
-                                {
-                                    Name = CarModelNameBox.Text,
-                                    Mark = mark,
-                                    MarkId = mark.Id,
-                                };
-                                unitOfWork.Models.Create(model);
-                                unitOfWork.Save();
-
-                                LocalInvoice.Car.Model = model;
-                            }
-                            else if (marks.Count != 0)
-                            {
-                                string message = "Для " + TextBoxHelper.ActionText(Action) + " даної накладної також треба створити модель \""
-                                        + CarModelNameBox.Text + "\" та авто \""
-                                        + CarVINCodeBox.Text + "\".\nВи згодні з створенням моделі та авто?";
-                                DialogWindow dialogWindow = new DialogWindow(message);
-                                bool? dialogResult = dialogWindow.ShowDialog();
-                                if (dialogResult != true)
-                                    return;
-
-                                var model = new Model.Entities.Model()
-                                {
-                                    Name = CarModelNameBox.Text,
-                                    Mark = marks.First(),
-                                    MarkId = marks.First().Id,
-                                };
-                                unitOfWork.Models.Create(model);
-                                unitOfWork.Save();
-
-                                LocalInvoice.Car.Model = model;
-                            }
-                        }
-                        else if (models.Count != 0)
-                        {
-                            if (marks.Count == 0)
-                                return;
-                            else if (models.Count != 0)
-                            {
-                                LocalInvoice.Car.Model = models.First();
-                            }
-                        }
-                        unitOfWork.Cars.Create(LocalInvoice.Car);
-                        unitOfWork.Save();
-                    }
-                    else if (cars.Count != 0)
-                    {
-                        var car = cars.First();
-                        if (car.ModelId == models.First().Id && models.First().MarkId == marks.First().Id)
-                        {
-                            LocalInvoice.Car = car;
-                            unitOfWork.Invoices.Create(LocalInvoice);
-                            unitOfWork.Save();
-                            OnInvoiceCreated();
-                        }
-                        else
-                        {
-                            string message = $"При {TextBoxHelper.ActionText(Action)} даної накладної виникла проблема." +
-                            $" Авто з VIN кодом {LocalInvoice.Car.VINCode} вже існує, але модель з маркою не співпадають.\n" +
-                            $"Чи створювати накладну?";
-
-                            DialogWindow dialogWindow = new DialogWindow(message);
-                            bool? dialogResult = dialogWindow.ShowDialog();
-                            if (dialogResult != true)
-                                return;
-
-                            LocalInvoice.Car = car;
-                            unitOfWork.Invoices.Create(LocalInvoice);
-                            unitOfWork.Save();
-                            OnInvoiceCreated();
-                        }
-                    }
+                    unitOfWork.Invoices.Create(LocalInvoice);
+                    unitOfWork.Save();
+                    IsInvoiceCreated = true;
                 }
                 else if (Action == ActionType.Edit)
                 {
@@ -220,7 +218,20 @@ namespace PartsManager
                     LocalInvoicePart.Part = partSelectionWindow.LocalPart;
                     PartBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
                     IsPartSelected = true; 
-                    UpdateCreateInvoicePartButton();
+                }
+            };
+            SelectCarButton.Click += (object sender, RoutedEventArgs e) =>
+            {
+                var carSelectionWindow = new CarSelectionWindow();
+                bool? dialogResult = carSelectionWindow.ShowDialog();
+                if (dialogResult != true)
+                    return;
+                else
+                {
+                    LocalInvoice.Car = carSelectionWindow.LocalCar;
+                    CarBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+                    IsCarSelected = true;
+                    WorkButton.IsEnabled = true;
                 }
             };
             CreateInvoicePartButton.Click += (object sender, RoutedEventArgs e) =>
@@ -243,33 +254,6 @@ namespace PartsManager
             };
         }
 
-        public void UpdateCreateInvoicePartButton()
-        {
-            if (IsInvoiceCreated && IsPartSelected)
-            {
-                CreateInvoicePartButton.IsEnabled = true;
-            }
-        }
-
-        public void OnInvoiceCreated()
-        {
-            IsInvoiceCreated = true;
-            WorkButton.Content = "Редагувати накладну";
-            Action = ActionType.Edit;
-
-            CarMarkNameBox.Text = LocalInvoice.Car.Model.Mark.Name;
-            CarModelNameBox.Text = LocalInvoice.Car.Model.Name;
-            CarVINCodeBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-            CarInfoBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-
-            CarMarkNameBox.IsEnabled = false;
-            CarModelNameBox.IsEnabled = false;
-            CarVINCodeBox.IsEnabled = false;
-            CarInfoBox.IsEnabled = false;
-
-            UpdateCreateInvoicePartButton();
-        }
-
         public void DeleteInvoicePartOnClick(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
@@ -289,7 +273,7 @@ namespace PartsManager
 
             LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
                 .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
-            InvoicePartListBox.GetBindingExpression(ListBox.ItemsSourceProperty).UpdateTarget();
+            InvoicePartListBox.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
         }
     }
 }

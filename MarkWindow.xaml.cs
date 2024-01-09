@@ -1,4 +1,5 @@
-﻿using PartsManager.Model.Entities;
+﻿using PartsManager.BaseHandlers;
+using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
 using System;
 using System.Collections.Generic;
@@ -32,8 +33,8 @@ namespace PartsManager
             LocalMark = new Mark();
             Action = ActionType.Create;
 
+            SetHandlers();
             SetContent();
-            SetButtonHandlers();
         }
 
         public MarkWindow(Mark mark, ActionType action)
@@ -43,8 +44,8 @@ namespace PartsManager
             LocalMark = mark;
             Action = action;
 
+            SetHandlers();
             SetContent();
-            SetButtonHandlers();
         }
 
         public void SetContent()
@@ -63,7 +64,7 @@ namespace PartsManager
             NameBox.Text = LocalMark.Name;
         }
 
-        public void SetButtonHandlers()
+        public void SetHandlers()
         {
             CancelButton.Click += (object sender, RoutedEventArgs e) => { Close(); };
 
@@ -84,6 +85,8 @@ namespace PartsManager
                     Close();
                 }
             };
+
+            NameBox.SetTextChangedFirstCharToUpper();
         }
     }
 }

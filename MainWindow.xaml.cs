@@ -4,6 +4,7 @@ using PartsManager.Model.Interfaces;
 using PartsManager.Model.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -25,11 +26,14 @@ namespace PartsManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<Invoice> LocalInvoices { get; set; }
         EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
 
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = this;
 
             SetMarkHandlers();
             SetModelHandlers();
@@ -69,7 +73,7 @@ namespace PartsManager
                 var mark = MarkListBox.SelectedItem as Mark;
                 if (mark != null)
                 {
-                    var invoices = unitOfWork.Invoices.GetAll().Where(item => item.Car.Model.MarkId == mark.Id).ToList();
+                    var invoices = unitOfWork.Invoices.GetAll().Where(item => item.Car.Model.MarkId == mark.Id).OrderByDescending(item => item.Id).ToList();
                     var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
                     invoiceSelectionWindow.Owner = this;
 
@@ -128,8 +132,8 @@ namespace PartsManager
         }
         public void SetCarHandlers()
         {
-            ComboBoxHelper.SetDropDownOpened(CarMarkNameBox, unitOfWork.Marks.GetAll());
-            ComboBoxHelper.SetDropDownOpened(CarModelNameBox, unitOfWork.Models.GetAll());
+            CarMarkNameBox.SetDropDownOpened(unitOfWork.Marks.GetAll());
+            CarModelNameBox.SetDropDownOpened(unitOfWork.Models.GetAll());
 
             CarSearchButton.Click += (object sender, RoutedEventArgs args) =>
             {
@@ -225,13 +229,22 @@ namespace PartsManager
         }
         public void SetPartHandlers()
         {
-            ComboBoxHelper.SetDropDownOpened(PartPartTypeNameBox, unitOfWork.PartTypes.GetAll());
-            ComboBoxHelper.SetDropDownOpened(PartNameBox, unitOfWork.Parts.GetAll());
+            PartPartTypeNameBox.SetDropDownOpened(unitOfWork.PartTypes.GetAll());
+            PartNameBox.SetDropDownOpened(unitOfWork.Parts.GetAll());
+            PartFullNameBox.DropDownOpened += delegate
+            {
+                var list = unitOfWork.Parts.GetAll()
+                    .Where(item => item.FullName.Contains(PartFullNameBox.Text))
+                    .Select(item => item.FullName).ToList();
+                list.Sort();
+                PartFullNameBox.ItemsSource = list;
+            };
 
             PartSearchButton.Click += (object sender, RoutedEventArgs args) =>
             {
                 var list = unitOfWork.Parts.GetAll()
                     .Where(item => item.Name.Contains(PartNameBox.Text)
+                        && item.FullName.Contains(PartFullNameBox.Text)
                         && item.PartType.Name.Contains(PartPartTypeNameBox.Text)
                         && item.Article.Contains(PartArticleBox.Text)
                         && item.Description.Contains(PartDescriptionBox.Text))
@@ -243,6 +256,7 @@ namespace PartsManager
                 Part part = new Part()
                 {
                     Name = PartNameBox.Text,
+                    FullName = PartFullNameBox.Text,
                     Article = PartArticleBox.Text,
                     Description = PartDescriptionBox.Text,
                     PartType = new PartType()
@@ -278,12 +292,27 @@ namespace PartsManager
         }
         public void SetInvoiceHandlers()
         {
-            InvoiceCreateButton.Click += (object sender, RoutedEventArgs args) =>
+            CreateInvoiceButton.Click += (object sender, RoutedEventArgs args) =>
             {
                 InvoiceWindow invoiceWindow = new InvoiceWindow();
                 invoiceWindow.Owner = this;
 
                 invoiceWindow.Show();
+            };
+            LocalInvoices = new ObservableCollection<Invoice>(unitOfWork.Invoices.GetAll().OrderByDescending(item => item.Id));
+
+            DataGridInvoices.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            {
+                var invoice = DataGridInvoices.SelectedItem as Invoice;
+                if (invoice != null)
+                {
+                    InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
+                    invoiceWindow.Owner = this;
+
+                    invoiceWindow.Show();
+                }
+
+                DataGridInvoices.UnselectAll();
             };
         }
 

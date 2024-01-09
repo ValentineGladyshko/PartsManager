@@ -31,6 +31,7 @@ namespace PartsManager
             {
                 PartType = new PartType(),
                 Name = string.Empty,
+                FullName = string.Empty,
                 Article = string.Empty,
                 Description = string.Empty,
             };
@@ -42,11 +43,20 @@ namespace PartsManager
         {
             ComboBoxHelper.SetDropDownOpened(PartPartTypeNameBox, unitOfWork.PartTypes.GetAll());
             ComboBoxHelper.SetDropDownOpened(PartNameBox, unitOfWork.Parts.GetAll());
+            PartFullNameBox.DropDownOpened += delegate
+            {
+                var list = unitOfWork.Parts.GetAll()
+                    .Where(item => item.FullName.Contains(PartFullNameBox.Text))
+                    .Select(item => item.FullName).ToList();
+                list.Sort();
+                PartFullNameBox.ItemsSource = list;
+            };
 
             SearchPartButton.Click += (object sender, RoutedEventArgs args) =>
             {
                 var list = unitOfWork.Parts.GetAll()
                     .Where(item => item.Name.Contains(LocalPart.Name)
+                        && item.FullName.Contains(LocalPart.FullName)
                         && item.PartType.Name.Contains(PartPartTypeNameBox.Text)
                         && item.Article.Contains(LocalPart.Article)
                         && item.Description.Contains(LocalPart.Description))

@@ -1,11 +1,11 @@
-﻿<Window x:Class="PartsManager.PartSelectionWindow"
+﻿<Window x:Class="PartsManager.CarSelectionWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PartsManager"
         mc:Ignorable="d"
-        Title="Вибір запчастини" Height="495" Width="880">
+        Title="Вибір автомобіля" Height="495" Width="880">
     <Window.Resources>
         <Style TargetType="ListBoxItem">
             <Setter Property="Opacity" Value="1.0"/>
@@ -46,7 +46,6 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -55,62 +54,59 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                                   Text="Тип:" Width="Auto"></TextBlock>
-            <ComboBox Name="PartPartTypeNameBox" Grid.Row="0" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
+                       Text="Марка:" Width="Auto"/>
+            <ComboBox Name="CarMarkNameBox" Grid.Row="0" Grid.Column="1"
+                      FontSize="14" MinWidth="100" IsEditable="True" 
+                      ShouldPreserveUserEnteredPrefix="False"/>
             <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
-                                   Text="Назва:" Width="Auto"></TextBlock>
-            <ComboBox Name="PartNameBox" Grid.Row="1" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" Text="{Binding Path=Name, Mode=OneWayToSource}"
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
+                       Text="Модель:" Width="Auto"/>
+            <ComboBox Name="CarModelNameBox" Grid.Row="1" Grid.Column="1"
+                      FontSize="14" MinWidth="100" IsEditable="True" 
+                      ShouldPreserveUserEnteredPrefix="False"/>
             <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
-                                   Text="Повна назва:" Width="Auto"></TextBlock>
-            <ComboBox Name="PartFullNameBox" Grid.Row="2" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" Text="{Binding Path=FullName, Mode=OneWayToSource}"
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Артикул:" Width="Auto"/>
-            <TextBox Name="PartArticleBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100" Text="{Binding Path=Article}"/>
-            <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Опис:" Width="Auto"/>
-            <TextBox Name="PartDescriptionBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100" Text="{Binding Path=Description}"/>
+                       Text="VIN код:" Width="Auto"/>
+            <TextBox Name="CarVINCodeBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100" Text="{Binding Path=VINCode}"/>
+            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
+                       Text="Опис:" Width="Auto"/>
+            <TextBox Name="CarInfoBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100" Text="{Binding Path=Info}"/>
 
-            <Button MinWidth="100" Name="SearchPartButton" Grid.Row="5" Grid.Column="0" 
-                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
-                                HorizontalAlignment="Center"></Button>
+            <Button MinWidth="100" Name="SearchCarButton" Grid.Row="4" Grid.Column="0" 
+                    Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
+                    HorizontalAlignment="Center"></Button>
 
         </Grid>
         <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                      HorizontalAlignment="Center" VerticalAlignment="Stretch" />
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <ListBox Name="PartListBox" Grid.Row="0" Background="{x:Null}"
+            <ListBox Name="CarListBox" Grid.Row="0" Background="{x:Null}"
                                  BorderThickness="0" HorizontalContentAlignment="Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel Name="DockPanel" Margin="2" 
                                                HorizontalAlignment="Stretch" LastChildFill="False">
                             <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=PartType.Name}" 
+                                                   Text="{Binding Path=Model.Mark.Name}" 
                                                    VerticalAlignment="Center" Margin="2"/>
                             <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=FullName}" 
+                                                   Text="{Binding Path=Model.Name}" 
                                                    VerticalAlignment="Center" Margin="2"/>
                             <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Article}" 
+                                                   Text="{Binding Path=VINCode}"                          
                                                    VerticalAlignment="Center" Margin="2"/>
                             <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Description}" 
+                                                   Text="{Binding Path=Info}"                          
                                                    VerticalAlignment="Center" Margin="2"/>
                         </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Name="CreatePartButton" Margin="2 0 0 0" 
-                                Content="Створити нову запчастину" Grid.Row="1"></Button>
+            <Button Name="CreateCarButton" Margin="2 0 0 0" 
+                    Content="Створити новий автомобіль" Grid.Row="1"/>
         </Grid>
     </Grid>
 </Window>
