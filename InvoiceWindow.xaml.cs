@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -32,6 +33,8 @@ namespace PartsManager
         private bool isInvoiceCreated;
         private bool isPartSelected;
         private bool isCarSelected;
+        private bool isPartEditing;
+        private InvoicePart localInvoicePart;
 
         public bool IsInvoiceCreated
         {
@@ -60,10 +63,27 @@ namespace PartsManager
                 OnPropertyChanged("IsCarSelected");
             }
         }
+        public bool IsPartEditing
+        {
+            get { return isPartEditing; }
+            set
+            {
+                isPartEditing = value;
+                OnPropertyChanged("IsPartEditing");
+            }
+        }
+        public InvoicePart LocalInvoicePart
+        {
+            get { return localInvoicePart; }
+            set
+            {
+                localInvoicePart = value;
+                OnPropertyChanged("LocalInvoicePart");
+            }
+        }
 
-        public Invoice LocalInvoice { get; set; }
         public ICollection<InvoicePart> LocalInvoiceParts { get; set; }
-        public InvoicePart LocalInvoicePart { get; set; }
+        public Invoice LocalInvoice { get; set; }
         private ActionType Action { get; set; }
         private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
 
@@ -97,6 +117,7 @@ namespace PartsManager
             IsInvoiceCreated = false;
             IsPartSelected = false;
             IsCarSelected = false;
+            IsPartEditing = false;
             DataContext = this;
             WorkButton.IsEnabled = false;
             InvoiceNotificationBlock.Text = "Для створення накладної спочатку необхідно обрати автомобіль";
@@ -121,6 +142,7 @@ namespace PartsManager
             IsInvoiceCreated = true;
             IsPartSelected = false;
             IsCarSelected = true;
+            IsPartEditing = false;
             LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
                 .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
 
@@ -135,7 +157,7 @@ namespace PartsManager
 
         public void SetContent()
         {
-            CreateInvoicePartButton.IsEnabled = false;
+            WorkInvoicePartButton.IsEnabled = false;
 
             PropertyChanged += ChangeButtons;
         }
@@ -180,7 +202,7 @@ namespace PartsManager
                 {
                     InvoicePartNotificationBlock.Text = "Запчастина обрана";
                     InvoicePartNotificationBlock.Foreground = Brushes.DarkGreen;
-                    CreateInvoicePartButton.IsEnabled = true;
+                    WorkInvoicePartButton.IsEnabled = true;
                 }
             }
 
@@ -188,7 +210,19 @@ namespace PartsManager
             {
                 WorkButton.Content = "Редагувати накладну";
                 Action = ActionType.Edit;
-            }        
+            }
+
+            if (e.PropertyName == "IsPartEditing")
+            {
+                if (IsPartEditing)
+                {
+                    WorkInvoicePartButton.Content = "Редагувати запчастину";
+                }
+                else
+                {
+                    WorkInvoicePartButton.Content = "Додати запчастину в накладну";
+                }
+            }
         }
 
         public void SetHandlers()
@@ -217,7 +251,8 @@ namespace PartsManager
                 {
                     LocalInvoicePart.Part = partSelectionWindow.LocalPart;
                     PartBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-                    IsPartSelected = true; 
+                    IsPartSelected = true;
+                    IsPartEditing = false;
                 }
             };
             SelectCarButton.Click += (object sender, RoutedEventArgs e) =>
@@ -234,14 +269,35 @@ namespace PartsManager
                     WorkButton.IsEnabled = true;
                 }
             };
-            CreateInvoicePartButton.Click += (object sender, RoutedEventArgs e) =>
+            WorkInvoicePartButton.Click += (object sender, RoutedEventArgs e) =>
             {
-                unitOfWork.InvoiceParts.Create(LocalInvoicePart);
-                unitOfWork.Save();
+                if(!IsPartEditing)
+                {
+                    try
+                    {
+                        unitOfWork.InvoiceParts.Create(LocalInvoicePart);
+                        unitOfWork.Save();
 
-                LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
-                    .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
-                InvoicePartListBox.GetBindingExpression(ListBox.ItemsSourceProperty).UpdateTarget();
+                        LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
+                            .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
+                        InvoicePartDataGrid.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    }
+                    catch (Exception ex)
+                    {
+                        InvoicePartNotificationBlock.Text = "Дана запчастина вже додана";
+                        InvoicePartNotificationBlock.Foreground = Brushes.DarkRed;
+                    }
+                }
+                else
+                {
+                    unitOfWork.InvoiceParts.Update(LocalInvoicePart);
+                    unitOfWork.Save();
+
+                    LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
+                        .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
+                    InvoicePartDataGrid.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    IsPartEditing = false;
+                }
             };
             PriceInBox.LostFocus += (object sender, RoutedEventArgs e) =>
             {
@@ -252,11 +308,26 @@ namespace PartsManager
             {
                 SumOutBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
             };
+            InvoicePartDataGrid.SelectionChanged += delegate
+            {
+                var invoicePart = InvoicePartDataGrid.SelectedItem as InvoicePart;
+                if (invoicePart != null)
+                {
+                    LocalInvoicePart = invoicePart;
+                }
+                IsPartSelected = true;
+                IsPartEditing = true;
+                InvoicePartDataGrid.UnselectAll();
+            };
         }
 
         public void DeleteInvoicePartOnClick(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
+            if (button == null)
+            {
+                return;
+            }
 
             var partInvoiceToDelete = unitOfWork.InvoiceParts.Get((int)button.Tag);
 
@@ -273,7 +344,8 @@ namespace PartsManager
 
             LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
                 .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
-            InvoicePartListBox.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+            InvoicePartDataGrid.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+
         }
     }
 }

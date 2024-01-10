@@ -19,19 +19,43 @@ namespace PartsManager.Model.Entities
         public decimal DeliveryPrice { get; set; }
         public bool IsPayed { get; set; } // 
         public bool IsPartnerPayed { get; set; } // розрахунок між партнерами можна змінити
-        public decimal Prepayment { get; set; } // скільки заплатили завдатку можна змінити
 
         [Required]
         public int CarId { get; set; }
         public virtual Car Car { get; set; }
 
         public virtual ICollection<InvoicePart> InvoiceParts { get; set; }
+        public virtual ICollection<Payment> Payments { get; set; }
 
         [NotMapped]
-        public decimal SumIn => InvoiceParts.Sum(x => x.SumIn);
+        public decimal SumIn
+        {
+            get
+            {
+                if (InvoiceParts == null) return 0;
+                else return InvoiceParts.Sum(x => x.SumIn);
+            }
+        }
         [NotMapped]
-        public decimal SumOut => InvoiceParts.Sum(x => x.SumOut);
+        public decimal SumOut
+        {
+            get
+            {
+                if (InvoiceParts == null) return 0;
+                else return InvoiceParts.Sum(x => x.SumOut);
+            }
+        }
         [NotMapped]
         public decimal SumTotal => SumOut + DeliveryPrice;
+        [NotMapped]
+        public decimal PaymentTotal
+        {
+            get 
+            { 
+                if (Payments == null) return 0;
+                else return Payments.Sum(x => x.PaymentAmount); 
+            }
+        }
+        
     }
 }

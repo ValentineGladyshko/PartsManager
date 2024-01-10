@@ -67,8 +67,6 @@
                 <DataGridTextColumn Header="Сплачено" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
                 <DataGridTextColumn Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
                 <DataGridTextColumn Header="Передоплата" Binding="{Binding Path=Prepayment, Mode=OneWay, StringFormat=C2}"/>
-                
-
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

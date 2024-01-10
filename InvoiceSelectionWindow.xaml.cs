@@ -40,19 +40,19 @@ namespace PartsManager
                 invoiceWindow.Show();
             };
 
-            //InvoiceListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
-            //{
-            //    var invoice = InvoiceListBox.SelectedItem as Invoice;
-            //    if (invoice != null)
-            //    {
-            //        InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
-            //        invoiceWindow.Owner = this;
+            DataGridInvoices.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            {
+                var invoice = DataGridInvoices.SelectedItem as Invoice;
+                if (invoice != null)
+                {
+                    InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
+                    invoiceWindow.Owner = this;
 
-            //        invoiceWindow.Show();
-            //    }
+                    invoiceWindow.Show();
+                }
 
-            //    InvoiceListBox.UnselectAll();
-            //};
+                DataGridInvoices.UnselectAll();
+            };
         }
     }
 }

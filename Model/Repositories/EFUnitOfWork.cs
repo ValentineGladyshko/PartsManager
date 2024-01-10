@@ -14,6 +14,16 @@ namespace PartsManager.Model.Repositories
         private ModelRepository modelRepository;
         private PartRepository partRepository;
         private PartTypeRepository partTypeRepository;
+        private PaymentRepository paymentRepository;
+        private AdditionalInfoRepository additionalInfoRepository;
+        private ApiStandardRepository apiStandardRepository;
+        private ManufacturerStandardRepository manufacturerStandardRepository;
+        private ManufacturerRepository manufacturerRepository;
+        private SaeQualityStandardRepository saeQualityStandardRepository;
+        private PartApiStandardRepository partApiStandardRepository;
+        private PartManufacturerStandardRepository partManufacturerStandardRepository;
+
+        public DataContext Db { get { return db; } }
 
         public EFUnitOfWork(string connectionString)
         {
@@ -34,6 +44,22 @@ namespace PartsManager.Model.Repositories
             => partRepository ?? (partRepository = new PartRepository(db));
         public IRepository<PartType> PartTypes
             => partTypeRepository ?? (partTypeRepository = new PartTypeRepository(db));
+        public IRepository<Payment> Payments
+            => paymentRepository ?? (paymentRepository = new PaymentRepository(db));
+        public IRepository<AdditionalInfo> AdditionalInfos
+            => additionalInfoRepository ?? (additionalInfoRepository = new AdditionalInfoRepository(db));
+        public IRepository<ApiStandard> ApiStandards
+            => apiStandardRepository ?? (apiStandardRepository = new ApiStandardRepository(db));
+        public IRepository<ManufacturerStandard> ManufacturerStandards
+            => manufacturerStandardRepository ?? (manufacturerStandardRepository = new ManufacturerStandardRepository(db));
+        public IRepository<Manufacturer> Manufacturers
+            => manufacturerRepository ?? (manufacturerRepository = new ManufacturerRepository(db));
+        public IRepository<SaeQualityStandard> SaeQualityStandards
+            => saeQualityStandardRepository ?? (saeQualityStandardRepository = new SaeQualityStandardRepository(db));
+        public IRepository<PartApiStandard> PartApiStandards
+            => partApiStandardRepository ?? (partApiStandardRepository = new PartApiStandardRepository(db));
+        public IRepository<PartManufacturerStandard> PartManufacturerStandards
+            => partManufacturerStandardRepository ?? (partManufacturerStandardRepository = new PartManufacturerStandardRepository(db));
 
         public void Save()
         {

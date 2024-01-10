@@ -25,10 +25,10 @@ namespace PartsManager.Model.Entities
         [NotMapped]
         public decimal RecommendedPrice => decimal.Multiply(PriceIn, 1.2m);
 
-        [Required]
+        [Index("IX_InvoiceAndPart", 1, IsUnique = true), Required]
         public int InvoiceId { get; set; }
         public virtual Invoice Invoice { get; set; }
-        [Required]
+        [Index("IX_InvoiceAndPart", 2, IsUnique = true), Required]
         public int PartId { get; set; }
         public virtual Part Part { get; set; }
     }

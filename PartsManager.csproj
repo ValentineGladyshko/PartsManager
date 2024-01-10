@@ -151,24 +151,41 @@
     </Compile>
     <Compile Include="Model\Context\DataContext.cs" />
     <Compile Include="Model\Entities\ActionType.cs" />
+    <Compile Include="Model\Entities\AdditionalInfo.cs" />
+    <Compile Include="Model\Entities\ApiStandard.cs" />
     <Compile Include="Model\Entities\Car.cs" />
     <Compile Include="Model\Entities\Invoice.cs" />
     <Compile Include="Model\Entities\InvoicePart.cs" />
+    <Compile Include="Model\Entities\Manufacturer.cs" />
+    <Compile Include="Model\Entities\ManufacturerStandard.cs" />
     <Compile Include="Model\Entities\Mark.cs" />
     <Compile Include="Model\Entities\Model.cs" />
     <Compile Include="Model\Entities\Part.cs" />
+    <Compile Include="Model\Entities\PartApiStandard.cs" />
+    <Compile Include="Model\Entities\PartManufacturerStandard.cs" />
     <Compile Include="Model\Entities\PartType.cs" />
+    <Compile Include="Model\Entities\Payment.cs" />
+    <Compile Include="Model\Entities\SaeQualityStandard.cs" />
+    <Compile Include="Model\Entities\Standard.cs" />
     <Compile Include="Model\Interfaces\IItem.cs" />
     <Compile Include="Model\Interfaces\IRepository.cs" />
     <Compile Include="Model\Interfaces\IUnitOfWork.cs" />
+    <Compile Include="Model\Repositories\AdditionalInfoRepository.cs" />
+    <Compile Include="Model\Repositories\ApiStandardRepository.cs" />
     <Compile Include="Model\Repositories\CarRepository.cs" />
     <Compile Include="Model\Repositories\EFUnitOfWork.cs" />
     <Compile Include="Model\Repositories\InvoicePartRepository.cs" />
     <Compile Include="Model\Repositories\InvoiceRepository.cs" />
+    <Compile Include="Model\Repositories\ManufacturerRepository.cs" />
+    <Compile Include="Model\Repositories\ManufacturerStandardRepository.cs" />
     <Compile Include="Model\Repositories\MarkRepository.cs" />
     <Compile Include="Model\Repositories\ModelRepository.cs" />
+    <Compile Include="Model\Repositories\PartApiStandardRepository.cs" />
+    <Compile Include="Model\Repositories\PartManufacturerStandardRepository.cs" />
     <Compile Include="Model\Repositories\PartRepository.cs" />
     <Compile Include="Model\Repositories\PartTypeRepository.cs" />
+    <Compile Include="Model\Repositories\PaymentRepository.cs" />
+    <Compile Include="Model\Repositories\SaeQualityStandardRepository.cs" />
     <Compile Include="PartSelectionWindow.xaml.cs">
       <DependentUpon>PartSelectionWindow.xaml</DependentUpon>
     </Compile>

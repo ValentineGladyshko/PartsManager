@@ -23,14 +23,13 @@ namespace PartsManager.Model.Repositories
         {
             return db.Invoices
                 .Include(item => item.Car)
-                .Include(item => item.InvoiceParts);
+                .Include(item => item.InvoiceParts)
+                .Include(item => item.Payments);
         }
 
         public Invoice Get(int id)
         {
             return db.Invoices.Find(id);
-            //db.Entry(result).Collection(item => item.InvoiceParts).Load();
-            //return result;
         }
 
         public IEnumerable<Invoice> Find(Func<Invoice, bool> predicate)
@@ -38,6 +37,7 @@ namespace PartsManager.Model.Repositories
             return db.Invoices
                 .Include(item => item.Car)
                 .Include(item => item.InvoiceParts)
+                .Include(item => item.Payments)
                 .Where(predicate);
         }
 

@@ -5,6 +5,8 @@ using PartsManager.Model.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -32,7 +34,9 @@ namespace PartsManager
         public MainWindow()
         {
             InitializeComponent();
+            unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
 
+            LocalInvoices = unitOfWork.Db.Invoices.Local;
             DataContext = this;
 
             SetMarkHandlers();
@@ -297,11 +301,19 @@ namespace PartsManager
                 InvoiceWindow invoiceWindow = new InvoiceWindow();
                 invoiceWindow.Owner = this;
 
+                invoiceWindow.Closed += (object sender1, EventArgs args1) =>
+                {
+                    DataGridInvoices.Items.SortDescriptions.Clear();
+                    DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+                    DataGridInvoices.Items.Refresh();
+                };
                 invoiceWindow.Show();
             };
-            LocalInvoices = new ObservableCollection<Invoice>(unitOfWork.Invoices.GetAll().OrderByDescending(item => item.Id));
+            DataGridInvoices.Items.SortDescriptions.Clear();
+            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+            DataGridInvoices.Items.Refresh();
 
-            DataGridInvoices.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            DataGridInvoices.SelectionChanged += delegate
             {
                 var invoice = DataGridInvoices.SelectedItem as Invoice;
                 if (invoice != null)
@@ -309,6 +321,12 @@ namespace PartsManager
                     InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
                     invoiceWindow.Owner = this;
 
+                    invoiceWindow.Closed += (object sender1, EventArgs args1) =>
+                    {
+                        DataGridInvoices.Items.SortDescriptions.Clear();
+                        DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+                        DataGridInvoices.Items.Refresh();
+                    };
                     invoiceWindow.Show();
                 }
 

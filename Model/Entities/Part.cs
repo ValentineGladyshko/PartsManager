@@ -30,8 +30,8 @@ namespace PartsManager.Model.Entities
 
         public virtual ICollection<InvoicePart> InvoiceParts { get; set; }
 
-        public override string ToString() => $"{PartType} {Name} {Article}";
+        public override string ToString() => $"{Name} {Article}";
         [NotMapped]
-        public string FullInfo => $"{PartType} {FullName} {Article}";
+        public string FullInfo => $"{FullName} {Article}";
     }
 }

@@ -19,6 +19,15 @@ namespace PartsManager.Model.Context
         public DbSet<Entities.Model> Models { get; set; }
         public DbSet<Part> Parts { get; set; }
         public DbSet<PartType> PartTypes { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<ApiStandard> ApiStandards { get; set; }
+        public DbSet<SaeQualityStandard> SaeQualityStandards { get; set; }
+        public DbSet<Manufacturer> Manufacturers { get; set; }
+        public DbSet<ManufacturerStandard> ManufacturerStandards { get; set; }
+        public DbSet<AdditionalInfo> AdditionalInfos { get; set; }
+        public DbSet<PartApiStandard> PartApiStandards { get; set; }
+        public DbSet<PartManufacturerStandard> PartManufacturerStandards { get; set; }
+
 
         static DataContext()
         {
