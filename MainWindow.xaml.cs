@@ -312,24 +312,43 @@ namespace PartsManager
             DataGridInvoices.Items.SortDescriptions.Clear();
             DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
             DataGridInvoices.Items.Refresh();
-
-            DataGridInvoices.SelectionChanged += delegate
+            DataGridInvoices.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
                 var invoice = DataGridInvoices.SelectedItem as Invoice;
                 if (invoice != null)
                 {
-                    InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
-                    invoiceWindow.Owner = this;
-
-                    invoiceWindow.Closed += (object sender1, EventArgs args1) =>
+                    if (DataGridInvoices.CurrentColumn.DisplayIndex == 8)
                     {
-                        DataGridInvoices.Items.SortDescriptions.Clear();
-                        DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
-                        DataGridInvoices.Items.Refresh();
-                    };
-                    invoiceWindow.Show();
-                }
+                        InvoiceInfoWindow invoiceInfoWindow = new InvoiceInfoWindow(invoice);
+                        invoiceInfoWindow.Owner = this;
+                        invoiceInfoWindow.Show();
+                    }
+                    else if (DataGridInvoices.CurrentColumn.DisplayIndex == 9)
+                    {
+                        PaymentWindow paymentWindow = new PaymentWindow(invoice);
+                        paymentWindow.Owner = this;
+                        paymentWindow.Closed += (object sender1, EventArgs args1) =>
+                        {
+                            DataGridInvoices.Items.SortDescriptions.Clear();
+                            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+                            DataGridInvoices.Items.Refresh();
+                        };
+                        paymentWindow.Show();
+                    }
+                    else
+                    {
+                        InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
+                        invoiceWindow.Owner = this;
 
+                        invoiceWindow.Closed += (object sender1, EventArgs args1) =>
+                        {
+                            DataGridInvoices.Items.SortDescriptions.Clear();
+                            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+                            DataGridInvoices.Items.Refresh();
+                        };
+                        invoiceWindow.Show();
+                    }
+                }
                 DataGridInvoices.UnselectAll();
             };
         }
@@ -503,6 +522,26 @@ namespace PartsManager
                 PartSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             };
             partWindow.Show();
+        }
+        private void ViewInvoiceOnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+
+            var invoice = unitOfWork.Invoices.Get((int)button.Tag);
+
+            InvoiceInfoWindow invoiceInfoWindow = new InvoiceInfoWindow(invoice);
+            invoiceInfoWindow.Owner = this;
+            invoiceInfoWindow.Show();
+        }
+        private void PaymentInvoiceOnClick(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+
+            var invoice = unitOfWork.Invoices.Get((int)button.Tag);
+
+            PaymentWindow paymentWindow = new PaymentWindow(invoice);
+            paymentWindow.Owner = this;
+            paymentWindow.Show();
         }
     }
 }

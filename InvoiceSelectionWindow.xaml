@@ -58,7 +58,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DataGrid Grid.Row="0" Name="DataGridInvoices" AutoGenerateColumns="False" CanUserAddRows="false" ItemsSource="{Binding Path=LocalInvoices}">
+        <DataGrid Grid.Row="0" Name="DataGridInvoices" AutoGenerateColumns="False" CanUserAddRows="false" 
+                  HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoices}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
                 <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>

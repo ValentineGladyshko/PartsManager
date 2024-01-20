@@ -135,6 +135,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -205,17 +207,30 @@
                 <TextBlock Grid.Row="7" Grid.Column="0" FontSize="14" Text="Сумарна ціна продажу:" Width="Auto"/>
                 <TextBox Name="SumOutBox" IsEnabled="False" Grid.Row="7" Grid.Column="1" 
                          FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.SumOut, Mode=OneWay, StringFormat=C2}"/>
+                <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" FontSize="14" Text="Останні ціни:" Width="Auto"/>
+                <ComboBox Name="LastPriceOutBox" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" FontSize="14" MinWidth="100"
+                          IsSynchronizedWithCurrentItem="True" SelectedIndex="0" IsEditable="False" ShouldPreserveUserEnteredPrefix="False" ItemsSource="{Binding Path=PartPrices}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Name="DockPanel" LastChildFill="False">
+                                <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=Invoice.Date, Mode=OneWay, StringFormat=d}"></TextBlock>
+                                <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"></TextBlock>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
-                <TextBlock Name="InvoicePartNotificationBlock" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" 
+                <TextBlock Name="InvoicePartNotificationBlock" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" 
                            TextAlignment="Center" FontSize="14" TextWrapping="Wrap" Width="Auto"/>
-                <Button MinWidth="100" Name="WorkInvoicePartButton" Grid.Row="10" Grid.Column="0"
+                <Button MinWidth="100" Name="WorkInvoicePartButton" Grid.Row="12" Grid.Column="0"
                         Grid.ColumnSpan="2" Content="Додати запчастину в накладну" VerticalAlignment="Top"
                         HorizontalAlignment="Center"></Button>
 
             </Grid>
             <GridSplitter Grid.Column="3" ShowsPreview="False" Width="5"
                           HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-            <DataGrid Grid.Column="4" Name="InvoicePartDataGrid" AutoGenerateColumns="False" CanUserAddRows="false" ItemsSource="{Binding Path=LocalInvoiceParts}">
+            <DataGrid Grid.Column="4" Name="InvoicePartDataGrid" AutoGenerateColumns="False" CanUserAddRows="false"
+                      HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoiceParts}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width ="50" Header="Код" Binding="{Binding Path=Part.Id, Mode=OneWay}" />
                     <DataGridTextColumn Width ="250" Header="Назва" Binding="{Binding Path=Part.FullName, Mode=OneWay}"/>

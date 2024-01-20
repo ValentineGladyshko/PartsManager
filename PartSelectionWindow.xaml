@@ -94,9 +94,6 @@
                         <DockPanel Name="DockPanel" Margin="2" 
                                                HorizontalAlignment="Stretch" LastChildFill="False">
                             <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=PartType.Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                            <TextBlock DockPanel.Dock="Left" FontSize="14"
                                                    Text="{Binding Path=FullName}" 
                                                    VerticalAlignment="Center" Margin="2"/>
                             <TextBlock DockPanel.Dock="Left" FontSize="14"

@@ -24,7 +24,7 @@ namespace PartsManager.Model.Entities
         public int CarId { get; set; }
         public virtual Car Car { get; set; }
 
-        public virtual ICollection<InvoicePart> InvoiceParts { get; set; }
+        public virtual ObservableCollection<InvoicePart> InvoiceParts { get; set; }
         public virtual ICollection<Payment> Payments { get; set; }
 
         [NotMapped]
@@ -56,6 +56,8 @@ namespace PartsManager.Model.Entities
                 else return Payments.Sum(x => x.PaymentAmount); 
             }
         }
-        
+        [NotMapped]
+        public decimal Residue => SumTotal - PaymentTotal;
+
     }
 }

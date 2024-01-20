@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PartsManager"
         mc:Ignorable="d"
-        Title="" Height="600" Width="1000">
+        Title="" Height="600" Width="1100">
     <Window.Resources>
         <Style TargetType="ListBoxItem">
             <Setter Property="Opacity" Value="1.0"/>
@@ -43,7 +43,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0" Name="DataGridInvoices" AutoGenerateColumns="False" CanUserAddRows="false" ItemsSource="{Binding Path=LocalInvoices}">
+                    <DataGrid Grid.Row="0" Name="DataGridInvoices"  AutoGenerateColumns="False" CanUserAddRows="false"
+                              HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoices}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
                             <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
@@ -53,6 +54,20 @@
                             <DataGridCheckBoxColumn Width ="50" Header="Сплата" IsReadOnly="True" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
                             <DataGridTextColumn Width ="85" Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
                             <DataGridTextColumn Width ="85" Header="Оплата" Binding="{Binding Path=PaymentTotal, Mode=OneWay, StringFormat=C2}"/>
+                            <DataGridTemplateColumn Width ="70">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="ViewInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Перегляд" Tag="{Binding Path=Id}"></Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width ="70">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="PaymentInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Оплата" Tag="{Binding Path=Id}"></Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                     <Button Name="CreateInvoiceButton" Margin="2 0 0 0" 

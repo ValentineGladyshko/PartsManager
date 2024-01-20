@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PartsManager"
         mc:Ignorable="d"
-        Title="InvoiceInfoWindow" Height="495" Width="880">
+        Title="InvoiceInfoWindow" Height="495" Width="530">
     <Window.Resources>
         <Style TargetType="ListBoxItem">
             <Setter Property="Opacity" Value="1.0"/>
@@ -53,20 +53,37 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <DataGrid Name="DataGridInvoices" AutoGenerateColumns="False" SelectionChanged="DataGridInvoices_SelectionChanged">
+        <DataGrid Grid.Row="0" BorderThickness="0" Name="DataGridInvoice" AutoGenerateColumns="False " ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  CanUserAddRows="false" HeadersVisibility="None" ItemsSource="{Binding Path=LocalInvoices}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Номер" Binding="{Binding Id, Mode=OneWay}" />
-                <DataGridTextColumn Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
-                <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
-                <DataGridTextColumn Header="Доставка" Binding="{Binding Path=DeliveryPrice, Mode=OneWay, StringFormat=С2}"/>
-                <DataGridTextColumn Header="Сплачено" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
-                <DataGridTextColumn Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
-                <DataGridTextColumn Header="Передоплата" Binding="{Binding Path=Prepayment, Mode=OneWay, StringFormat=C2}"/>
+                <DataGridTextColumn Width ="350" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
+                <DataGridTextColumn Width ="80" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
+                <DataGridTextColumn Width ="80" Binding="{Binding Path=DeliveryPrice, Mode=OneWay, StringFormat=C2}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid Grid.Row="1" BorderThickness="0" Name="DataGridInvoiceParts" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  CanUserAddRows="false" HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoice.InvoiceParts}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width ="250" MaxWidth="250" MinWidth="250" Header="Запчастина" Binding="{Binding Path=Part.Name, Mode=OneWay}" />
+                <DataGridTextColumn Width ="100" MaxWidth="100" MinWidth="100" Header="К-ть" Binding="{Binding Path=Count, Mode=OneWay}"/>
+                <DataGridTextColumn Width ="80" MaxWidth="80" MinWidth="80" Header="Ціна" Binding="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"/>
+                <DataGridTextColumn Width ="80" MaxWidth="80" MinWidth="80" Header="Сума" Binding="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid Grid.Row="2" BorderThickness="0" Name="DataGridInvoiceSum" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  CanUserAddRows="false" HeadersVisibility="None" ItemsSource="{Binding Path=LocalInvoices}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width ="250"/>
+                <DataGridTextColumn Width ="100"/>
+                <DataGridTextColumn Width ="80"/>
+                <DataGridTextColumn Width ="80" FontWeight="Bold" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

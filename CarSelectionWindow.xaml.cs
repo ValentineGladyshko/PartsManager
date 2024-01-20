@@ -43,8 +43,15 @@ namespace PartsManager
         public void SetPartHandlers()
         {
             CarMarkNameBox.SetDropDownOpened(unitOfWork.Marks.GetAll());
-            CarModelNameBox.SetDropDownOpened(unitOfWork.Models.GetAll());
-
+            CarModelNameBox.DropDownOpened += (object sender, EventArgs e) =>
+            {
+                var list = unitOfWork.Models.GetAll()
+                    .Where(item => item.Name.Contains(CarModelNameBox.Text)
+                        && item.Mark.Name.Contains(CarMarkNameBox.Text))
+                    .Select(item => item.Name).ToList();
+                list.Sort();
+                CarModelNameBox.ItemsSource = list;
+            };
             SearchCarButton.Click += (object sender, RoutedEventArgs args) =>
             {
                 var list = unitOfWork.Cars.GetAll()

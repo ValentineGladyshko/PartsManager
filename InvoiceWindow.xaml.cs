@@ -1,11 +1,14 @@
-﻿using PartsManager.BaseHandlers;
+﻿using Microsoft.SqlServer.Management.Smo;
+using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -79,11 +82,23 @@ namespace PartsManager
             {
                 localInvoicePart = value;
                 OnPropertyChanged("LocalInvoicePart");
+                OnPropertyChanged("PartPrices");
             }
         }
 
-        public ICollection<InvoicePart> LocalInvoiceParts { get; set; }
+        public ICollection<InvoicePart> PartPrices
+        {
+            get 
+            {
+                if (LocalInvoicePart.Part.InvoiceParts == null)
+                    return LocalInvoicePart.Part.InvoiceParts;
+                else 
+                    return LocalInvoicePart.Part.InvoiceParts.OrderByDescending(item => item.Invoice.Date).ToList();
+            }
+        }
+
         public Invoice LocalInvoice { get; set; }
+        public ICollection<InvoicePart> LocalInvoiceParts { get; set; }
         private ActionType Action { get; set; }
         private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
 
@@ -138,6 +153,7 @@ namespace PartsManager
                 PriceIn = 0,
                 PriceOut = 0,
             };
+            
             SetContent();
             IsInvoiceCreated = true;
             IsPartSelected = false;
@@ -145,7 +161,6 @@ namespace PartsManager
             IsPartEditing = false;
             LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
                 .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
-
             DataContext = this;
             SetHandlers();
         }
@@ -160,6 +175,38 @@ namespace PartsManager
             WorkInvoicePartButton.IsEnabled = false;
 
             PropertyChanged += ChangeButtons;
+
+            //string dbName = unitOfWork.Db.Database.Connection.Database;
+            //string directory = AppDomain.CurrentDomain.BaseDirectory + "backups";
+            //string name = "dbBackup" + DateTime.Now.ToString(" yyyy-MM-dd HH-mm-ss");
+
+            //Directory.CreateDirectory(directory);
+
+            //string path = System.IO.Path.Combine(directory, name);
+            //path = System.IO.Path.ChangeExtension(path, "bak");
+
+            //string path2 = System.IO.Path.Combine(directory, "dbBackup 2024-01-19 22-23-26.bak");
+
+            //Server server = new Server("(LocalDb)\\MSSQLLocalDB");
+
+            //Backup backup = new Backup();
+            //backup.Action = BackupActionType.Database;
+            //backup.Database = dbName;
+            //backup.Devices.AddDevice(path, DeviceType.File);
+            //backup.Initialize = false;
+            ////backup.PercentComplete += CompletionStatusInPercent;
+            ////backup.Complete += Backup_Completed;
+
+            //backup.SqlBackup(server);
+
+            //Restore restore = new Restore();
+            //restore.Database = dbName;          
+            //restore.Action = RestoreActionType.Database;
+            //restore.Devices.AddDevice(path2, DeviceType.File);
+            //restore.ReplaceDatabase = false;
+
+            //server.KillAllProcesses(dbName);
+            //restore.SqlRestore(server);
         }
 
         private void ChangeButtons(object sender, PropertyChangedEventArgs e)
@@ -250,6 +297,7 @@ namespace PartsManager
                 else
                 {
                     LocalInvoicePart.Part = partSelectionWindow.LocalPart;
+                    LastPriceOutBox.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
                     PartBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
                     IsPartSelected = true;
                     IsPartEditing = false;
@@ -271,9 +319,10 @@ namespace PartsManager
             };
             WorkInvoicePartButton.Click += (object sender, RoutedEventArgs e) =>
             {
-                if(!IsPartEditing)
+                if (!IsPartEditing)
                 {
-                    try
+                    if ((LocalInvoicePart.Part != null && LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.Part.Id).Count() == 0)
+                        || (LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.PartId).Count() == 0 && LocalInvoicePart.PartId != 0))
                     {
                         unitOfWork.InvoiceParts.Create(LocalInvoicePart);
                         unitOfWork.Save();
@@ -281,8 +330,18 @@ namespace PartsManager
                         LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
                             .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
                         InvoicePartDataGrid.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+
+                        var temp = LocalInvoicePart;
+                        LocalInvoicePart = new InvoicePart()
+                        {
+                            Part = temp.Part,
+                            Invoice = LocalInvoice,
+                            Count = 1,
+                            PriceIn = 0,
+                            PriceOut = 0,
+                        };
                     }
-                    catch (Exception ex)
+                    else
                     {
                         InvoicePartNotificationBlock.Text = "Дана запчастина вже додана";
                         InvoicePartNotificationBlock.Foreground = Brushes.DarkRed;
@@ -296,6 +355,17 @@ namespace PartsManager
                     LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
                         .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
                     InvoicePartDataGrid.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+
+                    var temp = LocalInvoicePart;
+                    LocalInvoicePart = new InvoicePart()
+                    {
+                        Part = temp.Part,
+                        Invoice = LocalInvoice,
+                        Count = 1,
+                        PriceIn = 0,
+                        PriceOut = 0,
+                    };
+
                     IsPartEditing = false;
                 }
             };
@@ -341,11 +411,10 @@ namespace PartsManager
 
             unitOfWork.InvoiceParts.Delete(partInvoiceToDelete.Id);
             unitOfWork.Save();
-
             LocalInvoiceParts = unitOfWork.InvoiceParts.GetAll()
                 .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
             InvoicePartDataGrid.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
-
+            IsPartEditing = false;
         }
     }
 }

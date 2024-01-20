@@ -41,12 +41,21 @@ namespace PartsManager
 
         public void SetPartHandlers()
         {
-            ComboBoxHelper.SetDropDownOpened(PartPartTypeNameBox, unitOfWork.PartTypes.GetAll());
-            ComboBoxHelper.SetDropDownOpened(PartNameBox, unitOfWork.Parts.GetAll());
+            PartPartTypeNameBox.SetDropDownOpened(unitOfWork.PartTypes.GetAll());
+            PartNameBox.DropDownOpened += delegate
+            {
+                var list = unitOfWork.Parts.GetAll()
+                    .Where(item => item.Name.Contains(PartNameBox.Text)
+                        && item.PartType.Name.Contains(PartPartTypeNameBox.Text))
+                    .Select(item => item.Name).ToList();
+                list.Sort();
+                PartNameBox.ItemsSource = list;
+            };
             PartFullNameBox.DropDownOpened += delegate
             {
                 var list = unitOfWork.Parts.GetAll()
-                    .Where(item => item.FullName.Contains(PartFullNameBox.Text))
+                    .Where(item => item.FullName.Contains(PartFullNameBox.Text)
+                        && item.PartType.Name.Contains(PartPartTypeNameBox.Text))
                     .Select(item => item.FullName).ToList();
                 list.Sort();
                 PartFullNameBox.ItemsSource = list;

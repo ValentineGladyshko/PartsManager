@@ -1,0 +1,129 @@
+﻿<Window x:Class="PartsManager.PaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PartsManager"
+        mc:Ignorable="d"
+        Title="Платежі" Height="450" Width="800">
+    <Window.Resources>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Opacity" Value="1.0"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Background" Value="#0F000000"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="10 0 10 0"/>
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <ControlTemplate x:Key="validationFailed">
+            <Border BorderBrush="Red" BorderThickness="1.5">
+                <AdornedElementPlaceholder />
+            </Border>
+        </ControlTemplate>
+
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="5"/>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.475*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" Text="Сума платежу:" Width="Auto"/>
+            <TextBox Name="PaymentAmountBox" Grid.Row="0" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
+                <TextBox.Text>
+                    <Binding Path="LocalPayment.PaymentAmount" StringFormat="F2">
+                        <Binding.ValidationRules>
+                            <ExceptionValidationRule />
+                            <DataErrorValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" Text="Залишок:" Width="Auto"/>
+            <TextBox Name="ResidueBox" Grid.Row="1" Grid.Column="1" IsEnabled="False"
+                     FontSize="14" Text="{Binding Path=LocalInvoice.Residue, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Опис платежу:" Width="Auto"/>
+            <TextBox Name="PaymentInfoBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
+                <TextBox.Text>
+                    <Binding Path="LocalPayment.Info">
+                        <Binding.ValidationRules>
+                            <ExceptionValidationRule />
+                            <DataErrorValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Дата:" Width="Auto"/>
+            <DatePicker Name="DatePicker" Grid.Row="3" Grid.Column="1" Language="uk-UA" 
+                            SelectedDate="{Binding Path=LocalPayment.Date, Mode=TwoWay}"/>
+
+            <Button MinWidth="100" Name="CreatePaymentButton" Grid.Row="5" Grid.Column="0" 
+                    Grid.ColumnSpan="2" Content="Створити платіж" VerticalAlignment="Top"
+                    HorizontalAlignment="Center"></Button>
+
+        </Grid>
+        <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                      HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <DataGrid Grid.Row="0" Name="PaymentListDataGrid" AutoGenerateColumns="False" CanUserAddRows="false"
+                      HeadersVisibility="Column" ItemsSource="{Binding Path=LocalPayments}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width ="50" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
+                    <DataGridTextColumn Width ="200" Header="Опис" Binding="{Binding Path=Info, Mode=OneWay}"/>
+                    <DataGridTextColumn Width ="100" Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
+                    <DataGridTextColumn Width ="100" Header="Сума платежу" Binding="{Binding Path=PaymentAmount, Mode=OneWay, StringFormat=C2}"/>
+                    <DataGridTemplateColumn Width ="70">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Click="DeletePaymentOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Видалити" Tag="{Binding Path=Id}"></Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>
