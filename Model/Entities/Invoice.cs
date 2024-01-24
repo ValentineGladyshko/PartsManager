@@ -58,6 +58,8 @@ namespace PartsManager.Model.Entities
         }
         [NotMapped]
         public decimal Residue => SumTotal - PaymentTotal;
+        [NotMapped]
+        public decimal PartnerSum => (SumOut - SumIn) / 2;
 
     }
 }

@@ -34,513 +34,626 @@
             <Setter Property="Margin" Value="5"/>
         </Style>
     </Window.Resources>
-
-    <TabControl Margin="2">
-        <TabItem Name="Invoices" Header="Накладні">
-            <TabItem.Content>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0" Name="DataGridInvoices"  AutoGenerateColumns="False" CanUserAddRows="false"
-                              HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoices}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
-                            <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
-                            <DataGridTextColumn Width ="150" Header="Опис" Binding="{Binding Path=Info, Mode=OneWay}"/>
-                            <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
-                            <DataGridTextColumn Width ="60" Header="Доставка" Binding="{Binding Path=DeliveryPrice, Mode=OneWay, StringFormat=C2}"/>
-                            <DataGridCheckBoxColumn Width ="50" Header="Сплата" IsReadOnly="True" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
-                            <DataGridTextColumn Width ="85" Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
-                            <DataGridTextColumn Width ="85" Header="Оплата" Binding="{Binding Path=PaymentTotal, Mode=OneWay, StringFormat=C2}"/>
-                            <DataGridTemplateColumn Width ="70">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Click="ViewInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Перегляд" Tag="{Binding Path=Id}"></Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Width ="70">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Click="PaymentInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Оплата" Tag="{Binding Path=Id}"></Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <Button Name="CreateInvoiceButton" Margin="2 0 0 0" 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="1">
+            <TabItem Name="Invoices" Header="Накладні">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0" Name="DataGridInvoices" AutoGenerateColumns="False" CanUserAddRows="false"
+                                  HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoices}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
+                                <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="150" Header="Опис" Binding="{Binding Path=Info, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
+                                <DataGridTextColumn Width ="60" Header="Доставка" Binding="{Binding Path=DeliveryPrice, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridCheckBoxColumn Width ="50" Header="Сплата" IsReadOnly="True" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="85" Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="85" Header="Оплата" Binding="{Binding Path=PaymentTotal, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTemplateColumn Width ="70">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="ViewInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Перегляд" Tag="{Binding Path=Id}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width ="70">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="PaymentInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Оплата" Tag="{Binding Path=Id}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button Name="CreateInvoiceButton" Margin="0" 
                                 Content="Створити нову накладну" Grid.Row="1"/>
-                </Grid>
-            </TabItem.Content>
-        </TabItem>
-        <TabItem Name="Cars" Header="Автомобілі">
-            <TabItem.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.475*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                                   Text="Марка:" Width="Auto"></TextBlock>
-                        <ComboBox Name="CarMarkNameBox" Grid.Row="0" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
-                                   Text="Модель:" Width="Auto"></TextBlock>
-                        <ComboBox Name="CarModelNameBox" Grid.Row="1" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
-                                   Text="VIN код:" Width="Auto"></TextBlock>
-                        <TextBox Name="CarVINCodeBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100"/>
-                        <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
-                                   Text="Опис:" Width="Auto"></TextBlock>
-                        <TextBox Name="CarInfoBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100"/>
-                        
-
-                        <Button MinWidth="100" Name="CarSearchButton" Grid.Row="4" Grid.Column="0" 
-                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
-                                HorizontalAlignment="Center"></Button>
-
                     </Grid>
-                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Name="Utilities" Header="Утиліти">
+                <TabItem.Content>
+                    <TabControl>
+                        <TabItem Name="Cars" Header="Автомобілі">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.475*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                        <ListBox Name="CarListBox" Grid.Row="0" Background="{x:Null}"
-                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Name="DockPanel" Margin="2" 
-                                               HorizontalAlignment="Stretch" LastChildFill="False">
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Model.Mark.Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Model.Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=VINCode}"                          
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Info}"                          
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <Button Click="CarEditButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="EditButton"
-                                                Tag="{Binding Path=Id}" Content="Редагувати"
-                                                Margin="2"></Button>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Button Name="CarCreateButton" Margin="2 0 0 0" 
-                                Content="Створити новий автомобіль" Grid.Row="1"></Button>
-                    </Grid>
-                </Grid>
-            </TabItem.Content>
-        </TabItem>
-        <TabItem Name="Models" Header="Моделі Авто">
-            <TabItem.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.475*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+                                                   Text="Марка:" Width="Auto"/>
+                                        <ComboBox Name="CarMarkNameBox" Grid.Row="0" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
+                                                   Text="Модель:" Width="Auto"/>
+                                        <ComboBox Name="CarModelNameBox" Grid.Row="1" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
+                                                   Text="VIN код:" Width="Auto"/>
+                                        <TextBox Name="CarVINCodeBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
+                                                   Text="Опис:" Width="Auto"/>
+                                        <TextBox Name="CarInfoBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100"/>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                                   Text="Марка:" Width="Auto"></TextBlock>
-                        <ComboBox Name="ModelMarkNameBox" Grid.Row="0" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
-                                   Text="Модель:" Width="Auto"></TextBlock>
-                        <ComboBox Name="ModelNameBox" Grid.Row="1" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
 
-                        <Button MinWidth="100" Name="ModelSearchButton" Grid.Row="2" Grid.Column="0" 
-                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
-                                HorizontalAlignment="Center"></Button>
+                                        <Button MinWidth="100" Name="CarSearchButton" Grid.Row="4" Grid.Column="0" 
+                                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
+                                                HorizontalAlignment="Center"/>
 
-                    </Grid>
-                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                    </Grid>
+                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
-                        <ListBox Name="ModelListBox" Grid.Row="0" Background="{x:Null}"
-                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Name="DockPanel" Margin="2" 
-                                               HorizontalAlignment="Stretch" LastChildFill="False">
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Mark.Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <Button Click="ModelDeleteButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="DeleteButton"
-                                                Tag="{Binding Path=Id}" Content="Видалити"
-                                                Margin="2"></Button>
-                                        <Button Click="ModelEditButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="EditButton"
-                                                Tag="{Binding Path=Id}" Content="Редагувати"
-                                                Margin="2"></Button>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Button Name="ModelCreateButton" Margin="2 0 0 0" 
-                                Content="Створити нову модель авто" Grid.Row="1"></Button>
-                    </Grid>
-                </Grid>
-            </TabItem.Content>
-        </TabItem>
-        <TabItem Name="Marks" Header="Марки Авто">
-            <TabItem.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.475*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        
-                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                                   Text="Марка:" Width="Auto"></TextBlock>
-                        <ComboBox Name="MarkNameBox" Grid.Row="0" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
+                                        <ListBox Name="CarListBox" Grid.Row="0" Background="{x:Null}"
+                                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel Name="DockPanel" Margin="2" 
+                                                               HorizontalAlignment="Stretch" LastChildFill="False">
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Model.Mark.Name}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Model.Name}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=VINCode}"                          
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Info}"                          
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <Button Click="CarEditButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="EditButton"
+                                                                Tag="{Binding Path=Id}" Content="Редагувати" Margin="2"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                        <Button Name="CarCreateButton" Margin="2 0 0 0" 
+                                                Content="Створити новий автомобіль" Grid.Row="1"/>
+                                    </Grid>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="Models" Header="Моделі Авто">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.475*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                        <Button MinWidth="100" Name="MarkSearchButton" Grid.Row="1" Grid.Column="0" 
-                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
-                                HorizontalAlignment="Center"></Button>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+                                                   Text="Марка:" Width="Auto"/>
+                                        <ComboBox Name="ModelMarkNameBox" Grid.Row="0" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
+                                                   Text="Модель:" Width="Auto"/>
+                                        <ComboBox Name="ModelNameBox" Grid.Row="1" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
 
-                    </Grid>
-                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                        <Button MinWidth="100" Name="ModelSearchButton" Grid.Row="2" Grid.Column="0" 
+                                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
+                                                HorizontalAlignment="Center"/>
 
-                        <ListBox Name="MarkListBox" Grid.Row="0" Background="{x:Null}"
-                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Name="DockPanel" Margin="2" 
-                                               HorizontalAlignment="Stretch" LastChildFill="False">
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <Button Click="MarkDeleteButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="DeleteButton"
-                                                Tag="{Binding Path=Id}" Content="Видалити"
-                                                Margin="2"></Button>
-                                        <Button Click="MarkEditButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="EditButton"
-                                                Tag="{Binding Path=Id}" Content="Редагувати"
-                                                Margin="2"></Button>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Button Name="MarkCreateButton" Margin="2 0 0 0" 
-                                Content="Створити нову марку авто" Grid.Row="1"></Button>
-                    </Grid>
-                </Grid>
-            </TabItem.Content>
-        </TabItem>
-        <TabItem Name="PartTypes" Header="Тип Запчастин">
-            <TabItem.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.475*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                                    </Grid>
+                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                                   Text="Тип:" Width="Auto"></TextBlock>
-                        <ComboBox Name="PartTypeNameBox" Grid.Row="0" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
+                                        <ListBox Name="ModelListBox" Grid.Row="0" Background="{x:Null}"
+                                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel Name="DockPanel" Margin="2" 
+                                                               HorizontalAlignment="Stretch" LastChildFill="False">
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Mark.Name}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Name}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <Button Click="ModelDeleteButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="DeleteButton"
+                                                                Tag="{Binding Path=Id}" Content="Видалити" Margin="2"/>
+                                                        <Button Click="ModelEditButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="EditButton"
+                                                                Tag="{Binding Path=Id}" Content="Редагувати" Margin="2"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                        <Button Name="ModelCreateButton" Margin="2 0 0 0" 
+                                                Content="Створити нову модель авто" Grid.Row="1"/>
+                                    </Grid>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="Marks" Header="Марки Авто">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.475*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                        <Button MinWidth="100" Name="PartTypeSearchButton" Grid.Row="1" Grid.Column="0" 
-                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
-                                HorizontalAlignment="Center"></Button>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+                                                   Text="Марка:" Width="Auto"/>
+                                        <ComboBox Name="MarkNameBox" Grid.Row="0" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
 
-                    </Grid>
-                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                        <Button MinWidth="100" Name="MarkSearchButton" Grid.Row="1" Grid.Column="0" 
+                                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
+                                                HorizontalAlignment="Center"/>
 
-                        <ListBox Name="PartTypeListBox" Grid.Row="0" Background="{x:Null}"
-                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Name="DockPanel" Margin="2" 
-                                               HorizontalAlignment="Stretch" LastChildFill="False">
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <Button Click="PartTypeDeleteButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="DeleteButton"
-                                                Tag="{Binding Path=Id}" Content="Видалити"
-                                                Margin="2"></Button>
-                                        <Button Click="PartTypeEditButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="EditButton"
-                                                Tag="{Binding Path=Id}" Content="Редагувати"
-                                                Margin="2"></Button>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Button Name="PartTypeCreateButton" Margin="2 0 0 0" 
-                                Content="Створити новий тип запчастин" Grid.Row="1"></Button>
-                    </Grid>
-                </Grid>
-            </TabItem.Content>
-        </TabItem>
-        <TabItem Name="Parts" Header="Запчастини">
-            <TabItem.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.475*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                                    </Grid>
+                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                                   Text="Тип:" Width="Auto"></TextBlock>
-                        <ComboBox Name="PartPartTypeNameBox" Grid.Row="0" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
-                                   Text="Назва:" Width="Auto"></TextBlock>
-                        <ComboBox Name="PartNameBox" Grid.Row="1" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
-                                   Text="Повна назва:" Width="Auto"></TextBlock>
-                        <ComboBox Name="PartFullNameBox" Grid.Row="2" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Артикул:" Width="Auto"/>
-                        <TextBox Name="PartArticleBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100"/>
-                        <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Опис:" Width="Auto"/>
-                        <TextBox Name="PartDescriptionBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100"/>
+                                        <ListBox Name="MarkListBox" Grid.Row="0" Background="{x:Null}"
+                                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel Name="DockPanel" Margin="2" 
+                                                               HorizontalAlignment="Stretch" LastChildFill="False">
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Name}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <Button Click="MarkDeleteButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="DeleteButton"
+                                                                Tag="{Binding Path=Id}" Content="Видалити" Margin="2"/>
+                                                        <Button Click="MarkEditButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="EditButton"
+                                                                Tag="{Binding Path=Id}" Content="Редагувати" Margin="2"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                        <Button Name="MarkCreateButton" Margin="2 0 0 0" 
+                                                Content="Створити нову марку авто" Grid.Row="1"/>
+                                    </Grid>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="PartTypes" Header="Тип Запчастин">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.475*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                        <Button MinWidth="100" Name="PartSearchButton" Grid.Row="5" Grid.Column="0" 
-                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
-                                HorizontalAlignment="Center"></Button>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+                                                   Text="Тип:" Width="Auto"/>
+                                        <ComboBox Name="PartTypeNameBox" Grid.Row="0" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
 
-                    </Grid>
-                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                        <Button MinWidth="100" Name="PartTypeSearchButton" Grid.Row="1" Grid.Column="0" 
+                                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
+                                                HorizontalAlignment="Center"/>
 
-                        <ListBox Name="PartListBox" Grid.Row="0" Background="{x:Null}"
-                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Name="DockPanel" Margin="2" 
-                                               HorizontalAlignment="Stretch" LastChildFill="False">
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=PartType.Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=FullName}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Article}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Description}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <Button Click="PartDeleteButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="DeleteButton"
-                                                Tag="{Binding Path=Id}" Content="Видалити"
-                                                Margin="2"></Button>
-                                        <Button Click="PartEditButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="EditButton"
-                                                Tag="{Binding Path=Id}" Content="Редагувати"
-                                                Margin="2"></Button>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Button Name="PartCreateButton" Margin="2 0 0 0" 
-                                Content="Створити нову запчастину" Grid.Row="1"></Button>
-                    </Grid>
-                </Grid>
-            </TabItem.Content>
-        </TabItem>
-        <TabItem Name="OilParts" Header="Оливи">
-            <TabItem.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.475*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                                    </Grid>
+                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                                   Text="Норма якості SAE:" Width="Auto"></TextBlock>
-                        <ComboBox Name="SaeQualityStandardBox" Grid.Row="0" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
-                                   Text="Виробник:" Width="Auto"></TextBlock>
-                        <ComboBox Name="ManufacturerBox" Grid.Row="1" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
-                                   Text="Стандарт:" Width="Auto"></TextBlock>
-                        <ComboBox Name="ManufacturerStandardBox" Grid.Row="2" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-                        <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
-                                   Text="Специфікація API:" Width="Auto"></TextBlock>
-                        <ComboBox Name="ApiStandardBox" Grid.Row="3" Grid.Column="1"
-                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                  ShouldPreserveUserEnteredPrefix="False"></ComboBox>
+                                        <ListBox Name="PartTypeListBox" Grid.Row="0" Background="{x:Null}"
+                                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel Name="DockPanel" Margin="2" 
+                                                               HorizontalAlignment="Stretch" LastChildFill="False">
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Name}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <Button Click="PartTypeDeleteButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="DeleteButton"
+                                                                Tag="{Binding Path=Id}" Content="Видалити" Margin="2"/>
+                                                        <Button Click="PartTypeEditButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="EditButton"
+                                                                Tag="{Binding Path=Id}" Content="Редагувати" Margin="2"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                        <Button Name="PartTypeCreateButton" Margin="2 0 0 0" 
+                                                Content="Створити новий тип запчастин" Grid.Row="1"/>
+                                    </Grid>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="Parts" Header="Запчастини">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.475*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                        <Button MinWidth="100" Name="OilPartSearchButton" Grid.Row="4" Grid.Column="0" 
-                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
-                                HorizontalAlignment="Center"></Button>
+                                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+                                                   Text="Тип:" Width="Auto"/>
+                                        <ComboBox Name="PartPartTypeNameBox" Grid.Row="0" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
+                                                   Text="Назва:" Width="Auto"/>
+                                        <ComboBox Name="PartNameBox" Grid.Row="1" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
+                                                   Text="Повна назва:" Width="Auto"/>
+                                        <ComboBox Name="PartFullNameBox" Grid.Row="2" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Артикул:" Width="Auto"/>
+                                        <TextBox Name="PartArticleBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100"/>
+                                        <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Опис:" Width="Auto"/>
+                                        <TextBox Name="PartDescriptionBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100"/>
 
-                    </Grid>
-                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                                        <Button MinWidth="100" Name="PartSearchButton" Grid.Row="5" Grid.Column="0" 
+                                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
+                                                HorizontalAlignment="Center"/>
 
-                        <!--<ListBox Name="PartListBox" Grid.Row="0" Background="{x:Null}"
-                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Name="DockPanel" Margin="2" 
-                                               HorizontalAlignment="Stretch" LastChildFill="False">
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=PartType.Name}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=FullName}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Article}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
-                                                   Text="{Binding Path=Description}" 
-                                                   VerticalAlignment="Center" Margin="2"/>
-                                        <Button Click="PartDeleteButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="DeleteButton"
-                                                Tag="{Binding Path=Id}" Content="Видалити"
-                                                Margin="2"></Button>
-                                        <Button Click="PartEditButtonOnClick" MinWidth="100"
-                                                DockPanel.Dock="Right" Name="EditButton"
-                                                Tag="{Binding Path=Id}" Content="Редагувати"
-                                                Margin="2"></Button>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Button Name="PartCreateButton" Margin="2 0 0 0" 
-                                Content="Створити нову запчастину" Grid.Row="1"></Button>-->
-                    </Grid>
-                </Grid>
-            </TabItem.Content>
-        </TabItem>
-    </TabControl>
+                                    </Grid>
+                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <ListBox Name="PartListBox" Grid.Row="0" Background="{x:Null}"
+                                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel Name="DockPanel" Margin="2" 
+                                                               HorizontalAlignment="Stretch" LastChildFill="False">
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=PartType.Name}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=FullName}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Article}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Description}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <Button Click="PartDeleteButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="DeleteButton"
+                                                                Tag="{Binding Path=Id}" Content="Видалити" Margin="2"/>
+                                                        <Button Click="PartEditButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="EditButton"
+                                                                Tag="{Binding Path=Id}" Content="Редагувати" Margin="2"/>
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                        <Button Name="PartCreateButton" Margin="2 0 0 0" 
+                                                Content="Створити нову запчастину" Grid.Row="1"/>
+                                    </Grid>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="OilParts" Header="Оливи">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.475*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+                                                   Text="Норма якості SAE:" Width="Auto"/>
+                                        <ComboBox Name="SaeQualityStandardBox" Grid.Row="0" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
+                                                   Text="Виробник:" Width="Auto"/>
+                                        <ComboBox Name="ManufacturerBox" Grid.Row="1" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
+                                                   Text="Стандарт:" Width="Auto"/>
+                                        <ComboBox Name="ManufacturerStandardBox" Grid.Row="2" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
+                                                   Text="Специфікація API:" Width="Auto"/>
+                                        <ComboBox Name="ApiStandardBox" Grid.Row="3" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+
+                                        <Button MinWidth="100" Name="OilPartSearchButton" Grid.Row="4" Grid.Column="0" 
+                                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
+                                                HorizontalAlignment="Center"/>
+
+                                    </Grid>
+                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                    </Grid>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="Backups" Header="Резервні копії">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.475*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Button MinWidth="260" MinHeight="25" Name="CreateBackupButton" Grid.Row="0"
+                                                Content="Створити резервну копію" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center" Margin="4"/>
+                                        <Button MinWidth="260" MinHeight="25" Name="ChooseBackupButton" Grid.Row="1"
+                                                Content="Обрати резервну копію з диска" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center" Margin="4"/>
+                                        <Button MinWidth="260" MinHeight="25" Name="LoadBackupButton" Grid.Row="2"
+                                                Content="Завантажити локальні резервні копії" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center" Margin="4"/>
+                                        <StatusBar Grid.Row="4">
+                                            <StatusBarItem HorizontalContentAlignment="Center">
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Left" Name="StatusTextBlock" Margin="10 2"/>
+                                                    <ProgressBar DockPanel.Dock="Left" Name="StatusProgressBar" Width="200" Height="16" Visibility="Collapsed" />
+                                                </DockPanel>
+                                            </StatusBarItem>
+                                        </StatusBar>
+                                    </Grid>
+                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <ListBox Name="BackupListBox" Grid.Row="0" Background="{x:Null}"
+                                                 BorderThickness="0" HorizontalContentAlignment="Stretch">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel Name="DockPanel" Margin="2" 
+                                                               HorizontalAlignment="Stretch" LastChildFill="False">
+                                                        <TextBlock DockPanel.Dock="Left" FontSize="14"
+                                                                   Text="{Binding Path=Name}" 
+                                                                   VerticalAlignment="Center" Margin="2"/>
+                                                        <!--<Button Click="PartTypeDeleteButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="DeleteButton"
+                                                                Tag="{Binding Path=Id}" Content="Видалити" Margin="2"/>
+                                                        <Button Click="PartTypeEditButtonOnClick" MinWidth="100"
+                                                                DockPanel.Dock="Right" Name="EditButton"
+                                                                Tag="{Binding Path=Id}" Content="Редагувати" Margin="2"/>-->
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                        <Button Name="LoadBackupButton2" Margin="2 0 0 0" 
+                                                Content="Завантажити локальні резервні копії" Grid.Row="1"/>
+                                    </Grid>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                    </TabControl>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Name="Reports" Header="Звіти">
+                <TabItem.Content>
+                    <TabControl>
+                        <TabItem Name="PartnerReport" Header="Звіт по партнерам">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <DataGrid Grid.Row="0" Name="DataGridPartnerReport"  AutoGenerateColumns="False" CanUserAddRows="false"
+                                              HeadersVisibility="Column" ItemsSource="{Binding Path=PartnerInvoices}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
+                                            <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
+                                            <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
+                                            <DataGridCheckBoxColumn Width ="50" Header="Сплата" IsReadOnly="True" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
+                                            <DataGridCheckBoxColumn Width ="65" Header="Партнери" IsReadOnly="True" Binding="{Binding Path=IsPartnerPayed, Mode=OneWay}"/>
+                                            <DataGridTextColumn Width ="85" Header="Закупка" Binding="{Binding Path=SumIn, Mode=OneWay, StringFormat=C2}"/>
+                                            <DataGridTextColumn Width ="85" Header="Продаж" Binding="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}"/>
+                                            <DataGridTextColumn Width ="85" Header="Партнери" Binding="{Binding Path=PartnerSum, Mode=OneWay, StringFormat=C2}"/>
+                                            <DataGridTemplateColumn Width ="70">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Click="ViewInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Перегляд" Tag="{Binding Path=Id}"></Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <!--<DataGridTemplateColumn Width ="70">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Click="PartnerReportOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Оплата" Tag="{Binding Path=Id}"></Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>-->
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <Button Name="PartnerReportButton" Margin="0" 
+                                            Content="Створити документ" Grid.Row="1"/>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="Report" Header="Звіт">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <DataGrid Grid.Row="0" Name="DataGridReport"  AutoGenerateColumns="False" CanUserAddRows="false"
+                                              HeadersVisibility="Column" ItemsSource="{Binding Path=ReportInvoices}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
+                                            <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
+                                            <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
+                                            <DataGridCheckBoxColumn Width ="50" Header="Сплата" IsReadOnly="True" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
+                                            <DataGridCheckBoxColumn Width ="65" Header="Партнери" IsReadOnly="True" Binding="{Binding Path=IsPartnerPayed, Mode=OneWay}"/>
+                                            <DataGridTextColumn Width ="85" Header="Закупка" Binding="{Binding Path=SumIn, Mode=OneWay, StringFormat=C2}"/>
+                                            <DataGridTextColumn Width ="85" Header="Продаж" Binding="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}"/>
+                                            <DataGridTemplateColumn Width ="70">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Click="ViewInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Перегляд" Tag="{Binding Path=Id}"></Button>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <Button Name="ReportButton" Margin="0" 
+                                            Content="Створити документ" Grid.Row="1"/>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                    </TabControl>
+                </TabItem.Content>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Window>

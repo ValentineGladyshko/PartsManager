@@ -7,6 +7,7 @@ namespace PartsManager.Model.Repositories
     public class EFUnitOfWork : IUnitOfWork
     {
         private DataContext db;
+        private string connectionString;
         private CarRepository carRepository;
         private InvoiceRepository invoiceRepository;
         private InvoicePartRepository invoicePartRepository;
@@ -27,7 +28,8 @@ namespace PartsManager.Model.Repositories
 
         public EFUnitOfWork(string connectionString)
         {
-            db = DataContext.GetDataContext(connectionString);
+            db = new DataContext(connectionString);
+            this.connectionString = connectionString;
         }
 
         public IRepository<Car> Cars 
@@ -64,6 +66,26 @@ namespace PartsManager.Model.Repositories
         public void Save()
         {
             db.SaveChanges();
+        }
+
+        public void Reload()
+        {
+            db = new DataContext(connectionString);
+            carRepository = new CarRepository(db);
+            invoiceRepository = new InvoiceRepository(db);
+            invoicePartRepository = new InvoicePartRepository(db);
+            markRepository = new MarkRepository(db);
+            modelRepository = new ModelRepository(db);
+            partRepository = new PartRepository(db);
+            partTypeRepository = new PartTypeRepository(db);
+            paymentRepository = new PaymentRepository(db);
+            additionalInfoRepository = new AdditionalInfoRepository(db);
+            apiStandardRepository = new ApiStandardRepository(db);
+            manufacturerStandardRepository = new ManufacturerStandardRepository(db);
+            manufacturerRepository = new ManufacturerRepository(db);
+            saeQualityStandardRepository = new SaeQualityStandardRepository(db);
+            partApiStandardRepository = new PartApiStandardRepository(db);
+            partManufacturerStandardRepository = new PartManufacturerStandardRepository(db);
         }
 
         public void Dispose()

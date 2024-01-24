@@ -175,38 +175,6 @@ namespace PartsManager
             WorkInvoicePartButton.IsEnabled = false;
 
             PropertyChanged += ChangeButtons;
-
-            //string dbName = unitOfWork.Db.Database.Connection.Database;
-            //string directory = AppDomain.CurrentDomain.BaseDirectory + "backups";
-            //string name = "dbBackup" + DateTime.Now.ToString(" yyyy-MM-dd HH-mm-ss");
-
-            //Directory.CreateDirectory(directory);
-
-            //string path = System.IO.Path.Combine(directory, name);
-            //path = System.IO.Path.ChangeExtension(path, "bak");
-
-            //string path2 = System.IO.Path.Combine(directory, "dbBackup 2024-01-19 22-23-26.bak");
-
-            //Server server = new Server("(LocalDb)\\MSSQLLocalDB");
-
-            //Backup backup = new Backup();
-            //backup.Action = BackupActionType.Database;
-            //backup.Database = dbName;
-            //backup.Devices.AddDevice(path, DeviceType.File);
-            //backup.Initialize = false;
-            ////backup.PercentComplete += CompletionStatusInPercent;
-            ////backup.Complete += Backup_Completed;
-
-            //backup.SqlBackup(server);
-
-            //Restore restore = new Restore();
-            //restore.Database = dbName;          
-            //restore.Action = RestoreActionType.Database;
-            //restore.Devices.AddDevice(path2, DeviceType.File);
-            //restore.ReplaceDatabase = false;
-
-            //server.KillAllProcesses(dbName);
-            //restore.SqlRestore(server);
         }
 
         private void ChangeButtons(object sender, PropertyChangedEventArgs e)
@@ -321,8 +289,10 @@ namespace PartsManager
             {
                 if (!IsPartEditing)
                 {
-                    if ((LocalInvoicePart.Part != null && LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.Part.Id).Count() == 0)
-                        || (LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.PartId).Count() == 0 && LocalInvoicePart.PartId != 0))
+                    if ((LocalInvoicePart.Part != null && (LocalInvoice.InvoiceParts == null 
+                            || LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.Part.Id).Count() == 0))
+                        || (LocalInvoicePart.PartId != 0 && (LocalInvoice.InvoiceParts == null
+                            || LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.PartId).Count() == 0)))
                     {
                         unitOfWork.InvoiceParts.Create(LocalInvoicePart);
                         unitOfWork.Save();

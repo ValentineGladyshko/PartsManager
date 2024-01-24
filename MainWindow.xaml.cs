@@ -1,12 +1,16 @@
-﻿using PartsManager.BaseHandlers;
+﻿using Microsoft.SqlServer.Management.Smo;
+using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
 using PartsManager.Model.Interfaces;
 using PartsManager.Model.Repositories;
+using Spire.Pdf.Exporting.XPS.Schema;
+using Spire.Xls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -29,6 +33,8 @@ namespace PartsManager
     public partial class MainWindow : Window
     {
         public ObservableCollection<Invoice> LocalInvoices { get; set; }
+        public IEnumerable<Invoice> PartnerInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && item.IsPayed);
+        public IEnumerable<Invoice> ReportInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && !item.IsPayed);
         EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
 
         public MainWindow()
@@ -45,6 +51,8 @@ namespace PartsManager
             SetPartTypeHandlers();
             SetPartHandlers();
             SetInvoiceHandlers();
+            SetReportHandlers();
+            SetBackupHandlers();
         }
 
         public void SetMarkHandlers()
@@ -352,6 +360,137 @@ namespace PartsManager
                 DataGridInvoices.UnselectAll();
             };
         }
+        public void SetReportHandlers()
+        {
+            LocalInvoices.CollectionChanged += delegate
+            {
+                DataGridPartnerReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                DataGridReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+            };
+            PartnerReportButton.Click += delegate
+            {
+                Workbook workbook = new Workbook();
+                Worksheet worksheet = workbook.Worksheets[0];
+
+                worksheet.Range[1, 1].Value = "Код";
+                worksheet.Range[1, 2].Value = "Автомобіль";
+                worksheet.Range[1, 3].Value = "Дата";
+                worksheet.Range[1, 4].Value = "Сплата";
+                worksheet.Range[1, 5].Value = "Партнери";
+                worksheet.Range[1, 6].Value = "Закупка";
+                worksheet.Range[1, 7].Value = "Продаж";
+                worksheet.Range[1, 8].Value = "Партнери";
+                
+                List<Invoice> partnerInvoices = new List<Invoice>(PartnerInvoices);
+                for (int i = 0; i < partnerInvoices.Count; i++)
+                {
+                    worksheet.Range[i + 2, 1].Value = partnerInvoices[i].Id.ToString();
+                    worksheet.Range[i + 2, 2].Value = partnerInvoices[i].Car.FullInfo.ToString();
+                    worksheet.Range[i + 2, 3].Value = partnerInvoices[i].Date.ToString("d");
+                    worksheet.Range[i + 2, 4].Value = Convert.ToInt32(partnerInvoices[i].IsPayed).ToString();
+                    worksheet.Range[i + 2, 5].Value = Convert.ToInt32(partnerInvoices[i].IsPartnerPayed).ToString();
+                    worksheet.Range[i + 2, 6].Value = partnerInvoices[i].SumIn.ToString("C2");
+                    worksheet.Range[i + 2, 7].Value = partnerInvoices[i].SumOut.ToString("C2");
+                    worksheet.Range[i + 2, 8].Value = partnerInvoices[i].PartnerSum.ToString("C2");
+                }
+                var formula = $"=SUM(Sheet1!$H$2:H${partnerInvoices.Count + 1})";
+                worksheet.Range[partnerInvoices.Count + 2, 8].Formula = formula;
+                worksheet.Range[1, 1, 1, 8].Style.Color = System.Drawing.Color.LightGray;
+                worksheet.AllocatedRange.AutoFitColumns();
+
+                workbook.SaveToFile($"partner report{DateTime.Now: yyyy-MM-dd HH-mm-ss}.xlsx", ExcelVersion.Version2016);
+            };
+            ReportButton.Click += delegate
+            {
+                Workbook workbook = new Workbook();
+                Worksheet worksheet = workbook.Worksheets[0];
+
+                worksheet.Range[1, 1].Value = "Код";
+                worksheet.Range[1, 2].Value = "Автомобіль";
+                worksheet.Range[1, 3].Value = "Дата";
+                worksheet.Range[1, 4].Value = "Сплата";
+                worksheet.Range[1, 5].Value = "Партнери";
+                worksheet.Range[1, 6].Value = "Закупка";
+                worksheet.Range[1, 7].Value = "Продаж";
+
+                List<Invoice> reportInvoices = new List<Invoice>(ReportInvoices);
+                for (int i = 0; i < reportInvoices.Count; i++)
+                {
+                    worksheet.Range[i + 2, 1].Value = reportInvoices[i].Id.ToString();
+                    worksheet.Range[i + 2, 2].Value = reportInvoices[i].Car.FullInfo.ToString();
+                    worksheet.Range[i + 2, 3].Value = reportInvoices[i].Date.ToString("d");
+                    worksheet.Range[i + 2, 4].Value = Convert.ToInt32(reportInvoices[i].IsPayed).ToString();
+                    worksheet.Range[i + 2, 5].Value = Convert.ToInt32(reportInvoices[i].IsPartnerPayed).ToString();
+                    worksheet.Range[i + 2, 6].Value = reportInvoices[i].SumIn.ToString("C2");
+                    worksheet.Range[i + 2, 7].Value = reportInvoices[i].SumOut.ToString("C2");
+                }
+                var formula = $"=SUM(Sheet1!$G$2:G${reportInvoices.Count + 1})";
+                worksheet.Range[reportInvoices.Count + 2, 7].Formula = formula;
+                worksheet.Range[1, 1, 1, 8].Style.Color = System.Drawing.Color.LightGray;
+                worksheet.AllocatedRange.AutoFitColumns();
+
+                workbook.SaveToFile($"report{DateTime.Now: yyyy-MM-dd HH-mm-ss}.xlsx", ExcelVersion.Version2016);
+            };
+        }
+        public void SetBackupHandlers()
+        {
+            CreateBackupButton.Click += delegate
+            {
+                var backup = BackupHelper.CreateBackup(unitOfWork.Db.Database.Connection.Database, "dbBackup" + DateTime.Now.ToString(" yyyy-MM-dd HH-mm-ss"));
+
+                var server = new Server(unitOfWork.Db.Database.Connection.DataSource);              
+
+                StatusTextBlock.Text = "Статус:";
+                StatusProgressBar.Visibility = Visibility.Visible;
+                StatusProgressBar.Value = 0;
+                backup.PercentComplete += (object sender, PercentCompleteEventArgs e) =>
+                {
+                    StatusProgressBar.Value = e.Percent;
+                };
+                backup.Complete += delegate
+                {
+                    StatusTextBlock.Text = "Резервну копію створено!";
+                    StatusProgressBar.Visibility = Visibility.Collapsed;
+                };
+
+                backup.SqlBackup(server);
+            };
+            ChooseBackupButton.Click += delegate
+            {
+                var path = BackupHelper.ChooseRestore();
+
+                Restore(path);
+            };
+            LoadBackupButton.Click += delegate
+            {
+                var directory = AppDomain.CurrentDomain.BaseDirectory + "backups";
+                var files = Directory.GetFiles(directory);
+                var fileInfos = new List<FileInfo>();
+                foreach (var file in files)
+                {
+                    fileInfos.Add(new FileInfo(file));
+                }
+                fileInfos = fileInfos.Where(item => item.Extension == ".bak").OrderByDescending(item => item.Name).ToList();
+                BackupListBox.ItemsSource = fileInfos;
+            };
+            LoadBackupButton2.Click += delegate
+            {
+                var directory = AppDomain.CurrentDomain.BaseDirectory + "backups";
+                var files = Directory.GetFiles(directory);
+                var fileInfos = new List<FileInfo>();
+                foreach (var file in files)
+                {
+                    fileInfos.Add(new FileInfo(file));
+                }
+                fileInfos = fileInfos.Where(item => item.Extension == ".bak").OrderByDescending(item => item.Name).ToList();
+                BackupListBox.ItemsSource = fileInfos;
+            };
+            BackupListBox.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
+            {
+                var fileInfo = BackupListBox.SelectedItem as FileInfo;
+                Restore(fileInfo.FullName);
+            };
+        }
 
         private void MarkDeleteButtonOnClick(object sender, RoutedEventArgs e)
         {
@@ -542,6 +681,52 @@ namespace PartsManager
             PaymentWindow paymentWindow = new PaymentWindow(invoice);
             paymentWindow.Owner = this;
             paymentWindow.Show();
+        }
+        private void Restore(string path)
+        {
+            if (path != null)
+            {
+                if (BackupHelper.AskRestore(System.IO.Path.GetFileName(path)) == true)
+                {
+                    StatusTextBlock.Text = "Статус:";
+                    StatusProgressBar.Visibility = Visibility.Visible;
+                    StatusProgressBar.Value = 0;
+
+                    var dbName = unitOfWork.Db.Database.Connection.Database;
+                    var server = new Server(unitOfWork.Db.Database.Connection.DataSource);
+                    string backupName = "dbRestoreBackup";
+
+                    if (!BackupHelper.CheckSameName(backupName, path))
+                    {
+                        var backup = BackupHelper.CreateBackup(dbName, backupName);
+                        backup.PercentComplete += (object sender, PercentCompleteEventArgs e) =>
+                        {
+                            StatusProgressBar.Value = e.Percent / 2.0;
+                        };
+
+                        backup.SqlBackup(server);
+                    }
+
+                    var restore = BackupHelper.CreateRestore(dbName, path);
+                    restore.PercentComplete += (object sender, PercentCompleteEventArgs e) =>
+                    {
+                        StatusProgressBar.Value = 50.0 + (e.Percent / 2.0);
+                    };
+                    restore.Complete += delegate
+                    {
+                        StatusTextBlock.Text = "Резервну копію завантажено!";
+                        StatusProgressBar.Visibility = Visibility.Collapsed;
+                    };
+                    server.KillAllProcesses(dbName);
+                    restore.SqlRestore(server);
+
+                    unitOfWork.Reload();
+                    unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
+                    LocalInvoices = unitOfWork.Db.Invoices.Local;
+                    DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                }
+            }
+            StatusTextBlock.Text = "";
         }
     }
 }
