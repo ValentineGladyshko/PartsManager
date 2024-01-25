@@ -37,11 +37,13 @@ namespace PartsManager
                 invoice
             };
             DataContext = this;
+            var directory = AppDomain.CurrentDomain.BaseDirectory + "reports";
+            Directory.CreateDirectory(directory);
             var xpsDocument = new XpsDocument("output.xps", FileAccess.Write);
             XpsDocumentWriter xpsdw = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
             xpsdw.Write(MainGrid);
             xpsDocument.Close();
-            XpsConverter.Convert("output.xps", $"invoice{LocalInvoice.Id}.pdf", 1);
+            XpsConverter.Convert("output.xps", $"reports/invoice{LocalInvoice.Id}.pdf", 1);
             Workbook workbook = new Workbook();
             Worksheet worksheet = workbook.Worksheets[0];
             CellRange range = worksheet.Range[1, 1, 1, 2];
@@ -72,7 +74,7 @@ namespace PartsManager
             worksheet.Range[2, 1, 2, 4].Style.Color = System.Drawing.Color.LightGray;
             worksheet.Range[1, 1, LocalInvoice.InvoiceParts.Count + 3, 4].Borders.Color = System.Drawing.Color.DarkGray;
 
-            workbook.SaveToFile($"invoice{LocalInvoice.Id}.xlsx", ExcelVersion.Version2016);
+            workbook.SaveToFile($"reports/invoice{LocalInvoice.Id}.xlsx", ExcelVersion.Version2016);
         }
     }
 }

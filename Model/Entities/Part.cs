@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
@@ -26,12 +27,15 @@ namespace PartsManager.Model.Entities
 
         [Required]
         public int PartTypeId { get; set; }
+        [JsonIgnore]
         public virtual PartType PartType { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<InvoicePart> InvoiceParts { get; set; }
 
         public override string ToString() => $"{Name} {Article}";
         [NotMapped]
+        [JsonIgnore]
         public string FullInfo => $"{FullName} {Article}";
     }
 }

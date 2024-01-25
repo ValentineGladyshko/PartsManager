@@ -100,7 +100,7 @@ namespace PartsManager
         public Invoice LocalInvoice { get; set; }
         public ICollection<InvoicePart> LocalInvoiceParts { get; set; }
         private ActionType Action { get; set; }
-        private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
+        private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
 
         public InvoiceWindow()
         {

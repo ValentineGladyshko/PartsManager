@@ -35,7 +35,7 @@ namespace PartsManager.BaseHandlers
             restore.Database = dbName;
             restore.Action = RestoreActionType.Database;
             restore.Devices.AddDevice(path, DeviceType.File);
-            restore.ReplaceDatabase = false;
+            restore.ReplaceDatabase = true;
             restore.PercentCompleteNotification = 5;
 
             return restore;

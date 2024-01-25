@@ -23,7 +23,7 @@ namespace PartsManager
     public partial class CarSelectionWindow : Window
     {
         public Car LocalCar { get; private set; }
-        private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
+        private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
         public CarSelectionWindow()
         {
             InitializeComponent();

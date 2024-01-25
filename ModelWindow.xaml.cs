@@ -24,7 +24,7 @@ namespace PartsManager
     {
         private Model.Entities.Model LocalModel { get; set; }
         private ActionType Action { get; set; }
-        private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
+        private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
         public ModelWindow()
         {
             InitializeComponent();

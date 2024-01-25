@@ -520,24 +520,27 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <Button MinWidth="260" MinHeight="25" Name="CreateBackupButton" Grid.Row="0"
+                                        <Button MinWidth="270" MinHeight="25" Name="CreateBackupButton" Grid.Row="0"
                                                 Content="Створити резервну копію" VerticalAlignment="Center"
                                                 HorizontalAlignment="Center" Margin="4"/>
-                                        <Button MinWidth="260" MinHeight="25" Name="ChooseBackupButton" Grid.Row="1"
+                                        <Button MinWidth="270" MinHeight="25" Name="ChooseBackupButton" Grid.Row="1"
                                                 Content="Обрати резервну копію з диска" VerticalAlignment="Center"
                                                 HorizontalAlignment="Center" Margin="4"/>
-                                        <Button MinWidth="260" MinHeight="25" Name="LoadBackupButton" Grid.Row="2"
+                                        <Button MinWidth="270" MinHeight="25" Name="LoadBackupButton" Grid.Row="2"
                                                 Content="Завантажити локальні резервні копії" VerticalAlignment="Center"
                                                 HorizontalAlignment="Center" Margin="4"/>
-                                        <StatusBar Grid.Row="4">
+                                        <Button MinWidth="270" MinHeight="25" Name="ChooseJsonBackupButton" Grid.Row="3"
+                                                Content="Обрати резервну копію з файлу JSON" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center" Margin="4"/>
+                                        <StatusBar Grid.Row="5">
                                             <StatusBarItem HorizontalContentAlignment="Center">
                                                 <DockPanel>
                                                     <TextBlock DockPanel.Dock="Left" Name="StatusTextBlock" Margin="10 2"/>
-                                                    <ProgressBar DockPanel.Dock="Left" Name="StatusProgressBar" Width="200" Height="16" Visibility="Collapsed" />
                                                 </DockPanel>
                                             </StatusBarItem>
                                         </StatusBar>

@@ -25,7 +25,7 @@ namespace PartsManager
     {
         private Part LocalPart { get; set; }
         private ActionType Action { get; set; }
-        private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
+        private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
 
         public PartWindow()
         {

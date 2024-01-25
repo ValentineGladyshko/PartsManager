@@ -35,7 +35,7 @@ namespace PartsManager
         public ObservableCollection<Invoice> LocalInvoices { get; set; }
         public IEnumerable<Invoice> PartnerInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && item.IsPayed);
         public IEnumerable<Invoice> ReportInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && !item.IsPayed);
-        EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
+        EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
 
         public MainWindow()
         {
@@ -398,7 +398,9 @@ namespace PartsManager
                 worksheet.Range[1, 1, 1, 8].Style.Color = System.Drawing.Color.LightGray;
                 worksheet.AllocatedRange.AutoFitColumns();
 
-                workbook.SaveToFile($"partner report{DateTime.Now: yyyy-MM-dd HH-mm-ss}.xlsx", ExcelVersion.Version2016);
+                var directory = AppDomain.CurrentDomain.BaseDirectory + "reports";
+                Directory.CreateDirectory(directory);
+                workbook.SaveToFile($"reports/partner report{DateTime.Now: yyyy-MM-dd HH-mm-ss}.xlsx", ExcelVersion.Version2016);
             };
             ReportButton.Click += delegate
             {
@@ -429,41 +431,37 @@ namespace PartsManager
                 worksheet.Range[1, 1, 1, 8].Style.Color = System.Drawing.Color.LightGray;
                 worksheet.AllocatedRange.AutoFitColumns();
 
-                workbook.SaveToFile($"report{DateTime.Now: yyyy-MM-dd HH-mm-ss}.xlsx", ExcelVersion.Version2016);
+                var directory = AppDomain.CurrentDomain.BaseDirectory + "reports";
+                Directory.CreateDirectory(directory);
+                workbook.SaveToFile($"reports/report{DateTime.Now: yyyy-MM-dd HH-mm-ss}.xlsx", ExcelVersion.Version2016);
             };
         }
         public void SetBackupHandlers()
         {
             CreateBackupButton.Click += delegate
             {
-                var backup = BackupHelper.CreateBackup(unitOfWork.Db.Database.Connection.Database, "dbBackup" + DateTime.Now.ToString(" yyyy-MM-dd HH-mm-ss"));
+                var date = DateTime.Now.ToString(" yyyy-MM-dd HH-mm-ss");
+                JsonBackupHelper.Backup($"jsonBackup{date}");
+                var backup = BackupHelper.CreateBackup(unitOfWork.Db.Database.Connection.Database, $"dbBackup{date}");
 
-                var server = new Server(unitOfWork.Db.Database.Connection.DataSource);              
+                var server = new Server(unitOfWork.Db.Database.Connection.DataSource);
 
-                StatusTextBlock.Text = "Статус:";
-                StatusProgressBar.Visibility = Visibility.Visible;
-                StatusProgressBar.Value = 0;
-                backup.PercentComplete += (object sender, PercentCompleteEventArgs e) =>
-                {
-                    StatusProgressBar.Value = e.Percent;
-                };
                 backup.Complete += delegate
                 {
                     StatusTextBlock.Text = "Резервну копію створено!";
-                    StatusProgressBar.Visibility = Visibility.Collapsed;
                 };
 
                 backup.SqlBackup(server);
             };
-            ChooseBackupButton.Click += delegate
+            ChooseBackupButton.Click +=  delegate
             {
                 var path = BackupHelper.ChooseRestore();
-
                 Restore(path);
             };
             LoadBackupButton.Click += delegate
             {
                 var directory = AppDomain.CurrentDomain.BaseDirectory + "backups";
+                Directory.CreateDirectory(directory);
                 var files = Directory.GetFiles(directory);
                 var fileInfos = new List<FileInfo>();
                 foreach (var file in files)
@@ -472,6 +470,32 @@ namespace PartsManager
                 }
                 fileInfos = fileInfos.Where(item => item.Extension == ".bak").OrderByDescending(item => item.Name).ToList();
                 BackupListBox.ItemsSource = fileInfos;
+            };
+            ChooseJsonBackupButton.Click += delegate
+            {
+                var path = JsonBackupHelper.ChooseRestore();
+                if (path != null)
+                {
+                    if (BackupHelper.AskRestore(System.IO.Path.GetFileName(path)) == true)
+                    {
+                        var dbName = unitOfWork.Db.Database.Connection.Database;
+                        var server = new Server(unitOfWork.Db.Database.Connection.DataSource);
+                        string backupName = "JsonRestoreBackup";
+
+                        var backup = BackupHelper.CreateBackup(dbName, backupName);
+                        backup.SqlBackup(server);
+
+                        JsonBackupHelper.Restore(path);
+                        unitOfWork.Reload();
+                        unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
+                        LocalInvoices = unitOfWork.Db.Invoices.Local;
+                        DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                        DataGridPartnerReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                        DataGridReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    };
+                }
+                else
+                    StatusTextBlock.Text = "";
             };
             LoadBackupButton2.Click += delegate
             {
@@ -488,7 +512,10 @@ namespace PartsManager
             BackupListBox.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
                 var fileInfo = BackupListBox.SelectedItem as FileInfo;
-                Restore(fileInfo.FullName);
+                if (fileInfo != null)
+                {
+                    Restore(fileInfo.FullName);
+                }
             };
         }
 
@@ -688,10 +715,6 @@ namespace PartsManager
             {
                 if (BackupHelper.AskRestore(System.IO.Path.GetFileName(path)) == true)
                 {
-                    StatusTextBlock.Text = "Статус:";
-                    StatusProgressBar.Visibility = Visibility.Visible;
-                    StatusProgressBar.Value = 0;
-
                     var dbName = unitOfWork.Db.Database.Connection.Database;
                     var server = new Server(unitOfWork.Db.Database.Connection.DataSource);
                     string backupName = "dbRestoreBackup";
@@ -699,34 +722,26 @@ namespace PartsManager
                     if (!BackupHelper.CheckSameName(backupName, path))
                     {
                         var backup = BackupHelper.CreateBackup(dbName, backupName);
-                        backup.PercentComplete += (object sender, PercentCompleteEventArgs e) =>
-                        {
-                            StatusProgressBar.Value = e.Percent / 2.0;
-                        };
 
                         backup.SqlBackup(server);
                     }
-
                     var restore = BackupHelper.CreateRestore(dbName, path);
-                    restore.PercentComplete += (object sender, PercentCompleteEventArgs e) =>
-                    {
-                        StatusProgressBar.Value = 50.0 + (e.Percent / 2.0);
-                    };
                     restore.Complete += delegate
                     {
                         StatusTextBlock.Text = "Резервну копію завантажено!";
-                        StatusProgressBar.Visibility = Visibility.Collapsed;
                     };
                     server.KillAllProcesses(dbName);
                     restore.SqlRestore(server);
-
                     unitOfWork.Reload();
                     unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
                     LocalInvoices = unitOfWork.Db.Invoices.Local;
                     DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    DataGridPartnerReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    DataGridReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
                 }
             }
-            StatusTextBlock.Text = "";
+            else
+                StatusTextBlock.Text = "";
         }
     }
 }

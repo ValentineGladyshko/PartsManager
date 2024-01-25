@@ -45,7 +45,7 @@ namespace PartsManager
                 OnPropertyChanged("LocalPayments");
             }
         }
-        private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
+        private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
 
         public PaymentWindow(Invoice localInvoice)
         {

@@ -7,7 +7,7 @@ namespace PartsManager.Model.Repositories
     public class EFUnitOfWork : IUnitOfWork
     {
         private DataContext db;
-        private string connectionString;
+        private static string connectionString;
         private CarRepository carRepository;
         private InvoiceRepository invoiceRepository;
         private InvoicePartRepository invoicePartRepository;
@@ -24,12 +24,23 @@ namespace PartsManager.Model.Repositories
         private PartApiStandardRepository partApiStandardRepository;
         private PartManufacturerStandardRepository partManufacturerStandardRepository;
 
+        private static EFUnitOfWork unitOfWork;
+
         public DataContext Db { get { return db; } }
 
-        public EFUnitOfWork(string connectionString)
+        private EFUnitOfWork(string connectionString)
         {
             db = new DataContext(connectionString);
-            this.connectionString = connectionString;
+            EFUnitOfWork.connectionString = connectionString;
+        }
+
+        public static EFUnitOfWork GetUnitOfWork(string connectionString)
+        {
+            if (unitOfWork == null)
+            {
+                unitOfWork = new EFUnitOfWork(connectionString);
+            }
+            return unitOfWork;
         }
 
         public IRepository<Car> Cars 

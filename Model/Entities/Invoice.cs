@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
@@ -22,12 +23,16 @@ namespace PartsManager.Model.Entities
 
         [Required]
         public int CarId { get; set; }
+        [JsonIgnore]
         public virtual Car Car { get; set; }
 
+        [JsonIgnore]
         public virtual ObservableCollection<InvoicePart> InvoiceParts { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Payment> Payments { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public decimal SumIn
         {
             get
@@ -37,6 +42,7 @@ namespace PartsManager.Model.Entities
             }
         }
         [NotMapped]
+        [JsonIgnore]
         public decimal SumOut
         {
             get
@@ -46,8 +52,10 @@ namespace PartsManager.Model.Entities
             }
         }
         [NotMapped]
+        [JsonIgnore]
         public decimal SumTotal => SumOut + DeliveryPrice;
         [NotMapped]
+        [JsonIgnore]
         public decimal PaymentTotal
         {
             get 
@@ -57,8 +65,10 @@ namespace PartsManager.Model.Entities
             }
         }
         [NotMapped]
+        [JsonIgnore]
         public decimal Residue => SumTotal - PaymentTotal;
         [NotMapped]
+        [JsonIgnore]
         public decimal PartnerSum => (SumOut - SumIn) / 2;
 
     }

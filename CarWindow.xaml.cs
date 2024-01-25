@@ -24,7 +24,7 @@ namespace PartsManager
     {
         private Car LocalCar { get; set; }
         private ActionType Action { get; set; }
-        private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
+        private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
         public CarWindow()
         {
             InitializeComponent();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
@@ -14,9 +15,11 @@ namespace PartsManager.Model.Entities
 
         [Required]
         public int ManufacturerStandardId { get; set; }
+        [JsonIgnore]
         public virtual ManufacturerStandard ManufacturerStandard { get; set; }
         [Required]
         public int PartId { get; set; }
+        [JsonIgnore]
         public virtual Part Part { get; set; }
     }
 }

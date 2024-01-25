@@ -343,6 +343,7 @@
     </Compile>
     <Compile Include="BaseHandlers\BackupHelper.cs" />
     <Compile Include="BaseHandlers\ComboBoxHelper.cs" />
+    <Compile Include="BaseHandlers\JsonBackupHelper.cs" />
     <Compile Include="BaseHandlers\TextBoxHelper.cs" />
     <Compile Include="CarSelectionWindow.xaml.cs">
       <DependentUpon>CarSelectionWindow.xaml</DependentUpon>
@@ -403,6 +404,7 @@
     <Compile Include="Model\Entities\AdditionalInfo.cs" />
     <Compile Include="Model\Entities\ApiStandard.cs" />
     <Compile Include="Model\Entities\Car.cs" />
+    <Compile Include="Model\Entities\DatabaseBackup.cs" />
     <Compile Include="Model\Entities\Invoice.cs" />
     <Compile Include="Model\Entities\InvoicePart.cs" />
     <Compile Include="Model\Entities\Manufacturer.cs" />

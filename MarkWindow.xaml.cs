@@ -24,7 +24,7 @@ namespace PartsManager
     {
         private Mark LocalMark { get; set; }
         private ActionType Action { get; set; }
-        private EFUnitOfWork unitOfWork = new EFUnitOfWork("DataContext");
+        private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
 
         public MarkWindow()
         {

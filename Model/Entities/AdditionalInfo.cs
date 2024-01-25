@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace PartsManager.Model.Entities
 {
@@ -20,10 +21,12 @@ namespace PartsManager.Model.Entities
 
         [Required]
         public int SaeQualityStandardId { get; set; }
+        [JsonIgnore]
         public virtual SaeQualityStandard SaeQualityStandard { get; set; }
 
         [Required]
         public int ManufacturerId { get; set; }
+        [JsonIgnore]
         public virtual Manufacturer Manufacturer { get; set; }
     }
 }

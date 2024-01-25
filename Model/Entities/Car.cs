@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Text.Json.Serialization;
 
 namespace PartsManager.Model.Entities
 {
@@ -21,10 +22,12 @@ namespace PartsManager.Model.Entities
 
         [Required]
         public int ModelId { get; set; }
+        [JsonIgnore]
         public virtual Model Model { get; set; }
-
+        [JsonIgnore]
         public virtual ICollection<Invoice> Invoices { get; set; }
         [NotMapped]
+        [JsonIgnore]
         public string FullInfo => $"{Model.Mark.Name} {Model.Name} {VINCode} {Info}";
     }
 }
