@@ -1,6 +1,8 @@
-﻿using System;
+﻿using PartsManager.Model.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
 {
-    public class Payment
+    public class Payment : IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -21,5 +23,15 @@ namespace PartsManager.Model.Entities
         public int InvoiceId { get; set; }
         [JsonIgnore]
         public virtual Invoice Invoice { get; set; }
+
+        public string GetTable()
+        {
+            return "INSERT INTO Payments (Id, PaymentAmount, Date, Info, InvoiceId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', '{PaymentAmount.ToString(CultureInfo.InvariantCulture)}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', N'{Info}', '{InvoiceId}')";
+        }
     }
 }

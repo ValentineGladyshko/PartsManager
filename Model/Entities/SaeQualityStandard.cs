@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PartsManager.Model.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +8,19 @@ using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
 {
-    public class SaeQualityStandard : Standard
+    public class SaeQualityStandard : Standard, IQuery
     {
         [JsonIgnore]
         public virtual ICollection<AdditionalInfo> AdditionalInfos { get; set; }
+
+        public string GetTable()
+        {
+            return "INSERT INTO SaeQualityStandards (Id, Name, Info) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{Name}', N'{Info}')";
+        }
     }
 }

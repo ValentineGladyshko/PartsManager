@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
 {
-    public class Part : IItem
+    public class Part : IItem, IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -37,5 +37,15 @@ namespace PartsManager.Model.Entities
         [NotMapped]
         [JsonIgnore]
         public string FullInfo => $"{FullName} {Article}";
+
+        public string GetTable()
+        {
+            return "INSERT INTO Parts (Id, Name, FullName, Article, Description, PartTypeId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{Name}', N'{FullName}', N'{Article}', N'{Description}', '{PartTypeId}')";
+        }
     }
 }

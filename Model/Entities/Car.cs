@@ -8,10 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Text.Json.Serialization;
+using PartsManager.Model.Interfaces;
+using System.IO.Ports;
 
 namespace PartsManager.Model.Entities
 {
-    public class Car
+    public class Car : IQuery
     {
         [Key]
         public int Id { get; set; }       
@@ -29,5 +31,15 @@ namespace PartsManager.Model.Entities
         [NotMapped]
         [JsonIgnore]
         public string FullInfo => $"{Model.Mark.Name} {Model.Name} {VINCode} {Info}";
+
+        public string GetTable()
+        {
+            return "INSERT INTO Cars (Id, VINCode, Info, ModelId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{VINCode}', N'{Info}', '{ModelId}')";
+        }
     }
 }

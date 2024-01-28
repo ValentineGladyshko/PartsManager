@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
 {
-    public class Model : IItem
+    public class Model : IItem, IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -24,6 +24,16 @@ namespace PartsManager.Model.Entities
         public virtual Mark Mark { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Car> Cars { get; set; }       
+        public virtual ICollection<Car> Cars { get; set; }
+
+        public string GetTable()
+        {
+            return "INSERT INTO Models (Id, Name, MarkId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{Name}', N'{MarkId}')";
+        }
     }
 }

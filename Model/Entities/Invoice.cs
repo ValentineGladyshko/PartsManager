@@ -1,16 +1,19 @@
-﻿using System;
+﻿using PartsManager.Model.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace PartsManager.Model.Entities
 {
-    public class Invoice
+    public class Invoice : IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -71,5 +74,14 @@ namespace PartsManager.Model.Entities
         [JsonIgnore]
         public decimal PartnerSum => (SumOut - SumIn) / 2;
 
+        public string GetTable()
+        {
+            return "INSERT INTO Invoices (Id, Info, Date, DeliveryPrice, IsPayed, IsPartnerPayed, CarId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{CarId}')";
+        }
     }
 }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using PartsManager.Model.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
 {
-    public class InvoicePart
+    public class InvoicePart : IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -37,5 +39,15 @@ namespace PartsManager.Model.Entities
         public int PartId { get; set; }
         [JsonIgnore]
         public virtual Part Part { get; set; }
+
+        public string GetTable()
+        {
+            return "INSERT INTO InvoiceParts (Id, Count, PriceIn, PriceOut, InvoiceId, PartId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', '{Count}', '{PriceIn.ToString(CultureInfo.InvariantCulture)}', '{PriceOut.ToString(CultureInfo.InvariantCulture)}', '{InvoiceId}', '{PartId}')";
+        }
     }
 }

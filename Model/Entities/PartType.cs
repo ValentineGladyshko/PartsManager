@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
 {
-    public class PartType : IItem
+    public class PartType : IItem, IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -21,5 +21,15 @@ namespace PartsManager.Model.Entities
         public virtual ICollection<Part> Parts { get; set;}
 
         public override string ToString() => $"{Name}";
+
+        public string GetTable()
+        {
+            return "INSERT INTO PartTypes (Id, Name) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{Name}')";
+        }
     }
 }

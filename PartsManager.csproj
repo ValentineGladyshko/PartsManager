@@ -419,6 +419,7 @@
     <Compile Include="Model\Entities\SaeQualityStandard.cs" />
     <Compile Include="Model\Entities\Standard.cs" />
     <Compile Include="Model\Interfaces\IItem.cs" />
+    <Compile Include="Model\Interfaces\IQuery.cs" />
     <Compile Include="Model\Interfaces\IRepository.cs" />
     <Compile Include="Model\Interfaces\IUnitOfWork.cs" />
     <Compile Include="Model\Repositories\AdditionalInfoRepository.cs" />

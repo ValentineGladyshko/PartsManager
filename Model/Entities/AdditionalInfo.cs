@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using PartsManager.Model.Interfaces;
 
 namespace PartsManager.Model.Entities
 {
-    public class AdditionalInfo
+    public class AdditionalInfo : IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -28,5 +29,15 @@ namespace PartsManager.Model.Entities
         public int ManufacturerId { get; set; }
         [JsonIgnore]
         public virtual Manufacturer Manufacturer { get; set; }
+
+        public string GetTable()
+        {
+            return "INSERT INTO AdditionalInfoes (Id, Info, PartId, SaeQualityStandardId, ManufacturerId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{Info}', '{PartId}', '{SaeQualityStandardId}', '{ManufacturerId}')";
+        }
     }
 }

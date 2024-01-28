@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
+using PartsManager.Model.Interfaces;
 
 namespace PartsManager.Model.Entities
 {
-    public class PartApiStandard
+    public class PartApiStandard : IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -22,5 +23,15 @@ namespace PartsManager.Model.Entities
         public int PartId { get; set; }
         [JsonIgnore]
         public virtual Part Part { get; set; }
+
+        public string GetTable()
+        {
+            return "INSERT INTO PartApiStandards (Id, ApiStandardId, PartId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{ApiStandardId}', '{PartId}')";
+        }
     }
 }

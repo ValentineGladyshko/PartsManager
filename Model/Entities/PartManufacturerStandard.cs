@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PartsManager.Model.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
 {
-    public class PartManufacturerStandard
+    public class PartManufacturerStandard : IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -21,5 +22,15 @@ namespace PartsManager.Model.Entities
         public int PartId { get; set; }
         [JsonIgnore]
         public virtual Part Part { get; set; }
+
+        public string GetTable()
+        {
+            return "INSERT INTO PartManufacturerStandards (Id, ManufacturerStandardId, PartId) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{ManufacturerStandardId}', '{PartId}')";
+        }
     }
 }

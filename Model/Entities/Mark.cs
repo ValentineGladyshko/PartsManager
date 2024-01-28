@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace PartsManager.Model.Entities
 {
-    public class Mark : IComparable<Mark>, IItem
+    public class Mark : IComparable<Mark>, IItem, IQuery
     {
         [Key]
         public int Id { get; set; }
@@ -24,6 +25,16 @@ namespace PartsManager.Model.Entities
         public int CompareTo(Mark other)
         {
             return Name.CompareTo(other.Name);
+        }
+
+        public string GetTable()
+        {
+            return "INSERT INTO Marks (Id, Name) VALUES ";
+        }
+
+        public string GetQuery()
+        {
+            return $"('{Id}', N'{Name}')";
         }
     }
 }
