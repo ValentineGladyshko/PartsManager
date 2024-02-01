@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -88,11 +89,11 @@ namespace PartsManager
 
         public ICollection<InvoicePart> PartPrices
         {
-            get 
+            get
             {
                 if (LocalInvoicePart.Part.InvoiceParts == null)
                     return LocalInvoicePart.Part.InvoiceParts;
-                else 
+                else
                     return LocalInvoicePart.Part.InvoiceParts.OrderByDescending(item => item.Invoice.Date).ToList();
             }
         }
@@ -144,7 +145,7 @@ namespace PartsManager
         public InvoiceWindow(Invoice invoice)
         {
             InitializeComponent();
-            LocalInvoice = invoice;           
+            LocalInvoice = invoice;
             LocalInvoicePart = new InvoicePart()
             {
                 Part = new Part(),
@@ -153,7 +154,7 @@ namespace PartsManager
                 PriceIn = 0,
                 PriceOut = 0,
             };
-            
+
             SetContent();
             IsInvoiceCreated = true;
             IsPartSelected = false;
@@ -264,7 +265,14 @@ namespace PartsManager
                     return;
                 else
                 {
-                    LocalInvoicePart.Part = partSelectionWindow.LocalPart;
+                    LocalInvoicePart = new InvoicePart()
+                    {
+                        Part = partSelectionWindow.LocalPart,
+                        Invoice = LocalInvoice,
+                        Count = 1,
+                        PriceIn = 0,
+                        PriceOut = 0,
+                    };
                     LastPriceOutBox.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
                     PartBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
                     IsPartSelected = true;
@@ -289,7 +297,7 @@ namespace PartsManager
             {
                 if (!IsPartEditing)
                 {
-                    if ((LocalInvoicePart.Part != null && (LocalInvoice.InvoiceParts == null 
+                    if ((LocalInvoicePart.Part != null && (LocalInvoice.InvoiceParts == null
                             || LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.Part.Id).Count() == 0))
                         || (LocalInvoicePart.PartId != 0 && (LocalInvoice.InvoiceParts == null
                             || LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.PartId).Count() == 0)))
@@ -385,6 +393,20 @@ namespace PartsManager
                 .Where(item => item.InvoiceId == LocalInvoice.Id).ToList();
             InvoicePartDataGrid.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
             IsPartEditing = false;
+        }
+    }
+
+    public class RowNumberConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int rowNumber = (int)value;
+            return rowNumber + 1;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

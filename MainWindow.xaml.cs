@@ -438,6 +438,16 @@ namespace PartsManager
         }
         public void SetBackupHandlers()
         {
+            Closing += (object sender, CancelEventArgs e) =>
+            {
+                string message = "Ви впевнені що хочете закрити програму?";
+                DialogWindow dialogWindow = new DialogWindow(message);
+                bool? dialogResult = dialogWindow.ShowDialog();
+                if (dialogResult != true)
+                    e.Cancel = true;
+                else
+                    e.Cancel = false;
+            };
             CreateBackupButton.Click += delegate
             {
                 var date = DateTime.Now.ToString(" yyyy-MM-dd HH-mm-ss");
@@ -449,6 +459,7 @@ namespace PartsManager
                 backup.Complete += delegate
                 {
                     StatusTextBlock.Text = "Резервну копію створено!";
+                    StatusTextBlock.Foreground = Brushes.DarkGreen;
                 };
 
                 backup.SqlBackup(server);
@@ -485,7 +496,16 @@ namespace PartsManager
                         var backup = BackupHelper.CreateBackup(dbName, backupName);
                         backup.SqlBackup(server);
 
-                        JsonBackupHelper.Restore(path);
+                        if (JsonBackupHelper.Restore(path))
+                        {
+                            StatusTextBlock.Text = "Резервну копію завантажено!";
+                            StatusTextBlock.Foreground = Brushes.DarkGreen;
+                        }
+                        else
+                        {
+                            StatusTextBlock.Text = "Помилка завантаження резервної копії!";
+                            StatusTextBlock.Foreground = Brushes.DarkRed;
+                        }
                         unitOfWork.Reload();
                         unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
                         LocalInvoices = unitOfWork.Db.Invoices.Local;
@@ -511,8 +531,7 @@ namespace PartsManager
             };
             BackupListBox.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
-                var fileInfo = BackupListBox.SelectedItem as FileInfo;
-                if (fileInfo != null)
+                if (BackupListBox.SelectedItem is FileInfo fileInfo)
                 {
                     Restore(fileInfo.FullName);
                 }
@@ -729,9 +748,20 @@ namespace PartsManager
                     restore.Complete += delegate
                     {
                         StatusTextBlock.Text = "Резервну копію завантажено!";
+                        StatusTextBlock.Foreground = Brushes.DarkGreen;
                     };
-                    server.KillAllProcesses(dbName);
-                    restore.SqlRestore(server);
+
+                    try
+                    {
+                        server.KillAllProcesses(dbName);
+                        restore.SqlRestore(server);
+                    }
+                    catch 
+                    {
+                        StatusTextBlock.Text = "Помилка завантаження резервної копії!";
+                        StatusTextBlock.Foreground = Brushes.DarkRed;
+                    }
+
                     unitOfWork.Reload();
                     unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
                     LocalInvoices = unitOfWork.Db.Invoices.Local;

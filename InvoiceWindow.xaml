@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="Накладна" Height="600" Width="1400">
     <Window.Resources>
+        <local:RowNumberConverter x:Key="rowNumberConverter"/>
         <Style TargetType="ListBoxItem">
             <Setter Property="Opacity" Value="1.0"/>
             <Setter Property="Margin" Value="2"/>
@@ -214,6 +215,7 @@
                         <DataTemplate>
                             <DockPanel Name="DockPanel" LastChildFill="False">
                                 <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=Invoice.Date, Mode=OneWay, StringFormat=d}"></TextBlock>
+                                <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=PriceIn, Mode=OneWay, StringFormat=C2}"></TextBlock>
                                 <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"></TextBlock>
                             </DockPanel>
                         </DataTemplate>
@@ -229,10 +231,10 @@
             </Grid>
             <GridSplitter Grid.Column="3" ShowsPreview="False" Width="5"
                           HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-            <DataGrid Grid.Column="4" Name="InvoicePartDataGrid" AutoGenerateColumns="False" CanUserAddRows="false"
-                      HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoiceParts}">
+            <DataGrid Grid.Column="4" Name="InvoicePartDataGrid" AutoGenerateColumns="False" CanUserAddRows="false" HeadersVisibility="Column"
+                      ItemsSource="{Binding Path=LocalInvoiceParts}" AlternationCount="{Binding Items.Count, RelativeSource={RelativeSource Self}}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width ="50" Header="Код" Binding="{Binding Path=Part.Id, Mode=OneWay}" />
+                    <DataGridTextColumn Width ="50" Header="Код" Binding="{Binding AlternationIndex, Converter={StaticResource rowNumberConverter}, RelativeSource={RelativeSource AncestorType=DataGridRow}, Mode=OneWay}" />
                     <DataGridTextColumn Width ="250" Header="Назва" Binding="{Binding Path=Part.FullName, Mode=OneWay}"/>
                     <DataGridTextColumn Width ="100" Header="Артикул" Binding="{Binding Path=Part.Article, Mode=OneWay}"/>
                     <DataGridTextColumn Width ="50" Header="К-ть" Binding="{Binding Path=Count, Mode=OneWay}"/>

@@ -23,6 +23,8 @@ namespace PartsManager.Model.Entities
         public decimal DeliveryPrice { get; set; }
         public bool IsPayed { get; set; } // 
         public bool IsPartnerPayed { get; set; } // розрахунок між партнерами можна змінити
+        //public bool IsBill { get; set; }
+
 
         [Required]
         public int CarId { get; set; }
