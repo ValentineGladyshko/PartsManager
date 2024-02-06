@@ -117,20 +117,6 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <!--<DataGridTemplateColumn Width ="70">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Click="BillInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Рахунок" Tag="{Binding Path=Id}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>-->
-                                <!--<DataGridCheckBoxColumn Width ="70" Header="Рахунок" Binding="{Binding Path=IsBill, Mode=TwoWay}">
-                                    <DataGridCheckBoxColumn.CellStyle>
-                                        <Style>
-                                            <EventSetter Event="CheckBox.Checked" Handler="BillInvoiceOnClick2"/>
-                                        </Style>
-                                    </DataGridCheckBoxColumn.CellStyle>
-                                </DataGridCheckBoxColumn>-->
                                 <DataGridTemplateColumn Width="70" Header="Рахунок">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -138,7 +124,13 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                                        
+                                <DataGridTemplateColumn Width="70" Header="Партнери">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" Click="PartnerInvoiceOnClick" IsChecked="{Binding Path=IsPartnerPayed, Mode=TwoWay}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <Button Name="CreateInvoiceButton" Margin="0" 
@@ -673,13 +665,13 @@
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <!--<DataGridTemplateColumn Width ="70">
+                                            <DataGridTemplateColumn Width="70" Header="Партнери">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <Button Click="PartnerReportOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Оплата" Tag="{Binding Path=Id}"></Button>
+                                                        <CheckBox HorizontalAlignment="Center" Click="PartnerInvoiceOnClick" IsChecked="{Binding Path=IsPartnerPayed, Mode=TwoWay}"/>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>-->
+                                            </DataGridTemplateColumn>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                     <Button Name="PartnerReportButton" Margin="0" 

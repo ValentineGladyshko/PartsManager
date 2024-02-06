@@ -302,6 +302,37 @@ namespace PartsManager
                         || (LocalInvoicePart.PartId != 0 && (LocalInvoice.InvoiceParts == null
                             || LocalInvoice.InvoiceParts.Where(item => item.PartId == LocalInvoicePart.PartId).Count() == 0)))
                     {
+                        if (LocalInvoicePart.PriceOut > (LocalInvoicePart.RecommendedPrice * 2) || LocalInvoicePart.PriceOut < LocalInvoicePart.PriceIn)
+                        {
+                            string message = $"Ціна продажу: {LocalInvoicePart.PriceOut:C2} \nзначно більша за рекомендовану: {LocalInvoicePart.RecommendedPrice:C2}";
+
+                            DialogWindow dialogWindow = new DialogWindow(message);
+                            bool? dialogResult = dialogWindow.ShowDialog();
+
+                            if (dialogResult != true)
+                                return;
+                        }
+                        if (LocalInvoicePart.PriceOut < LocalInvoicePart.PriceIn)
+                        {
+                            string message = $"Ціна продажу: {LocalInvoicePart.PriceOut:C2} \nменша за ціну покупки: {LocalInvoicePart.PriceIn:C2}";
+
+                            DialogWindow dialogWindow = new DialogWindow(message);
+                            bool? dialogResult = dialogWindow.ShowDialog();
+
+                            if (dialogResult != true)
+                                return;
+                        }
+                        if (PartPrices != null && PartPrices.Count > 0 && (LocalInvoicePart.PriceOut > (PartPrices.First().PriceOut * 2) || LocalInvoicePart.PriceOut < (PartPrices.First().PriceOut * 0.7m)))
+                        {
+                            string message = $"Ціна продажу: {LocalInvoicePart.PriceOut:C2} \nсильно відрізняється від останньої ціни: {PartPrices.First().PriceOut:C2}";
+
+                            DialogWindow dialogWindow = new DialogWindow(message);
+                            bool? dialogResult = dialogWindow.ShowDialog();
+
+                            if (dialogResult != true)
+                                return;
+                        }
+                        
                         unitOfWork.InvoiceParts.Create(LocalInvoicePart);
                         unitOfWork.Save();
 
@@ -327,6 +358,37 @@ namespace PartsManager
                 }
                 else
                 {
+                    if (LocalInvoicePart.PriceOut > (LocalInvoicePart.RecommendedPrice * 2) || LocalInvoicePart.PriceOut < LocalInvoicePart.PriceIn)
+                    {
+                        string message = $"Ціна продажу: {LocalInvoicePart.PriceOut:C2} \nзначно більша за рекомендовану: {LocalInvoicePart.RecommendedPrice:C2}";
+
+                        DialogWindow dialogWindow = new DialogWindow(message);
+                        bool? dialogResult = dialogWindow.ShowDialog();
+
+                        if (dialogResult != true)
+                            return;
+                    }
+                    if (LocalInvoicePart.PriceOut < LocalInvoicePart.PriceIn)
+                    {
+                        string message = $"Ціна продажу: {LocalInvoicePart.PriceOut:C2} \nменша за ціну покупки: {LocalInvoicePart.PriceIn:C2}";
+
+                        DialogWindow dialogWindow = new DialogWindow(message);
+                        bool? dialogResult = dialogWindow.ShowDialog();
+
+                        if (dialogResult != true)
+                            return;
+                    }
+                    if (PartPrices != null && PartPrices.Count > 0 && (LocalInvoicePart.PriceOut > (PartPrices.First().PriceOut * 2) || LocalInvoicePart.PriceOut < (PartPrices.First().PriceOut * 0.7m)))
+                    {
+                        string message = $"Ціна продажу: {LocalInvoicePart.PriceOut:C2} \nсильно відрізняється від останньої ціни: {PartPrices.First().PriceOut:C2}";
+
+                        DialogWindow dialogWindow = new DialogWindow(message);
+                        bool? dialogResult = dialogWindow.ShowDialog();
+
+                        if (dialogResult != true)
+                            return;
+                    }
+                    
                     unitOfWork.InvoiceParts.Update(LocalInvoicePart);
                     unitOfWork.Save();
 
@@ -346,6 +408,11 @@ namespace PartsManager
 
                     IsPartEditing = false;
                 }
+            };
+            CountBox.LostFocus += (object sender, RoutedEventArgs e) =>
+            {
+                SumInBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+                SumOutBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
             };
             PriceInBox.LostFocus += (object sender, RoutedEventArgs e) =>
             {

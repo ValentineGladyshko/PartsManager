@@ -176,7 +176,7 @@
                 <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Ціна закупівлі:" Width="Auto"/>
                 <TextBox Name="PriceInBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
                     <TextBox.Text>
-                        <Binding Path="LocalInvoicePart.PriceIn" StringFormat="F2">
+                        <Binding Path="LocalInvoicePart.PriceIn" StringFormat="N2">
                             <Binding.ValidationRules>
                                 <ExceptionValidationRule />
                                 <DataErrorValidationRule />
@@ -188,7 +188,7 @@
                 <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Ціна продажу:" Width="Auto"/>
                 <TextBox Name="PriceOutBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100">
                     <TextBox.Text>
-                        <Binding Path="LocalInvoicePart.PriceOut" StringFormat="F2">
+                        <Binding Path="LocalInvoicePart.PriceOut" StringFormat="N2">
                             <Binding.ValidationRules>
                                 <ExceptionValidationRule />
                                 <DataErrorValidationRule />

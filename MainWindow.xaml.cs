@@ -360,6 +360,9 @@ namespace PartsManager
                     else if (DataGridInvoices.CurrentColumn.DisplayIndex == 10)
                     {
                     }
+                    else if (DataGridInvoices.CurrentColumn.DisplayIndex == 11)
+                    {
+                    }
                     else
                     {
                         InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
@@ -727,7 +730,7 @@ namespace PartsManager
             var partToDelete = unitOfWork.Parts.Get((int)button.Tag);
 
             string message = "Ви впевнені що хочете видалити запчастину \""
-                             + partToDelete.PartType.Name + " " + partToDelete.Name + "\"?";
+                             + partToDelete.Name + "\"?";
 
             DialogWindow dialogWindow = new DialogWindow(message);
             bool? dialogResult = dialogWindow.ShowDialog();
@@ -787,6 +790,26 @@ namespace PartsManager
                     else 
                     { 
                         invoice.IsBill = false; 
+                    }
+                    unitOfWork.Invoices.Update(invoice);
+                    unitOfWork.Save();
+                    Refresh();
+                }
+            }
+        }
+        private void PartnerInvoiceOnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+            {
+                if (checkBox.DataContext is Invoice invoice)
+                {
+                    if (checkBox.IsChecked == true)
+                    {
+                        invoice.IsPartnerPayed = true;
+                    }
+                    else
+                    {
+                        invoice.IsPartnerPayed = false;
                     }
                     unitOfWork.Invoices.Update(invoice);
                     unitOfWork.Save();
