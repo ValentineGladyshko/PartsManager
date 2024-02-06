@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,12 +31,25 @@ namespace PartsManager
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public ObservableCollection<Invoice> LocalInvoices { get; set; }
-        public IEnumerable<Invoice> PartnerInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && item.IsPayed);
-        public IEnumerable<Invoice> ReportInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && !item.IsPayed);
+        public IEnumerable<Invoice> PayedInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && item.IsPayed && !item.IsBill);
+        public IEnumerable<Invoice> UnpayedInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && !item.IsPayed && !item.IsBill);
+        public IEnumerable<Invoice> PartnerInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && !item.IsBill);
+        public IEnumerable<Invoice> ReportInvoices => LocalInvoices.Where(item => !item.IsBill);
+        public decimal UnpayedInvoicesResidueSum => UnpayedInvoices.Sum(item => item.Residue);
+        public decimal UnpayedInvoicesSumInDelivery => UnpayedInvoices.Sum(item => item.SumInDelivery);
+        public decimal PartnerInvoicesPartnerSum => PartnerInvoices.Sum(item => item.PartnerSum);
+        public decimal PayedInvoicesPartnerSum => PayedInvoices.Sum(item => item.PartnerSum);
+
         EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
 
         public MainWindow()
         {
@@ -304,6 +318,10 @@ namespace PartsManager
         }
         public void SetInvoiceHandlers()
         {
+            DataGridInvoices.Items.SortDescriptions.Clear();
+            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+            DataGridInvoices.Items.Refresh();
+
             CreateInvoiceButton.Click += (object sender, RoutedEventArgs args) =>
             {
                 InvoiceWindow invoiceWindow = new InvoiceWindow();
@@ -313,13 +331,11 @@ namespace PartsManager
                 {
                     DataGridInvoices.Items.SortDescriptions.Clear();
                     DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
-                    DataGridInvoices.Items.Refresh();
+                    Refresh();
                 };
                 invoiceWindow.Show();
             };
-            DataGridInvoices.Items.SortDescriptions.Clear();
-            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
-            DataGridInvoices.Items.Refresh();
+            
             DataGridInvoices.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
                 var invoice = DataGridInvoices.SelectedItem as Invoice;
@@ -337,11 +353,12 @@ namespace PartsManager
                         paymentWindow.Owner = this;
                         paymentWindow.Closed += (object sender1, EventArgs args1) =>
                         {
-                            DataGridInvoices.Items.SortDescriptions.Clear();
-                            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
-                            DataGridInvoices.Items.Refresh();
+                            Refresh();
                         };
                         paymentWindow.Show();
+                    }
+                    else if (DataGridInvoices.CurrentColumn.DisplayIndex == 10)
+                    {
                     }
                     else
                     {
@@ -350,9 +367,7 @@ namespace PartsManager
 
                         invoiceWindow.Closed += (object sender1, EventArgs args1) =>
                         {
-                            DataGridInvoices.Items.SortDescriptions.Clear();
-                            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
-                            DataGridInvoices.Items.Refresh();
+                            Refresh();
                         };
                         invoiceWindow.Show();
                     }
@@ -364,8 +379,7 @@ namespace PartsManager
         {
             LocalInvoices.CollectionChanged += delegate
             {
-                DataGridPartnerReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
-                DataGridReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                Refresh();
             };
             PartnerReportButton.Click += delegate
             {
@@ -381,7 +395,7 @@ namespace PartsManager
                 worksheet.Range[1, 7].Value = "Продаж";
                 worksheet.Range[1, 8].Value = "Партнери";
                 
-                List<Invoice> partnerInvoices = new List<Invoice>(PartnerInvoices);
+                List<Invoice> partnerInvoices = new List<Invoice>(PayedInvoices);
                 for (int i = 0; i < partnerInvoices.Count; i++)
                 {
                     worksheet.Range[i + 2, 1].Value = partnerInvoices[i].Id.ToString();
@@ -401,6 +415,40 @@ namespace PartsManager
                 var directory = AppDomain.CurrentDomain.BaseDirectory + "reports";
                 Directory.CreateDirectory(directory);
                 workbook.SaveToFile($"reports/partner report{DateTime.Now: yyyy-MM-dd HH-mm-ss}.xlsx", ExcelVersion.Version2016);
+            };
+            UnpayedReportButton.Click += delegate
+            {
+                Workbook workbook = new Workbook();
+                Worksheet worksheet = workbook.Worksheets[0];
+
+                worksheet.Range[1, 1].Value = "Код";
+                worksheet.Range[1, 2].Value = "Автомобіль";
+                worksheet.Range[1, 3].Value = "Дата";
+                worksheet.Range[1, 4].Value = "Сплата";
+                worksheet.Range[1, 5].Value = "Партнери";
+                worksheet.Range[1, 6].Value = "Закупка";
+                worksheet.Range[1, 7].Value = "Продаж";
+                worksheet.Range[1, 8].Value = "Партнери";
+
+                List<Invoice> unpayedInvoices = new List<Invoice>(UnpayedInvoices);
+                for (int i = 0; i < unpayedInvoices.Count; i++)
+                {
+                    worksheet.Range[i + 2, 1].Value = unpayedInvoices[i].Id.ToString();
+                    worksheet.Range[i + 2, 2].Value = unpayedInvoices[i].Car.FullInfo.ToString();
+                    worksheet.Range[i + 2, 3].Value = unpayedInvoices[i].Date.ToString("d");
+                    worksheet.Range[i + 2, 4].Value = Convert.ToInt32(unpayedInvoices[i].IsPayed).ToString();
+                    worksheet.Range[i + 2, 5].Value = Convert.ToInt32(unpayedInvoices[i].IsPartnerPayed).ToString();
+                    worksheet.Range[i + 2, 6].Value = unpayedInvoices[i].SumIn.ToString("C2");
+                    worksheet.Range[i + 2, 7].Value = unpayedInvoices[i].SumOut.ToString("C2");
+                }
+                var formula = $"=SUM(Sheet1!$G$2:G${unpayedInvoices.Count + 1})";
+                worksheet.Range[unpayedInvoices.Count + 2, 7].Formula = formula;
+                worksheet.Range[1, 1, 1, 8].Style.Color = System.Drawing.Color.LightGray;
+                worksheet.AllocatedRange.AutoFitColumns();
+
+                var directory = AppDomain.CurrentDomain.BaseDirectory + "reports";
+                Directory.CreateDirectory(directory);
+                workbook.SaveToFile($"reports/unpayed report{DateTime.Now: yyyy-MM-dd HH-mm-ss}.xlsx", ExcelVersion.Version2016);
             };
             ReportButton.Click += delegate
             {
@@ -509,9 +557,7 @@ namespace PartsManager
                         unitOfWork.Reload();
                         unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
                         LocalInvoices = unitOfWork.Db.Invoices.Local;
-                        DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
-                        DataGridPartnerReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
-                        DataGridReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                        Refresh();
                     };
                 }
                 else
@@ -728,6 +774,27 @@ namespace PartsManager
             paymentWindow.Owner = this;
             paymentWindow.Show();
         }
+        private void BillInvoiceOnClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is CheckBox checkBox)
+            {
+                if (checkBox.DataContext is Invoice invoice)
+                {
+                    if (checkBox.IsChecked == true)
+                    {
+                        invoice.IsBill = true;
+                    }
+                    else 
+                    { 
+                        invoice.IsBill = false; 
+                    }
+                    unitOfWork.Invoices.Update(invoice);
+                    unitOfWork.Save();
+                    Refresh();
+                }
+            }
+        }
+
         private void Restore(string path)
         {
             if (path != null)
@@ -765,13 +832,24 @@ namespace PartsManager
                     unitOfWork.Reload();
                     unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
                     LocalInvoices = unitOfWork.Db.Invoices.Local;
-                    DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    DataGridPartnerReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    DataGridReport.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    Refresh();
                 }
             }
             else
                 StatusTextBlock.Text = "";
+        }
+
+        private void Refresh()
+        {
+            DataGridInvoices.Items.Refresh();
+            OnPropertyChanged("PartnerInvoices");
+            OnPropertyChanged("UnpayedInvoices");
+            OnPropertyChanged("PayedInvoices");
+            OnPropertyChanged("ReportInvoices");
+            OnPropertyChanged("UnpayedInvoicesResidueSum");
+            OnPropertyChanged("UnpayedInvoicesSumInDelivery");
+            OnPropertyChanged("PartnerInvoicesPartnerSum");
+            OnPropertyChanged("PayedInvoicesPartnerSum");
         }
     }
 }

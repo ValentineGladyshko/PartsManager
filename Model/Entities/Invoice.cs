@@ -23,7 +23,7 @@ namespace PartsManager.Model.Entities
         public decimal DeliveryPrice { get; set; }
         public bool IsPayed { get; set; } // 
         public bool IsPartnerPayed { get; set; } // розрахунок між партнерами можна змінити
-        //public bool IsBill { get; set; }
+        public bool IsBill { get; set; }
 
 
         [Required]
@@ -74,16 +74,19 @@ namespace PartsManager.Model.Entities
         public decimal Residue => SumTotal - PaymentTotal;
         [NotMapped]
         [JsonIgnore]
+        public decimal SumInDelivery => SumIn + DeliveryPrice - PaymentTotal;
+        [NotMapped]
+        [JsonIgnore]
         public decimal PartnerSum => (SumOut - SumIn) / 2;
 
         public string GetTable()
         {
-            return "INSERT INTO Invoices (Id, Info, Date, DeliveryPrice, IsPayed, IsPartnerPayed, CarId) VALUES ";
+            return "INSERT INTO Invoices (Id, Info, Date, DeliveryPrice, IsPayed, IsPartnerPayed, IsBill, CarId) VALUES ";
         }
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{CarId}')";
+            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{CarId}')";
         }
     }
 }

@@ -28,6 +28,16 @@ namespace PartsManager.Model.Context
         public DbSet<PartApiStandard> PartApiStandards { get; set; }
         public DbSet<PartManufacturerStandard> PartManufacturerStandards { get; set; }
 
-        public DataContext(string connectionString) : base(connectionString) { }
+        public DataContext(string connectionString) : base(connectionString) 
+        {
+            Database.SetInitializer<DataContext>(new StoreDbInitializer());
+        }
+    }
+    public class StoreDbInitializer : DropCreateDatabaseIfModelChanges<DataContext>
+    {
+        protected override void Seed(DataContext db)
+        {
+            db.SaveChanges();
+        }
     }
 }

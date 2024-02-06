@@ -77,7 +77,7 @@ namespace PartsManager
                 }
                 unitOfWork.Payments.Create(LocalPayment);
                 unitOfWork.Save();
-                if (LocalInvoice.Residue <= 0)
+                if (LocalInvoice.Residue == 0)
                 {
                     LocalInvoice.IsPayed = true;
                     unitOfWork.Invoices.Update(LocalInvoice);

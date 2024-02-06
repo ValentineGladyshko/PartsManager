@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PartsManager"
         mc:Ignorable="d"
-        Title="Накладна" Height="600" Width="1400">
+        Title="Накладна" Height="700" Width="1400">
     <Window.Resources>
         <local:RowNumberConverter x:Key="rowNumberConverter"/>
         <Style TargetType="ListBoxItem">
