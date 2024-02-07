@@ -1,0 +1,200 @@
+﻿<Window x:Class="PartsManager.OilPartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PartsManager"
+        mc:Ignorable="d"
+        Title="OilPartWindow" Height="600" Width="1200">
+    <Window.Resources>
+        <local:RowNumberConverter x:Key="rowNumberConverter"/>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Opacity" Value="1.0"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Background" Value="#0F000000"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="10 0 10 0"/>
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <ControlTemplate x:Key="validationFailed">
+            <Border BorderBrush="Red" BorderThickness="1.5">
+                <AdornedElementPlaceholder />
+            </Border>
+        </ControlTemplate>
+
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="5"/>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self},
+                    Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.7*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Column="0" FontSize="14"
+                               Text="Олива:" Width="Auto"/>
+                    <TextBox Name="PartBox" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
+                             FontSize="14" Text="{Binding Path=LocalAdditionalInfo.Part.FullInfo, Mode=OneWay}" MinWidth="100"/>
+                </Grid>
+                
+                <Button MinWidth="100" Name="SelectPartButton" Grid.Row="1" Grid.Column="0" 
+                        Grid.ColumnSpan="2" Content="Обрати оливу" VerticalAlignment="Top"
+                        HorizontalAlignment="Center" Margin="5"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" 
+                           Text="Виробник:" Width="Auto"/>
+                <ComboBox Name="ManufacturerBox" Grid.Row="2" Grid.Column="1"
+                          FontSize="14" MinWidth="100" IsEditable="True" 
+                          ShouldPreserveUserEnteredPrefix="False"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" 
+                           Text="Норма якості SAE:" Width="Auto"/>
+                <ComboBox Name="SaeQualityStandardBox" Grid.Row="3" Grid.Column="1"
+                          FontSize="14" MinWidth="100" IsEditable="True" 
+                          ShouldPreserveUserEnteredPrefix="False"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" FontSize="14" 
+                           Text="Додаткова інформація:" Width="Auto" TextAlignment="Center"/>
+                <TextBox Name="InfoBox" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                         FontSize="14" MinWidth="100" Text="{Binding Path=LocalAdditionalInfo.Info, Mode=TwoWay}"/>
+
+                <TextBlock Name="PartNotificationBlock" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" 
+                           TextAlignment="Center" FontSize="14" TextWrapping="Wrap" Width="Auto"/>
+                <Button MinWidth="100" Name="WorkButton" Grid.Row="8" Grid.Column="0"
+                        Grid.ColumnSpan="2" VerticalAlignment="Top"
+                        HorizontalAlignment="Center"></Button>
+            </Grid>
+            <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" 
+                           Text="Стандарт:" Width="Auto"/>
+                <ComboBox Name="ManufacturerStandardBox" Grid.Row="0" Grid.Column="1"
+                          FontSize="14" MinWidth="100" IsEditable="True" 
+                          ShouldPreserveUserEnteredPrefix="False"/>
+                <Button MinWidth="100" Name="AddManufacturerStandardButton" Grid.Row="1" Grid.Column="0"
+                        Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Додати стандарт"
+                        HorizontalAlignment="Center"/>
+                
+                <TextBox Name="MultipleManufacturerStandardBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap"
+                         AcceptsReturn="True" FontSize="14" MinWidth="100"/>
+                <Button MinWidth="100" Name="AddMultipleManufacturerStandardButton" Grid.Row="3" Grid.Column="0"
+                        Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Додати декілька стандартів"
+                        HorizontalAlignment="Center"/>
+
+                <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Name="ManufacturerStandardDataGrid" AutoGenerateColumns="False"
+                          CanUserAddRows="false" HeadersVisibility="Column" ItemsSource="{Binding Path=PartManufacturerStandards}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width ="170" Header="Назва" Binding="{Binding Path=ManufacturerStandard.Name, Mode=OneWay}"/>
+                        <DataGridTextColumn Width ="170" Header="Опис" Binding="{Binding Path=ManufacturerStandard.Info, Mode=OneWay}"/>
+                        <DataGridTemplateColumn Width ="70">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Click="DeleteManufacturerStandardOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Видалити" Tag="{Binding Path=Id}"></Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+            <GridSplitter Grid.Column="3" ShowsPreview="False" Width="5"
+                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+            <Grid Grid.Column="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" 
+                           Text="Специфікація API:" Width="Auto"/>
+                <ComboBox Name="ApiStandardBox" Grid.Row="0" Grid.Column="1"
+                          FontSize="14" MinWidth="100" IsEditable="True" 
+                          ShouldPreserveUserEnteredPrefix="False"/>
+                <Button MinWidth="100" Name="AddApiStandardButton" Grid.Row="1" Grid.Column="0"
+                        Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Додати специфікацію API"
+                        HorizontalAlignment="Center"/>
+
+                <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Name="ApiStandardDataGrid" AutoGenerateColumns="False"
+                          CanUserAddRows="false" HeadersVisibility="Column" ItemsSource="{Binding Path=PartApiStandards}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width ="170" Header="Назва" Binding="{Binding Path=ApiStandard.Name, Mode=OneWay}"/>
+                        <DataGridTextColumn Width ="170" Header="Опис" Binding="{Binding Path=ApiStandard.Info, Mode=OneWay}"/>
+                        <DataGridTemplateColumn Width ="70">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Click="DeleteApiStandardOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Видалити" Tag="{Binding Path=Id}"></Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

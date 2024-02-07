@@ -375,6 +375,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="OilPartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PartSelectionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -411,6 +415,7 @@
     <Compile Include="Model\Entities\ManufacturerStandard.cs" />
     <Compile Include="Model\Entities\Mark.cs" />
     <Compile Include="Model\Entities\Model.cs" />
+    <Compile Include="Model\Entities\OilPart.cs" />
     <Compile Include="Model\Entities\Part.cs" />
     <Compile Include="Model\Entities\PartApiStandard.cs" />
     <Compile Include="Model\Entities\PartManufacturerStandard.cs" />
@@ -438,6 +443,9 @@
     <Compile Include="Model\Repositories\PartTypeRepository.cs" />
     <Compile Include="Model\Repositories\PaymentRepository.cs" />
     <Compile Include="Model\Repositories\SaeQualityStandardRepository.cs" />
+    <Compile Include="OilPartWindow.xaml.cs">
+      <DependentUpon>OilPartWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PartSelectionWindow.xaml.cs">
       <DependentUpon>PartSelectionWindow.xaml</DependentUpon>
     </Compile>

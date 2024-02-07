@@ -32,11 +32,23 @@ namespace PartsManager.Model.Entities
 
         [JsonIgnore]
         public virtual ICollection<InvoicePart> InvoiceParts { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<PartApiStandard> PartApiStandards { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<PartManufacturerStandard> PartManufacturerStandards { get; set; }
 
         public override string ToString() => $"{Name} {Article}";
         [NotMapped]
         [JsonIgnore]
         public string FullInfo => $"{FullName} {Article}";
+
+        [NotMapped]
+        [JsonIgnore]
+        public string ApiStandards => string.Join(", ", PartApiStandards.Select(x => x.ApiStandard.Name));
+
+        [NotMapped]
+        [JsonIgnore]
+        public string ManufacturerStandards => string.Join(", ", PartManufacturerStandards.Select(x => x.ManufacturerStandard.Name));
 
         public string GetTable()
         {

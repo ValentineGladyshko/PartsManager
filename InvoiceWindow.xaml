@@ -30,13 +30,13 @@
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Margin" Value="5"/>
         </Style>
-        
+
         <ControlTemplate x:Key="validationFailed">
             <Border BorderBrush="Red" BorderThickness="1.5">
                 <AdornedElementPlaceholder />
             </Border>
         </ControlTemplate>
-        
+
         <Style TargetType="TextBox">
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Margin" Value="5"/>
@@ -51,205 +51,203 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.35*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="0.35*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.35*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="0.35*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                
-                <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" FontSize="14"
-                               Text="Авто:" Width="Auto"/>
-                    <TextBox Name="CarBox" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
-                             FontSize="14" Text="{Binding Path=LocalInvoice.Car.FullInfo, Mode=OneWay}" MinWidth="100"/>
-                </Grid>
-                <Button MinWidth="100" Name="SelectCarButton" Grid.Row="1" Grid.Column="0"
-                        Grid.ColumnSpan="2" Content="Обрати автомобіль" VerticalAlignment="Top"
-                        HorizontalAlignment="Center" Margin="5"/>
-
-                <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Опис накладної:" Width="Auto"/>
-                <TextBox Name="InvoiceInfoBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
-                    <TextBox.Text>
-                        <Binding Path="LocalInvoice.Info">
-                            <Binding.ValidationRules>
-                                <ExceptionValidationRule />
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                
-                <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Ціна доставки:" Width="Auto"/>
-                <TextBox Name="InvoiceDeliveryPriceBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
-                    <TextBox.Text>
-                        <Binding Path="LocalInvoice.DeliveryPrice" StringFormat="F2">
-                            <Binding.ValidationRules>
-                                <ExceptionValidationRule />
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-
-                <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Дата:" Width="Auto"/>
-                <DatePicker Name="DatePicker" Grid.Row="4" Grid.Column="1" Language="uk-UA" 
-                            SelectedDate="{Binding Path=LocalInvoice.Date, Mode=TwoWay}"/>
-
-                <TextBlock Name="InvoiceNotificationBlock" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
-                            TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Width="Auto"/>
-                <Button MinWidth="100" Name="WorkButton" Grid.Row="7" Grid.Column="0" 
-                        Grid.ColumnSpan="2" Content="Створити накладну" VerticalAlignment="Top"
-                        HorizontalAlignment="Center"></Button>
-
+                <TextBlock Grid.Column="0" FontSize="14"
+                           Text="Авто:" Width="Auto"/>
+                <TextBox Name="CarBox" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
+                         FontSize="14" Text="{Binding Path=LocalInvoice.Car.FullInfo, Mode=OneWay}" MinWidth="100"/>
             </Grid>
-            <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+            <Button MinWidth="100" Name="SelectCarButton" Grid.Row="1" Grid.Column="0"
+                    Grid.ColumnSpan="2" Content="Обрати автомобіль" VerticalAlignment="Top"
+                    HorizontalAlignment="Center" Margin="5"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Опис накладної:" Width="Auto"/>
+            <TextBox Name="InvoiceInfoBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255">
+                <TextBox.Text>
+                    <Binding Path="LocalInvoice.Info">
+                        <Binding.ValidationRules>
+                            <ExceptionValidationRule />
+                            <DataErrorValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Ціна доставки:" Width="Auto"/>
+            <TextBox Name="InvoiceDeliveryPriceBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
+                <TextBox.Text>
+                    <Binding Path="LocalInvoice.DeliveryPrice" StringFormat="F2">
+                        <Binding.ValidationRules>
+                            <ExceptionValidationRule />
+                            <DataErrorValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Дата:" Width="Auto"/>
+            <DatePicker Name="DatePicker" Grid.Row="4" Grid.Column="1" Language="uk-UA" 
+                        SelectedDate="{Binding Path=LocalInvoice.Date, Mode=TwoWay}"/>
+
+            <TextBlock Name="InvoiceNotificationBlock" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+                       TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Width="Auto"/>
+            <Button MinWidth="100" Name="WorkButton" Grid.Row="7" Grid.Column="0" 
+                    Grid.ColumnSpan="2" Content="Створити накладну" VerticalAlignment="Top"
+                    HorizontalAlignment="Center"></Button>
+
+        </Grid>
+        <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
                           HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-            <Grid Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" FontSize="14"
+                <TextBlock Grid.Column="0" FontSize="14"
                                Text="Запчастина:" Width="Auto"/>
-                    <TextBox Name="PartBox" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
+                <TextBox Name="PartBox" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
                              FontSize="14" Text="{Binding Path=LocalInvoicePart.Part.FullInfo, Mode=OneWay}" MinWidth="100"/>
-                </Grid>
-                
-                <Button MinWidth="100" Name="SelectPartButton" Grid.Row="1" Grid.Column="0" 
+            </Grid>
+
+            <Button MinWidth="100" Name="SelectPartButton" Grid.Row="1" Grid.Column="0" 
                         Grid.ColumnSpan="2" Content="Обрати запчастину" VerticalAlignment="Top"
                         HorizontalAlignment="Center" Margin="5"/>
-                
-                <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Кількість:" Width="Auto"/>
-                <TextBox Name="CountBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100">
-                    <TextBox.Text>
-                        <Binding Path="LocalInvoicePart.Count">
-                            <Binding.ValidationRules>
-                                <ExceptionValidationRule />
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                
-                <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Ціна закупівлі:" Width="Auto"/>
-                <TextBox Name="PriceInBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
-                    <TextBox.Text>
-                        <Binding Path="LocalInvoicePart.PriceIn" StringFormat="N2">
-                            <Binding.ValidationRules>
-                                <ExceptionValidationRule />
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                
-                <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Ціна продажу:" Width="Auto"/>
-                <TextBox Name="PriceOutBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100">
-                    <TextBox.Text>
-                        <Binding Path="LocalInvoicePart.PriceOut" StringFormat="N2">
-                            <Binding.ValidationRules>
-                                <ExceptionValidationRule />
-                                <DataErrorValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
-                
-                <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" Text="Рекомендована ціна:" Width="Auto"/>
-                <TextBox Name="RecommendedPriceBox" IsEnabled="False" Grid.Row="5" Grid.Column="1" 
+
+            <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Кількість:" Width="Auto"/>
+            <TextBox Name="CountBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100">
+                <TextBox.Text>
+                    <Binding Path="LocalInvoicePart.Count">
+                        <Binding.ValidationRules>
+                            <ExceptionValidationRule />
+                            <DataErrorValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Ціна закупівлі:" Width="Auto"/>
+            <TextBox Name="PriceInBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100">
+                <TextBox.Text>
+                    <Binding Path="LocalInvoicePart.PriceIn" StringFormat="N2">
+                        <Binding.ValidationRules>
+                            <ExceptionValidationRule />
+                            <DataErrorValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Ціна продажу:" Width="Auto"/>
+            <TextBox Name="PriceOutBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100">
+                <TextBox.Text>
+                    <Binding Path="LocalInvoicePart.PriceOut" StringFormat="N2">
+                        <Binding.ValidationRules>
+                            <ExceptionValidationRule />
+                            <DataErrorValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
+            <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" Text="Рекомендована ціна:" Width="Auto"/>
+            <TextBox Name="RecommendedPriceBox" IsEnabled="False" Grid.Row="5" Grid.Column="1" 
                          FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.RecommendedPrice, Mode=OneWay, StringFormat=C2}"/>
 
-                <TextBlock Grid.Row="6" Grid.Column="0" FontSize="14" Text="Сумарна ціна закупівлі:" Width="Auto"/>
-                <TextBox Name="SumInBox" IsEnabled="False" Grid.Row="6" Grid.Column="1" 
+            <TextBlock Grid.Row="6" Grid.Column="0" FontSize="14" Text="Сумарна ціна закупівлі:" Width="Auto"/>
+            <TextBox Name="SumInBox" IsEnabled="False" Grid.Row="6" Grid.Column="1" 
                          FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.SumIn, Mode=OneWay, StringFormat=C2}"/>
 
-                <TextBlock Grid.Row="7" Grid.Column="0" FontSize="14" Text="Сумарна ціна продажу:" Width="Auto"/>
-                <TextBox Name="SumOutBox" IsEnabled="False" Grid.Row="7" Grid.Column="1" 
+            <TextBlock Grid.Row="7" Grid.Column="0" FontSize="14" Text="Сумарна ціна продажу:" Width="Auto"/>
+            <TextBox Name="SumOutBox" IsEnabled="False" Grid.Row="7" Grid.Column="1" 
                          FontSize="14" MinWidth="100" Text="{Binding Path=LocalInvoicePart.SumOut, Mode=OneWay, StringFormat=C2}"/>
-                <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" FontSize="14" Text="Останні ціни:" Width="Auto"/>
-                <ComboBox Name="LastPriceOutBox" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" FontSize="14" MinWidth="100"
+            <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" FontSize="14" Text="Останні ціни:" Width="Auto"/>
+            <ComboBox Name="LastPriceOutBox" Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" FontSize="14" MinWidth="100"
                           IsSynchronizedWithCurrentItem="True" SelectedIndex="0" IsEditable="False" ShouldPreserveUserEnteredPrefix="False" ItemsSource="{Binding Path=PartPrices}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <DockPanel Name="DockPanel" LastChildFill="False">
-                                <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=Invoice.Date, Mode=OneWay, StringFormat=d}"></TextBlock>
-                                <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=PriceIn, Mode=OneWay, StringFormat=C2}"></TextBlock>
-                                <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"></TextBlock>
-                            </DockPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel Name="DockPanel" LastChildFill="False">
+                            <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=Invoice.Date, Mode=OneWay, StringFormat=d}"></TextBlock>
+                            <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=PriceIn, Mode=OneWay, StringFormat=C2}"></TextBlock>
+                            <TextBlock DockPanel.Dock="Left" FontSize="14" Width="80" Text="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"></TextBlock>
+                        </DockPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
-                <TextBlock Name="InvoicePartNotificationBlock" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" 
+            <TextBlock Name="InvoicePartNotificationBlock" Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" 
                            TextAlignment="Center" FontSize="14" TextWrapping="Wrap" Width="Auto"/>
-                <Button MinWidth="100" Name="WorkInvoicePartButton" Grid.Row="12" Grid.Column="0"
+            <Button MinWidth="100" Name="WorkInvoicePartButton" Grid.Row="12" Grid.Column="0"
                         Grid.ColumnSpan="2" Content="Додати запчастину в накладну" VerticalAlignment="Top"
                         HorizontalAlignment="Center"></Button>
 
-            </Grid>
-            <GridSplitter Grid.Column="3" ShowsPreview="False" Width="5"
-                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-            <DataGrid Grid.Column="4" Name="InvoicePartDataGrid" AutoGenerateColumns="False" CanUserAddRows="false" HeadersVisibility="Column"
-                      ItemsSource="{Binding Path=LocalInvoiceParts}" AlternationCount="{Binding Items.Count, RelativeSource={RelativeSource Self}}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Width ="50" Header="Код" Binding="{Binding AlternationIndex, Converter={StaticResource rowNumberConverter}, RelativeSource={RelativeSource AncestorType=DataGridRow}, Mode=OneWay}" />
-                    <DataGridTextColumn Width ="250" Header="Назва" Binding="{Binding Path=Part.FullName, Mode=OneWay}"/>
-                    <DataGridTextColumn Width ="100" Header="Артикул" Binding="{Binding Path=Part.Article, Mode=OneWay}"/>
-                    <DataGridTextColumn Width ="50" Header="К-ть" Binding="{Binding Path=Count, Mode=OneWay}"/>
-                    <DataGridTextColumn Width ="80" Header="Ціна входу" Binding="{Binding Path=PriceIn, Mode=OneWay, StringFormat=C2}"/>
-                    <DataGridTextColumn Width ="80" Header="Ціна виходу" Binding="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"/>
-                    <DataGridTextColumn Width ="80" Header="Сума" Binding="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}"/>
-                    <DataGridTemplateColumn Width ="70">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Click="DeleteInvoicePartOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Видалити" Tag="{Binding Path=Id}"></Button>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
         </Grid>
+        <GridSplitter Grid.Column="3" ShowsPreview="False" Width="5"
+                          HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+        <DataGrid Grid.Column="4" Name="InvoicePartDataGrid" AutoGenerateColumns="False" CanUserAddRows="false" HeadersVisibility="Column"
+                      ItemsSource="{Binding Path=LocalInvoiceParts}" AlternationCount="{Binding Items.Count, RelativeSource={RelativeSource Self}}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width ="50" Header="Код" Binding="{Binding AlternationIndex, Converter={StaticResource rowNumberConverter}, RelativeSource={RelativeSource AncestorType=DataGridRow}, Mode=OneWay}" />
+                <DataGridTextColumn Width ="250" Header="Назва" Binding="{Binding Path=Part.FullName, Mode=OneWay}"/>
+                <DataGridTextColumn Width ="100" Header="Артикул" Binding="{Binding Path=Part.Article, Mode=OneWay}"/>
+                <DataGridTextColumn Width ="50" Header="К-ть" Binding="{Binding Path=Count, Mode=OneWay}"/>
+                <DataGridTextColumn Width ="80" Header="Ціна входу" Binding="{Binding Path=PriceIn, Mode=OneWay, StringFormat=C2}"/>
+                <DataGridTextColumn Width ="80" Header="Ціна виходу" Binding="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"/>
+                <DataGridTextColumn Width ="80" Header="Сума" Binding="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}"/>
+                <DataGridTemplateColumn Width ="70">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="DeleteInvoicePartOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Видалити" Tag="{Binding Path=Id}"></Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

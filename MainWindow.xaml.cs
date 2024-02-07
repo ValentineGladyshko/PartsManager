@@ -67,6 +67,7 @@ namespace PartsManager
             SetInvoiceHandlers();
             SetReportHandlers();
             SetBackupHandlers();
+            SetOilPartHandlers();
         }
 
         public void SetMarkHandlers()
@@ -312,9 +313,8 @@ namespace PartsManager
 
                     invoiceSelectionWindow.Show();
                 }
+                PartListBox.UnselectAll();
             };
-
-            PartListBox.UnselectAll();
         }
         public void SetInvoiceHandlers()
         {
@@ -560,6 +560,9 @@ namespace PartsManager
                         unitOfWork.Reload();
                         unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
                         LocalInvoices = unitOfWork.Db.Invoices.Local;
+                        DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                        DataGridInvoices.Items.SortDescriptions.Clear();
+                        DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
                         Refresh();
                     };
                 }
@@ -584,6 +587,64 @@ namespace PartsManager
                 {
                     Restore(fileInfo.FullName);
                 }
+            };
+        }
+        public void SetOilPartHandlers()
+        {
+            ManufacturerBox.SetDropDownOpened(unitOfWork.Manufacturers.GetAll());
+            SaeQualityStandardBox.SetDropDownOpened(unitOfWork.SaeQualityStandards.GetAll());
+            ManufacturerStandardBox.SetDropDownOpened(unitOfWork.ManufacturerStandards.GetAll());
+            ApiStandardBox.SetDropDownOpened(unitOfWork.ApiStandards.GetAll());
+            ManufacturerBox.SetTextChangedFirstCharToUpper();
+            SaeQualityStandardBox.SetTextChangedFirstCharToUpper();
+            ManufacturerStandardBox.SetTextChangedFirstCharToUpper();
+            ApiStandardBox.SetTextChangedFirstCharToUpper();
+            OilPartCreateButton.Click += delegate
+            {
+                OilPartWindow oilPartWindow = new OilPartWindow();
+                oilPartWindow.Owner = this;
+
+                oilPartWindow.Closed += (object sender1, EventArgs args1) =>
+                {
+                };
+                oilPartWindow.Show();
+            };
+            OilPartSearchButton.Click += delegate
+            {
+                //var parts = unitOfWork.AdditionalInfos.GetAll()
+                //    .Where(item => item.Manufacturer.Name.Contains(ManufacturerBox.Text)
+                //        && item.SaeQualityStandard.Name.Contains(SaeQualityStandardBox.Text)).Select(item => item.Part)
+                //    .ToList();
+
+                //parts = parts
+                //    .Where(item => item.PartApiStandards.Any(item2 => item2.ApiStandard.Name.Contains(ApiStandardBox.Text)))
+                //    .Where(item => item.PartManufacturerStandards.Any(item2 => item2.ManufacturerStandard.Name.Contains(ManufacturerStandardBox.Text)))
+                //    .ToList();
+                var infos = unitOfWork.AdditionalInfos.GetAll()
+                    .Where(item => item.Manufacturer.Name.Contains(ManufacturerBox.Text)
+                        && item.SaeQualityStandard.Name.Contains(SaeQualityStandardBox.Text))
+                    .ToList();
+
+                infos = infos
+                    .Where(item => item.Part.PartApiStandards.Any(item2 => item2.ApiStandard.Name.Contains(ApiStandardBox.Text)))
+                    .Where(item => item.Part.PartManufacturerStandards.Any(item2 => item2.ManufacturerStandard.Name.Contains(ManufacturerStandardBox.Text)))
+                    .ToList();
+
+                OilPartListBox.ItemsSource = infos;
+            };
+            OilPartListBox.SelectionChanged += delegate
+            {
+                if (OilPartListBox.SelectedItem is AdditionalInfo info)
+                {
+                    var oilPartWindow = new OilPartWindow(info.Part)
+                    {
+                        Owner = this
+                    };
+
+                    oilPartWindow.Show();
+                }
+
+                OilPartListBox.UnselectAll();
             };
         }
 
@@ -855,6 +916,9 @@ namespace PartsManager
                     unitOfWork.Reload();
                     unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
                     LocalInvoices = unitOfWork.Db.Invoices.Local;
+                    DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    DataGridInvoices.Items.SortDescriptions.Clear();
+                    DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
                     Refresh();
                 }
             }

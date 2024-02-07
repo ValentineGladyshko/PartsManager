@@ -505,64 +505,6 @@
                                 </Grid>
                             </TabItem.Content>
                         </TabItem>
-                        <TabItem Name="OilParts" Header="Оливи">
-                            <TabItem.Content>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="0.475*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid Grid.Column="0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-                                                   Text="Норма якості SAE:" Width="Auto"/>
-                                        <ComboBox Name="SaeQualityStandardBox" Grid.Row="0" Grid.Column="1"
-                                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                                  ShouldPreserveUserEnteredPrefix="False"/>
-                                        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
-                                                   Text="Виробник:" Width="Auto"/>
-                                        <ComboBox Name="ManufacturerBox" Grid.Row="1" Grid.Column="1"
-                                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                                  ShouldPreserveUserEnteredPrefix="False"/>
-                                        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
-                                                   Text="Стандарт:" Width="Auto"/>
-                                        <ComboBox Name="ManufacturerStandardBox" Grid.Row="2" Grid.Column="1"
-                                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                                  ShouldPreserveUserEnteredPrefix="False"/>
-                                        <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
-                                                   Text="Специфікація API:" Width="Auto"/>
-                                        <ComboBox Name="ApiStandardBox" Grid.Row="3" Grid.Column="1"
-                                                  FontSize="14" MinWidth="100" IsEditable="True" 
-                                                  ShouldPreserveUserEnteredPrefix="False"/>
-
-                                        <Button MinWidth="100" Name="OilPartSearchButton" Grid.Row="4" Grid.Column="0" 
-                                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
-                                                HorizontalAlignment="Center"/>
-
-                                    </Grid>
-                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
-                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-                                    <Grid Grid.Column="2">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-                                    </Grid>
-                                </Grid>
-                            </TabItem.Content>
-                        </TabItem>
                         <TabItem Name="Backups" Header="Резервні копії">
                             <TabItem.Content>
                                 <Grid>
@@ -745,6 +687,137 @@
                             </TabItem.Content>
                         </TabItem>
                     </TabControl>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Name="OilParts" Header="Оливи">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.475*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+                                                   Text="Норма якості SAE:" Width="Auto"/>
+                            <ComboBox Name="SaeQualityStandardBox" Grid.Row="0" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
+                                                   Text="Виробник:" Width="Auto"/>
+                            <ComboBox Name="ManufacturerBox" Grid.Row="1" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
+                                                   Text="Стандарт:" Width="Auto"/>
+                            <ComboBox Name="ManufacturerStandardBox" Grid.Row="2" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
+                                                   Text="Специфікація API:" Width="Auto"/>
+                            <ComboBox Name="ApiStandardBox" Grid.Row="3" Grid.Column="1"
+                                                  FontSize="14" MinWidth="100" IsEditable="True" 
+                                                  ShouldPreserveUserEnteredPrefix="False"/>
+
+                            <Button MinWidth="100" Name="OilPartSearchButton" Grid.Row="4" Grid.Column="0" 
+                                                Grid.ColumnSpan="2" Content="Пошук" VerticalAlignment="Top"
+                                                HorizontalAlignment="Center"/>
+
+                        </Grid>
+                        <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                        <Grid Grid.Column="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ListBox Name="OilPartListBox" Grid.Row="0" Background="{x:Null}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                 BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="0" FontSize="14"
+                                                       Text="{Binding Path=Part.FullInfo}" FontWeight="DemiBold" VerticalAlignment="Center" Margin="2"/>
+
+                                            <TextBlock Grid.Column="0" Grid.Row="1" FontSize="14"
+                                                       Text="Норма якості SAE:" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBlock Grid.Column="1" Grid.Row="1" FontSize="14"
+                                                       Text="{Binding Path=SaeQualityStandard.Name}" FontWeight="DemiBold" VerticalAlignment="Center" Margin="2 2 10 2"/>
+                                            <TextBlock Grid.Column="2" Grid.Row="1" FontSize="14"
+                                                       Text="Виробник:" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBlock Grid.Column="3" Grid.Row="1" FontSize="14"
+                                                       Text="{Binding Path=Manufacturer.Name}" FontWeight="DemiBold" VerticalAlignment="Center" Margin="2"/>
+
+                                            <TextBlock Grid.Column="0" Grid.Row="2" FontSize="14"
+                                                       Text="Стандарт:" VerticalAlignment="Center" Margin="2"/>
+                                            <!--<TextBlock Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" FontSize="14" TextWrapping="Wrap"
+                                                       Text="{Binding Path=Part.ManufacturerStandards}" FontWeight="DemiBold" VerticalAlignment="Center" Margin="2"/>-->
+                                            <ItemsControl Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" ItemsSource="{Binding Path=Part.PartManufacturerStandards}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock FontSize="14" FontWeight="DemiBold" Text="{Binding Path=ManufacturerStandard.Name}" Margin="2 2 10 2" />
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                            <TextBlock Grid.Column="0" Grid.Row="3" FontSize="14"
+                                                       Text="Специфікація API:" VerticalAlignment="Center" Margin="2"/>
+                                            <TextBlock Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" FontSize="14" TextWrapping="Wrap"
+                                                       Text="{Binding Path=Part.ApiStandards}" FontWeight="DemiBold" VerticalAlignment="Center" Margin="2"/>
+                                            <!--<ItemsControl Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" ItemsSource="{Binding Path=Part.PartApiStandards}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock FontSize="14" FontWeight="DemiBold" Text="{Binding Path=ApiStandard.Name}" Margin="2 2 10 2" />
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>-->
+
+                                            <Button Click="PartEditButtonOnClick" MinWidth="100"
+                                                    Grid.Column="4" Grid.Row="0" Grid.RowSpan="4" Name="EditButton" VerticalAlignment="Center"
+                                                    Tag="{Binding Path=PartId}" Content="Редагувати" Margin="2"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Button Name="OilPartCreateButton" Margin="2 0 0 0" 
+                                    Content="Створити нову оливу" Grid.Row="1"/>
+                        </Grid>
+                    </Grid>
                 </TabItem.Content>
             </TabItem>
         </TabControl>
