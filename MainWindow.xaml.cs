@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -601,11 +602,14 @@ namespace PartsManager
             ApiStandardBox.SetTextChangedFirstCharToUpper();
             OilPartCreateButton.Click += delegate
             {
-                OilPartWindow oilPartWindow = new OilPartWindow();
-                oilPartWindow.Owner = this;
-
-                oilPartWindow.Closed += (object sender1, EventArgs args1) =>
+                OilPartWindow oilPartWindow = new OilPartWindow
                 {
+                    Owner = this
+                };
+
+                oilPartWindow.Closed += delegate
+                {
+                    OilPartSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 };
                 oilPartWindow.Show();
             };
@@ -640,7 +644,10 @@ namespace PartsManager
                     {
                         Owner = this
                     };
-
+                    oilPartWindow.Closed += delegate
+                    {
+                        OilPartSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                    };
                     oilPartWindow.Show();
                 }
 

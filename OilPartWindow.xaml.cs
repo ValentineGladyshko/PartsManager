@@ -342,6 +342,8 @@ namespace PartsManager
                     }
                     unitOfWork.Save();
                 }
+
+                PartManufacturerStandards = unitOfWork.PartManufacturerStandards.GetAll().Where(item => item.PartId == LocalAdditionalInfo.Part.Id).ToList();
             };
             AddManufacturerStandardButton.Click += delegate
             {
@@ -385,6 +387,60 @@ namespace PartsManager
                 unitOfWork.Save();
 
                 PartManufacturerStandards = unitOfWork.PartManufacturerStandards.GetAll().Where(item => item.PartId == LocalAdditionalInfo.Part.Id).ToList();
+            };
+            AddMultipleApiStandardButton.Click += delegate
+            {
+                if (MultipleApiStandardBox.Text == string.Empty)
+                    return;
+                var apiStandards = new List<string>(MultipleApiStandardBox.Text.Split('\n'));
+                apiStandards = apiStandards.Select(item => item.Trim()).ToList();
+
+                var existingApiStandards = unitOfWork.ApiStandards.GetAll().Where(item => apiStandards.Any(item2 => item2 == item.Name)).ToList();
+                var allApiStandards = unitOfWork.ApiStandards.GetAll().ToList();
+                var partApiStandards = unitOfWork.PartApiStandards.Find(item => item.PartId == LocalAdditionalInfo.Part.Id).ToList();
+                apiStandards = apiStandards.Where(item => allApiStandards.All(item2 => item2.Name != item)).ToList();
+
+                if (existingApiStandards.Any())
+                {
+                    existingApiStandards = existingApiStandards.Where(item => partApiStandards.All(item2 => item2.Id != item.Id)).ToList();
+
+                    var partApiStandardsToAdd = existingApiStandards.Select(item => new PartApiStandard()
+                    {
+                        ApiStandard = item,
+                        PartId = LocalAdditionalInfo.Part.Id,
+                    });
+
+                    foreach (var partApiStandard in partApiStandardsToAdd)
+                    {
+                        unitOfWork.PartApiStandards.Create(partApiStandard);
+                    }
+                    unitOfWork.Save();
+                }
+
+                if (apiStandards.Any())
+                {
+                    string message = $"Для додавання також треба створити стандарти\n\"{string.Join("\",\n\"", apiStandards)}\"";
+                    DialogWindow dialogWindow = new DialogWindow(message);
+                    bool? dialogResult = dialogWindow.ShowDialog();
+                    if (dialogResult != true)
+                        return;
+
+                    var apiStandartsToAdd = apiStandards.Select(item => new ApiStandard() { Name = item });
+
+                    var partApiStandardsToAdd = apiStandartsToAdd.Select(item => new PartApiStandard()
+                    {
+                        ApiStandard = item,
+                        PartId = LocalAdditionalInfo.Part.Id,
+                    });
+
+                    foreach (var partApiStandard in partApiStandardsToAdd)
+                    {
+                        unitOfWork.PartApiStandards.Create(partApiStandard);
+                    }
+                    unitOfWork.Save();
+                }
+
+                PartApiStandards = unitOfWork.PartApiStandards.GetAll().Where(item => item.PartId == LocalAdditionalInfo.Part.Id).ToList();
             };
             AddApiStandardButton.Click += delegate
             {
@@ -443,9 +499,49 @@ namespace PartsManager
 
         public void DeleteApiStandardOnClick(object sender, RoutedEventArgs e)
         {
+            Button button = sender as Button;
+            if (button == null)
+            {
+                return;
+            }
+
+            var apiStandardToDelete = unitOfWork.PartApiStandards.Get((int)button.Tag);
+
+            string message = $"Ви впевнені що хочете видалити специфікацію API \"{apiStandardToDelete.ApiStandard.Name}\" з оливи?";
+
+            DialogWindow dialogWindow = new DialogWindow(message);
+            bool? dialogResult = dialogWindow.ShowDialog();
+
+            if (dialogResult != true)
+                return;
+
+            unitOfWork.PartApiStandards.Delete(apiStandardToDelete.Id);
+            unitOfWork.Save();
+
+            PartApiStandards = unitOfWork.PartApiStandards.GetAll().Where(item => item.PartId == LocalAdditionalInfo.Part.Id).ToList();
         }
         public void DeleteManufacturerStandardOnClick(object sender, RoutedEventArgs e)
         {
+            Button button = sender as Button;
+            if (button == null)
+            {
+                return;
+            }
+
+            var manufacturerStandardToDelete = unitOfWork.PartManufacturerStandards.Get((int)button.Tag);
+
+            string message = $"Ви впевнені що хочете видалити стандарт \"{manufacturerStandardToDelete.ManufacturerStandard.Name}\" з оливи?";
+
+            DialogWindow dialogWindow = new DialogWindow(message);
+            bool? dialogResult = dialogWindow.ShowDialog();
+
+            if (dialogResult != true)
+                return;
+
+            unitOfWork.PartManufacturerStandards.Delete(manufacturerStandardToDelete.Id);
+            unitOfWork.Save();
+
+            PartManufacturerStandards = unitOfWork.PartManufacturerStandards.GetAll().Where(item => item.PartId == LocalAdditionalInfo.Part.Id).ToList();
         }
     }
 }

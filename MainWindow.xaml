@@ -775,9 +775,7 @@
 
                                             <TextBlock Grid.Column="0" Grid.Row="2" FontSize="14"
                                                        Text="Стандарт:" VerticalAlignment="Center" Margin="2"/>
-                                            <!--<TextBlock Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" FontSize="14" TextWrapping="Wrap"
-                                                       Text="{Binding Path=Part.ManufacturerStandards}" FontWeight="DemiBold" VerticalAlignment="Center" Margin="2"/>-->
-                                            <ItemsControl Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" ItemsSource="{Binding Path=Part.PartManufacturerStandards}">
+                                            <ItemsControl Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="2" ItemsSource="{Binding Path=Part.ManufacturerStandards}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <WrapPanel />
@@ -785,16 +783,14 @@
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock FontSize="14" FontWeight="DemiBold" Text="{Binding Path=ManufacturerStandard.Name}" Margin="2 2 10 2" />
+                                                        <TextBlock FontSize="14" FontWeight="DemiBold" Text="{Binding}" Margin="2 2 4 2" />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
 
                                             <TextBlock Grid.Column="0" Grid.Row="3" FontSize="14"
                                                        Text="Специфікація API:" VerticalAlignment="Center" Margin="2"/>
-                                            <TextBlock Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" FontSize="14" TextWrapping="Wrap"
-                                                       Text="{Binding Path=Part.ApiStandards}" FontWeight="DemiBold" VerticalAlignment="Center" Margin="2"/>
-                                            <!--<ItemsControl Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" ItemsSource="{Binding Path=Part.PartApiStandards}">
+                                            <ItemsControl Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" ItemsSource="{Binding Path=Part.ApiStandards}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <WrapPanel />
@@ -802,10 +798,10 @@
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock FontSize="14" FontWeight="DemiBold" Text="{Binding Path=ApiStandard.Name}" Margin="2 2 10 2" />
+                                                        <TextBlock FontSize="14" FontWeight="DemiBold" Text="{Binding}" Margin="2 2 4 2" />
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
-                                            </ItemsControl>-->
+                                            </ItemsControl>
 
                                             <Button Click="PartEditButtonOnClick" MinWidth="100"
                                                     Grid.Column="4" Grid.Row="0" Grid.RowSpan="4" Name="EditButton" VerticalAlignment="Center"

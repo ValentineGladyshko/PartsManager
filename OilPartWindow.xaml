@@ -140,7 +140,7 @@
                 <TextBox Name="MultipleManufacturerStandardBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap"
                          AcceptsReturn="True" FontSize="14" MinWidth="100"/>
                 <Button MinWidth="100" Name="AddMultipleManufacturerStandardButton" Grid.Row="3" Grid.Column="0"
-                        Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Додати декілька стандартів"
+                        Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Додати декілька специфікацій API"
                         HorizontalAlignment="Center"/>
 
                 <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Name="ManufacturerStandardDataGrid" AutoGenerateColumns="False"
@@ -164,6 +164,8 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -180,7 +182,14 @@
                         Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Додати специфікацію API"
                         HorizontalAlignment="Center"/>
 
-                <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Name="ApiStandardDataGrid" AutoGenerateColumns="False"
+                <TextBox Name="MultipleApiStandardBox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap"
+                         AcceptsReturn="True" FontSize="14" MinWidth="100"/>
+                <Button MinWidth="100" Name="AddMultipleApiStandardButton" Grid.Row="3" Grid.Column="0"
+                        Grid.ColumnSpan="2" VerticalAlignment="Top" Content="Додати декілька стандартів"
+                        HorizontalAlignment="Center"/>
+   
+
+                <DataGrid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Name="ApiStandardDataGrid" AutoGenerateColumns="False"
                           CanUserAddRows="false" HeadersVisibility="Column" ItemsSource="{Binding Path=PartApiStandards}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width ="170" Header="Назва" Binding="{Binding Path=ApiStandard.Name, Mode=OneWay}"/>

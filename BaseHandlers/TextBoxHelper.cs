@@ -1,7 +1,9 @@
 ﻿using PartsManager.Model.Entities;
 using PartsManager.Model.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -74,6 +76,22 @@ namespace PartsManager.BaseHandlers
                     textBox.Text = textBox.Text.ToUpper();
                 textBox.Select(cursorPosition, selectionLength);
             };
+        }
+
+        public static ICollection<string> GetTextCollection(this List<IItem> items)
+        {
+            var result = new List<string>();
+            if (items == null || !items.Any())
+                return result;
+            else
+            {
+                for (int i = 0; i < items.Count - 1; i++)
+                {
+                    result.Add($"{items[i].Name},");
+                }
+                result.Add(items[items.Count - 1].Name);
+                return result;
+            }
         }
     }
 }

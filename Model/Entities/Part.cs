@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using PartsManager.BaseHandlers;
 
 namespace PartsManager.Model.Entities
 {
@@ -44,11 +45,11 @@ namespace PartsManager.Model.Entities
 
         [NotMapped]
         [JsonIgnore]
-        public string ApiStandards => string.Join(", ", PartApiStandards.Select(x => x.ApiStandard.Name));
+        public ICollection<string> ApiStandards => PartApiStandards.Select(item => (IItem)item.ApiStandard).ToList().GetTextCollection();
 
         [NotMapped]
         [JsonIgnore]
-        public string ManufacturerStandards => string.Join(", ", PartManufacturerStandards.Select(x => x.ManufacturerStandard.Name));
+        public ICollection<string> ManufacturerStandards => PartManufacturerStandards.Select(item => (IItem)item.ManufacturerStandard).ToList().GetTextCollection();
 
         public string GetTable()
         {
