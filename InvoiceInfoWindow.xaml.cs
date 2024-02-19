@@ -2,28 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Xps;
 using System.Windows.Xps.Packaging;
 using PdfSharp.Xps;
-using System.Drawing;
 using Spire.Xls;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for InvoiceInfoWindow.xaml
-    /// </summary>
     public partial class InvoiceInfoWindow : Window
     {
         public Invoice LocalInvoice { get; set; }
@@ -40,13 +25,13 @@ namespace PartsManager
             var directory = AppDomain.CurrentDomain.BaseDirectory + "reports";
             Directory.CreateDirectory(directory);
             var xpsDocument = new XpsDocument("output.xps", FileAccess.Write);
-            XpsDocumentWriter xpsdw = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
+            var xpsdw = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
             xpsdw.Write(MainGrid);
             xpsDocument.Close();
             XpsConverter.Convert("output.xps", $"reports/invoice{LocalInvoice.Id}.pdf", 1);
-            Workbook workbook = new Workbook();
-            Worksheet worksheet = workbook.Worksheets[0];
-            CellRange range = worksheet.Range[1, 1, 1, 2];
+            var workbook = new Workbook();
+            var worksheet = workbook.Worksheets[0];
+            var range = worksheet.Range[1, 1, 1, 2];
             range.Merge();
             worksheet.Range[1, 1].Value = invoice.Car.FullInfo;
             worksheet.Range[1, 3].Value = invoice.Date.ToString("d");
@@ -63,7 +48,7 @@ namespace PartsManager
                 worksheet.Range[i + 3, 3].Value = LocalInvoice.InvoiceParts[i].PriceOut.ToString("C2");
                 worksheet.Range[i + 3, 4].Value = LocalInvoice.InvoiceParts[i].SumOut.ToString("C2");
             }
-            //worksheet.Range[LocalInvoice.InvoiceParts.Count + 3, 4].Value = invoice.SumTotal.ToString("C2");
+           
             var formula = $"=Sheet1!$D$1+SUM(Sheet1!$D$3:D${LocalInvoice.InvoiceParts.Count + 2})";
             worksheet.Range[LocalInvoice.InvoiceParts.Count + 3, 4].Formula = formula;
             worksheet.SetColumnWidth(1, 25);

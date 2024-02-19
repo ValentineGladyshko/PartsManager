@@ -1,25 +1,11 @@
 ﻿using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for CarWindow.xaml
-    /// </summary>
     public partial class CarWindow : Window
     {
         private Car LocalCar { get; set; }
@@ -73,9 +59,9 @@ namespace PartsManager
 
         public void SetHandlers()
         {     
-            CancelButton.Click += (object sender, RoutedEventArgs e) => { Close(); };
+            CancelButton.Click += delegate { Close(); };
 
-            WorkButton.Click += (object sender, RoutedEventArgs e) =>
+            WorkButton.Click += delegate
             {
                 if (CarMarkNameBox.Text == string.Empty || CarModelNameBox.Text == string.Empty)
                     return;
@@ -88,7 +74,7 @@ namespace PartsManager
                     string message = "Для " + TextBoxHelper.ActionText(Action) + " даного автомобіля також треба створити марку \""
                             + CarMarkNameBox.Text + "\" та модель \"" 
                             + CarModelNameBox.Text + "\"\nВи згодні з створенням марки та моделі?";
-                    DialogWindow dialogWindow = new DialogWindow(message);
+                    var dialogWindow = new DialogWindow(message);
                     bool? dialogResult = dialogWindow.ShowDialog();
                     if (dialogResult != true)
                         return;
@@ -120,7 +106,7 @@ namespace PartsManager
                 {
                     string message = "Для " + TextBoxHelper.ActionText(Action) + " даного автомобіля також треба створити модель \""
                             + CarModelNameBox.Text + "\"\nВи згодні з створенням моделі?";
-                    DialogWindow dialogWindow = new DialogWindow(message);
+                    var dialogWindow = new DialogWindow(message);
                     bool? dialogResult = dialogWindow.ShowDialog();
                     if (dialogResult != true)
                         return;

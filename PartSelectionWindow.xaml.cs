@@ -2,25 +2,13 @@
 using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for PartSelectionWindow.xaml
-    /// </summary>
     public partial class PartSelectionWindow : Window
     {
         public Part LocalPart { get; private set; }
@@ -65,7 +53,7 @@ namespace PartsManager
                 var list = unitOfWork.Parts.GetAll()
                     .Where(item => item.Name.Contains(PartNameBox.Text)
                         && item.PartType.Name.Contains(PartPartTypeNameBox.Text))
-                    .Select(item => item.Name).ToList();
+                    .Select(item => item.Name).GroupBy(item => item).Select(item => item.Key).ToList();
                 list.Sort();
                 PartNameBox.ItemsSource = list;
             };
@@ -79,7 +67,7 @@ namespace PartsManager
                 PartFullNameBox.ItemsSource = list;
             };
 
-            SearchPartButton.Click += (object sender, RoutedEventArgs args) =>
+            SearchPartButton.Click += delegate
             {
                 var list = unitOfWork.Parts.GetAll()
                     .Where(item => item.Name.Contains(LocalPart.Name)
@@ -90,23 +78,24 @@ namespace PartsManager
                     .ToList();
                 PartListBox.ItemsSource = list;
             };
-            CreatePartButton.Click += (object sender, RoutedEventArgs args) =>
+            CreatePartButton.Click += delegate
             {
                 LocalPart.PartType.Name = PartPartTypeNameBox.Text;
 
-                PartWindow partWindow = new PartWindow(LocalPart, ActionType.Create);
-                partWindow.Owner = this;
-                partWindow.Closed += (object o, EventArgs eventArgs) =>
+                var partWindow = new PartWindow(LocalPart, ActionType.Create)
                 {
-                    SearchPartButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    Owner = this
+                };
+                partWindow.Closed += delegate
+                {
+                    SearchPartButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 };
 
                 partWindow.Show();
             };
-            PartListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            PartListBox.SelectionChanged += delegate
             {
-                var part = PartListBox.SelectedItem as Part;
-                if (part != null)
+                if (PartListBox.SelectedItem is Part part)
                 {
                     LocalPart = part;
                     DialogResult = true;

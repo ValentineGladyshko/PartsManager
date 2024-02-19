@@ -1,25 +1,11 @@
 ﻿using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for ModelWindow.xaml
-    /// </summary>
     public partial class ModelWindow : Window
     {
         private Model.Entities.Model LocalModel { get; set; }
@@ -70,9 +56,9 @@ namespace PartsManager
 
         public void SetHandlers()
         {
-            CancelButton.Click += (object sender, RoutedEventArgs e) => { Close(); };
+            CancelButton.Click += delegate { Close(); };
 
-            WorkButton.Click += (object sender, RoutedEventArgs e) =>
+            WorkButton.Click += delegate
             {
                 if (ModelMarkNameBox.Text == string.Empty)
                     return;
@@ -83,7 +69,7 @@ namespace PartsManager
                 {
                     string message = "Для " + TextBoxHelper.ActionText(Action) + " даної моделі також треба створити марку \""
                             + ModelMarkNameBox.Text + "\"\nВи згодні з створенням марки?";
-                    DialogWindow dialogWindow = new DialogWindow(message);
+                    var dialogWindow = new DialogWindow(message);
                     bool? dialogResult = dialogWindow.ShowDialog();
                     if (dialogResult != true)
                         return;

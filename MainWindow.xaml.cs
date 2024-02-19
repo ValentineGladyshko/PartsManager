@@ -1,9 +1,7 @@
 ﻿using Microsoft.SqlServer.Management.Smo;
 using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
-using PartsManager.Model.Interfaces;
 using PartsManager.Model.Repositories;
-using Spire.Pdf.Exporting.XPS.Schema;
 using Spire.Xls;
 using System;
 using System.Collections.Generic;
@@ -13,25 +11,13 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public ObservableCollection<Invoice> LocalInvoices { get; set; }
@@ -44,7 +30,7 @@ namespace PartsManager
         public decimal PartnerInvoicesPartnerSum => PartnerInvoices.Sum(item => item.PartnerSum);
         public decimal PayedInvoicesPartnerSum => PayedInvoices.Sum(item => item.PartnerSum);
 
-        EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
+        private readonly EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -75,35 +61,40 @@ namespace PartsManager
         {
             ComboBoxHelper.SetDropDownOpened(MarkNameBox, unitOfWork.Marks.GetAll());
 
-            MarkSearchButton.Click += (object sender, RoutedEventArgs args) =>
+            MarkSearchButton.Click += delegate
             {
                 var list = unitOfWork.Marks.GetAll()
                     .Where(item => item.Name.Contains(MarkNameBox.Text))
                     .ToList();
                 MarkListBox.ItemsSource = list;
             };
-            MarkCreateButton.Click += (object sender, RoutedEventArgs args) =>
+            MarkCreateButton.Click += delegate
             {
-                Mark mark = new Mark();
-                mark.Name = MarkNameBox.Text;
-
-                MarkWindow markWindow = new MarkWindow(mark, ActionType.Create);
-                markWindow.Owner = this;
-                markWindow.Closed += (object o, EventArgs eventArgs) =>
+                var mark = new Mark
                 {
-                    MarkSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    Name = MarkNameBox.Text
+                };
+
+                var markWindow = new MarkWindow(mark, ActionType.Create)
+                {
+                    Owner = this
+                };
+                markWindow.Closed += delegate
+                {
+                    MarkSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 };
 
                 markWindow.Show();
             };
-            MarkListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            MarkListBox.SelectionChanged += delegate
             {
-                var mark = MarkListBox.SelectedItem as Mark;
-                if (mark != null)
+                if (MarkListBox.SelectedItem is Mark mark)
                 {
                     var invoices = unitOfWork.Invoices.GetAll().Where(item => item.Car.Model.MarkId == mark.Id).OrderByDescending(item => item.Id).ToList();
-                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
-                    invoiceSelectionWindow.Owner = this;
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices)
+                    {
+                        Owner = this
+                    };
 
                     invoiceSelectionWindow.Show();
                 }
@@ -113,17 +104,17 @@ namespace PartsManager
         }
         public void SetModelHandlers()
         {
-            ComboBoxHelper.SetDropDownOpened(ModelMarkNameBox, unitOfWork.Marks.GetAll());
-            ComboBoxHelper.SetDropDownOpened(ModelNameBox, unitOfWork.Models.GetAll());
+            ModelMarkNameBox.SetDropDownOpened(unitOfWork.Marks.GetAll());
+            ModelNameBox.SetDropDownOpened(unitOfWork.Models.GetAll());
 
-            ModelSearchButton.Click += (object sender, RoutedEventArgs args) =>
+            ModelSearchButton.Click += delegate
             {
                 var list = unitOfWork.Models.GetAll()
                     .Where(item => item.Name.Contains(ModelNameBox.Text) && item.Mark.Name.Contains(ModelMarkNameBox.Text))
                     .ToList();
                 ModelListBox.ItemsSource = list;
             };
-            ModelCreateButton.Click += (object sender, RoutedEventArgs args) =>
+            ModelCreateButton.Click += delegate
             {
                 Model.Entities.Model model = new Model.Entities.Model()
                 {
@@ -132,25 +123,28 @@ namespace PartsManager
                     {
                         Name = ModelMarkNameBox.Text
                     }
-                };              
+                };
 
-                ModelWindow modelWindow = new ModelWindow(model, ActionType.Create); ;
-                modelWindow.Owner = this;
-                modelWindow.Closed += (object o, EventArgs eventArgs) =>
+                var modelWindow = new ModelWindow(model, ActionType.Create)
                 {
-                    ModelSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    Owner = this
+                };
+                modelWindow.Closed += delegate
+                {
+                    ModelSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 };
 
                 modelWindow.Show();
             };
-            ModelListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            ModelListBox.SelectionChanged += delegate
             {
-                var model = ModelListBox.SelectedItem as Model.Entities.Model;
-                if (model != null)
+                if (ModelListBox.SelectedItem is Model.Entities.Model model)
                 {
                     var invoices = unitOfWork.Invoices.GetAll().Where(item => item.Car.ModelId == model.Id).ToList();
-                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
-                    invoiceSelectionWindow.Owner = this;
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices)
+                    {
+                        Owner = this
+                    };
 
                     invoiceSelectionWindow.Show();
                 }
@@ -163,7 +157,7 @@ namespace PartsManager
             CarMarkNameBox.SetDropDownOpened(unitOfWork.Marks.GetAll());
             CarModelNameBox.SetDropDownOpened(unitOfWork.Models.GetAll());
 
-            CarSearchButton.Click += (object sender, RoutedEventArgs args) =>
+            CarSearchButton.Click += delegate
             {
                 var list = unitOfWork.Cars.GetAll()
                     .Where(item => item.Info.Contains(CarInfoBox.Text) 
@@ -173,9 +167,9 @@ namespace PartsManager
                     .ToList();
                 CarListBox.ItemsSource = list;
             };
-            CarCreateButton.Click += (object sender, RoutedEventArgs args) =>
+            CarCreateButton.Click += delegate
             {
-                Car car = new Car()
+                var car = new Car()
                 {
                     VINCode = CarVINCodeBox.Text,
                     Info = CarInfoBox.Text,
@@ -190,23 +184,26 @@ namespace PartsManager
                 };
 
 
-                CarWindow carWindow = new CarWindow(car, ActionType.Create); ;
-                carWindow.Owner = this;
-                carWindow.Closed += (object o, EventArgs eventArgs) =>
+                var carWindow = new CarWindow(car, ActionType.Create)
                 {
-                    ModelSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    Owner = this
+                };
+                carWindow.Closed += delegate
+                {
+                    ModelSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 };
 
                 carWindow.Show();
             };
-            CarListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            CarListBox.SelectionChanged += delegate
             {
-                var car = CarListBox.SelectedItem as Car;
-                if (car != null)
+                if (CarListBox.SelectedItem is Car car)
                 {
                     var invoices = unitOfWork.Invoices.GetAll().Where(item => item.CarId == car.Id).ToList();
-                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
-                    invoiceSelectionWindow.Owner = this;
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices)
+                    {
+                        Owner = this
+                    };
 
                     invoiceSelectionWindow.Show();
                 }
@@ -216,38 +213,43 @@ namespace PartsManager
         }
         public void SetPartTypeHandlers()
         {
-            ComboBoxHelper.SetDropDownOpened(PartTypeNameBox, unitOfWork.PartTypes.GetAll());
+            PartTypeNameBox.SetDropDownOpened(unitOfWork.PartTypes.GetAll());
 
-            PartTypeSearchButton.Click += (object sender, RoutedEventArgs args) =>
+            PartTypeSearchButton.Click += delegate
             {
                 var list = unitOfWork.PartTypes.GetAll()
                     .Where(item => item.Name.Contains(PartTypeNameBox.Text))
                     .ToList();
                 PartTypeListBox.ItemsSource = list;
             };
-            PartTypeCreateButton.Click += (object sender, RoutedEventArgs args) =>
+            PartTypeCreateButton.Click += delegate
             {
-                PartType partType = new PartType();
-                partType.Name = PartTypeNameBox.Text;
-
-                PartTypeWindow partTypeWindow = new PartTypeWindow(partType, ActionType.Create);
-                partTypeWindow.Owner = this;
-                partTypeWindow.Closed += (object o, EventArgs eventArgs) =>
+                var partType = new PartType
                 {
-                    PartTypeSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    Name = PartTypeNameBox.Text
+                };
+
+                var partTypeWindow = new PartTypeWindow(partType, ActionType.Create)
+                {
+                    Owner = this
+                };
+                partTypeWindow.Closed += delegate
+                {
+                    PartTypeSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 };
 
                 partTypeWindow.Show();
             };
-            PartTypeListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            PartTypeListBox.SelectionChanged += delegate
             {
-                var partType = PartTypeListBox.SelectedItem as PartType;
-                if (partType != null)
+                if (PartTypeListBox.SelectedItem is PartType partType)
                 {
                     var invoices = unitOfWork.Invoices.GetAll().Where(item => item.InvoiceParts
                         .Any(item2 => item2.Part.PartTypeId == partType.Id)).ToList();
-                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
-                    invoiceSelectionWindow.Owner = this;
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices)
+                    {
+                        Owner = this
+                    };
 
                     invoiceSelectionWindow.Show();
                 }
@@ -268,7 +270,7 @@ namespace PartsManager
                 PartFullNameBox.ItemsSource = list;
             };
 
-            PartSearchButton.Click += (object sender, RoutedEventArgs args) =>
+            PartSearchButton.Click += delegate
             {
                 var list = unitOfWork.Parts.GetAll()
                     .Where(item => item.Name.Contains(PartNameBox.Text)
@@ -279,9 +281,9 @@ namespace PartsManager
                     .ToList();
                 PartListBox.ItemsSource = list;
             };
-            PartCreateButton.Click += (object sender, RoutedEventArgs args) =>
+            PartCreateButton.Click += delegate
             {
-                Part part = new Part()
+                var part = new Part()
                 {
                     Name = PartNameBox.Text,
                     FullName = PartFullNameBox.Text,
@@ -293,24 +295,27 @@ namespace PartsManager
                     }
                 };
 
-                PartWindow partWindow = new PartWindow(part, ActionType.Create);
-                partWindow.Owner = this;
-                partWindow.Closed += (object o, EventArgs eventArgs) =>
+                var partWindow = new PartWindow(part, ActionType.Create)
                 {
-                    PartSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    Owner = this
+                };
+                partWindow.Closed += delegate
+                {
+                    PartSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 };
 
                 partWindow.Show();
             };
-            PartListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            PartListBox.SelectionChanged += delegate
             {
-                var part = PartListBox.SelectedItem as Part;
-                if (part != null)
+                if (PartListBox.SelectedItem is Part part)
                 {
                     var invoices = unitOfWork.Invoices.GetAll().Where(item => item.InvoiceParts
                         .Any(item2 => item2.PartId == part.Id)).ToList();
-                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices);
-                    invoiceSelectionWindow.Owner = this;
+                    var invoiceSelectionWindow = new InvoiceSelectionWindow(invoices)
+                    {
+                        Owner = this
+                    };
 
                     invoiceSelectionWindow.Show();
                 }
@@ -323,12 +328,14 @@ namespace PartsManager
             DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
             DataGridInvoices.Items.Refresh();
 
-            CreateInvoiceButton.Click += (object sender, RoutedEventArgs args) =>
+            CreateInvoiceButton.Click += delegate
             {
-                InvoiceWindow invoiceWindow = new InvoiceWindow();
-                invoiceWindow.Owner = this;
+                var invoiceWindow = new InvoiceWindow
+                {
+                    Owner = this
+                };
 
-                invoiceWindow.Closed += (object sender1, EventArgs args1) =>
+                invoiceWindow.Closed += delegate
                 {
                     DataGridInvoices.Items.SortDescriptions.Clear();
                     DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
@@ -337,22 +344,25 @@ namespace PartsManager
                 invoiceWindow.Show();
             };
             
-            DataGridInvoices.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
+            DataGridInvoices.SelectionChanged += delegate
             {
-                var invoice = DataGridInvoices.SelectedItem as Invoice;
-                if (invoice != null)
+                if (DataGridInvoices.SelectedItem is Invoice invoice)
                 {
                     if (DataGridInvoices.CurrentColumn.DisplayIndex == 8)
                     {
-                        InvoiceInfoWindow invoiceInfoWindow = new InvoiceInfoWindow(invoice);
-                        invoiceInfoWindow.Owner = this;
+                        var invoiceInfoWindow = new InvoiceInfoWindow(invoice)
+                        {
+                            Owner = this
+                        };
                         invoiceInfoWindow.Show();
                     }
                     else if (DataGridInvoices.CurrentColumn.DisplayIndex == 9)
                     {
-                        PaymentWindow paymentWindow = new PaymentWindow(invoice);
-                        paymentWindow.Owner = this;
-                        paymentWindow.Closed += (object sender1, EventArgs args1) =>
+                        var paymentWindow = new PaymentWindow(invoice)
+                        {
+                            Owner = this
+                        };
+                        paymentWindow.Closed += delegate
                         {
                             Refresh();
                         };
@@ -366,10 +376,12 @@ namespace PartsManager
                     }
                     else
                     {
-                        InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
-                        invoiceWindow.Owner = this;
+                        var invoiceWindow = new InvoiceWindow(invoice)
+                        {
+                            Owner = this
+                        };
 
-                        invoiceWindow.Closed += (object sender1, EventArgs args1) =>
+                        invoiceWindow.Closed += delegate
                         {
                             Refresh();
                         };
@@ -387,8 +399,8 @@ namespace PartsManager
             };
             PartnerReportButton.Click += delegate
             {
-                Workbook workbook = new Workbook();
-                Worksheet worksheet = workbook.Worksheets[0];
+                var workbook = new Workbook();
+                var worksheet = workbook.Worksheets[0];
 
                 worksheet.Range[1, 1].Value = "Код";
                 worksheet.Range[1, 2].Value = "Автомобіль";
@@ -399,7 +411,7 @@ namespace PartsManager
                 worksheet.Range[1, 7].Value = "Продаж";
                 worksheet.Range[1, 8].Value = "Партнери";
                 
-                List<Invoice> partnerInvoices = new List<Invoice>(PayedInvoices);
+                var partnerInvoices = new List<Invoice>(PayedInvoices);
                 for (int i = 0; i < partnerInvoices.Count; i++)
                 {
                     worksheet.Range[i + 2, 1].Value = partnerInvoices[i].Id.ToString();
@@ -422,8 +434,8 @@ namespace PartsManager
             };
             UnpayedReportButton.Click += delegate
             {
-                Workbook workbook = new Workbook();
-                Worksheet worksheet = workbook.Worksheets[0];
+                var workbook = new Workbook();
+                var worksheet = workbook.Worksheets[0];
 
                 worksheet.Range[1, 1].Value = "Код";
                 worksheet.Range[1, 2].Value = "Автомобіль";
@@ -434,7 +446,7 @@ namespace PartsManager
                 worksheet.Range[1, 7].Value = "Продаж";
                 worksheet.Range[1, 8].Value = "Партнери";
 
-                List<Invoice> unpayedInvoices = new List<Invoice>(UnpayedInvoices);
+                var unpayedInvoices = new List<Invoice>(UnpayedInvoices);
                 for (int i = 0; i < unpayedInvoices.Count; i++)
                 {
                     worksheet.Range[i + 2, 1].Value = unpayedInvoices[i].Id.ToString();
@@ -456,8 +468,8 @@ namespace PartsManager
             };
             ReportButton.Click += delegate
             {
-                Workbook workbook = new Workbook();
-                Worksheet worksheet = workbook.Worksheets[0];
+                var workbook = new Workbook();
+                var worksheet = workbook.Worksheets[0];
 
                 worksheet.Range[1, 1].Value = "Код";
                 worksheet.Range[1, 2].Value = "Автомобіль";
@@ -493,7 +505,7 @@ namespace PartsManager
             Closing += (object sender, CancelEventArgs e) =>
             {
                 string message = "Ви впевнені що хочете закрити програму?";
-                DialogWindow dialogWindow = new DialogWindow(message);
+                var dialogWindow = new DialogWindow(message);
                 bool? dialogResult = dialogWindow.ShowDialog();
                 if (dialogResult != true)
                     e.Cancel = true;
@@ -539,7 +551,7 @@ namespace PartsManager
                 var path = JsonBackupHelper.ChooseRestore();
                 if (path != null)
                 {
-                    if (BackupHelper.AskRestore(System.IO.Path.GetFileName(path)) == true)
+                    if (BackupHelper.AskRestore(Path.GetFileName(path)) == true)
                     {
                         var dbName = unitOfWork.Db.Database.Connection.Database;
                         var server = new Server(unitOfWork.Db.Database.Connection.DataSource);
@@ -582,7 +594,7 @@ namespace PartsManager
                 fileInfos = fileInfos.Where(item => item.Extension == ".bak").OrderByDescending(item => item.Name).ToList();
                 BackupListBox.ItemsSource = fileInfos;
             };
-            BackupListBox.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
+            BackupListBox.SelectionChanged += delegate
             {
                 if (BackupListBox.SelectedItem is FileInfo fileInfo)
                 {
@@ -602,7 +614,7 @@ namespace PartsManager
             ApiStandardBox.SetTextChangedFirstCharToUpper();
             OilPartCreateButton.Click += delegate
             {
-                OilPartWindow oilPartWindow = new OilPartWindow
+                var oilPartWindow = new OilPartWindow
                 {
                     Owner = this
                 };
@@ -615,15 +627,6 @@ namespace PartsManager
             };
             OilPartSearchButton.Click += delegate
             {
-                //var parts = unitOfWork.AdditionalInfos.GetAll()
-                //    .Where(item => item.Manufacturer.Name.Contains(ManufacturerBox.Text)
-                //        && item.SaeQualityStandard.Name.Contains(SaeQualityStandardBox.Text)).Select(item => item.Part)
-                //    .ToList();
-
-                //parts = parts
-                //    .Where(item => item.PartApiStandards.Any(item2 => item2.ApiStandard.Name.Contains(ApiStandardBox.Text)))
-                //    .Where(item => item.PartManufacturerStandards.Any(item2 => item2.ManufacturerStandard.Name.Contains(ManufacturerStandardBox.Text)))
-                //    .ToList();
                 var infos = unitOfWork.AdditionalInfos.GetAll()
                     .Where(item => item.Manufacturer.Name.Contains(ManufacturerBox.Text)
                         && item.SaeQualityStandard.Name.Contains(SaeQualityStandardBox.Text))
@@ -664,7 +667,7 @@ namespace PartsManager
             string message = "Ви впевнені що хочете видалити марку авто \""
                              + markToDelete.Name + "\"?";
 
-            DialogWindow dialogWindow = new DialogWindow(message);
+            var dialogWindow = new DialogWindow(message);
             bool? dialogResult = dialogWindow.ShowDialog();
 
             if (dialogResult != true)
@@ -673,7 +676,7 @@ namespace PartsManager
             unitOfWork.Marks.Delete(markToDelete.Id);
             unitOfWork.Save();
 
-            MarkSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            MarkSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         }
         private void MarkEditButtonOnClick(object sender, RoutedEventArgs e)
         {
@@ -681,11 +684,13 @@ namespace PartsManager
 
             var markToUpdate = unitOfWork.Marks.Get((int)button.Tag);
 
-            MarkWindow markWindow = new MarkWindow(markToUpdate, ActionType.Edit);
-            markWindow.Owner = this;
-            markWindow.Closed += (object o, EventArgs eventArgs) =>
+            var markWindow = new MarkWindow(markToUpdate, ActionType.Edit)
             {
-                MarkSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                Owner = this
+            };
+            markWindow.Closed += delegate
+            {
+                MarkSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             };
             markWindow.Show();
         }
@@ -698,7 +703,7 @@ namespace PartsManager
             string message = "Ви впевнені що хочете видалити модель авто \""
                              + modelToDelete.Mark.Name + " " + modelToDelete.Name + "\"?";
 
-            DialogWindow dialogWindow = new DialogWindow(message);
+            var dialogWindow = new DialogWindow(message);
             bool? dialogResult = dialogWindow.ShowDialog();
 
             if (dialogResult != true)
@@ -707,7 +712,7 @@ namespace PartsManager
             unitOfWork.Models.Delete(modelToDelete.Id);
             unitOfWork.Save();
 
-            ModelSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            ModelSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         }
         private void ModelEditButtonOnClick(object sender, RoutedEventArgs e)
         {
@@ -715,11 +720,13 @@ namespace PartsManager
 
             var modelToUpdate = unitOfWork.Models.Get((int)button.Tag);
 
-            ModelWindow modelWindow = new ModelWindow(modelToUpdate, ActionType.Edit);
-            modelWindow.Owner = this;
-            modelWindow.Closed += (object o, EventArgs eventArgs) =>
+            var modelWindow = new ModelWindow(modelToUpdate, ActionType.Edit)
             {
-                ModelSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                Owner = this
+            };
+            modelWindow.Closed += delegate
+            {
+                ModelSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             };
             modelWindow.Show();
         }
@@ -732,7 +739,7 @@ namespace PartsManager
             string message = "Ви впевнені що хочете видалити автомобіль \""
                              + carToDelete.Model.Mark.Name + " " + carToDelete.Model.Name + " " + carToDelete.VINCode + "\"?";
 
-            DialogWindow dialogWindow = new DialogWindow(message);
+            var dialogWindow = new DialogWindow(message);
             bool? dialogResult = dialogWindow.ShowDialog();
 
             if (dialogResult != true)
@@ -741,7 +748,7 @@ namespace PartsManager
             unitOfWork.Cars.Delete(carToDelete.Id);
             unitOfWork.Save();
 
-            MarkSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            MarkSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         }
         private void CarEditButtonOnClick(object sender, RoutedEventArgs e)
         {
@@ -749,11 +756,13 @@ namespace PartsManager
 
             var carToUpdate = unitOfWork.Cars.Get((int)button.Tag);
 
-            CarWindow carWindow = new CarWindow(carToUpdate, ActionType.Edit);
-            carWindow.Owner = this;
-            carWindow.Closed += (object o, EventArgs eventArgs) =>
+            var carWindow = new CarWindow(carToUpdate, ActionType.Edit)
             {
-                MarkSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                Owner = this
+            };
+            carWindow.Closed += delegate
+            {
+                MarkSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             };
             carWindow.Show();
         }
@@ -766,7 +775,7 @@ namespace PartsManager
             string message = "Ви впевнені що хочете видалити тип запчастин \""
                              + partTypeToDelete.Name + "\"?";
 
-            DialogWindow dialogWindow = new DialogWindow(message);
+            var dialogWindow = new DialogWindow(message);
             bool? dialogResult = dialogWindow.ShowDialog();
 
             if (dialogResult != true)
@@ -775,7 +784,7 @@ namespace PartsManager
             unitOfWork.PartTypes.Delete(partTypeToDelete.Id);
             unitOfWork.Save();
 
-            PartTypeSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            PartTypeSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         }
         private void PartTypeEditButtonOnClick(object sender, RoutedEventArgs e)
         {
@@ -783,11 +792,13 @@ namespace PartsManager
 
             var partTypeToUpdate = unitOfWork.PartTypes.Get((int)button.Tag);
 
-            PartTypeWindow partTypeWindow = new PartTypeWindow(partTypeToUpdate, ActionType.Edit);
-            partTypeWindow.Owner = this;
-            partTypeWindow.Closed += (object o, EventArgs eventArgs) =>
+            var partTypeWindow = new PartTypeWindow(partTypeToUpdate, ActionType.Edit)
             {
-                PartTypeSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                Owner = this
+            };
+            partTypeWindow.Closed += delegate
+            {
+                PartTypeSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             };
             partTypeWindow.Show();
         }
@@ -800,7 +811,7 @@ namespace PartsManager
             string message = "Ви впевнені що хочете видалити запчастину \""
                              + partToDelete.Name + "\"?";
 
-            DialogWindow dialogWindow = new DialogWindow(message);
+            var dialogWindow = new DialogWindow(message);
             bool? dialogResult = dialogWindow.ShowDialog();
 
             if (dialogResult != true)
@@ -809,7 +820,7 @@ namespace PartsManager
             unitOfWork.Parts.Delete(partToDelete.Id);
             unitOfWork.Save();
 
-            PartSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            PartSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         }
         private void PartEditButtonOnClick(object sender, RoutedEventArgs e)
         {
@@ -817,11 +828,13 @@ namespace PartsManager
 
             var partToUpdate = unitOfWork.Parts.Get((int)button.Tag);
 
-            PartWindow partWindow = new PartWindow(partToUpdate, ActionType.Edit);
-            partWindow.Owner = this;
-            partWindow.Closed += (object o, EventArgs eventArgs) =>
+            var partWindow = new PartWindow(partToUpdate, ActionType.Edit)
             {
-                PartSearchButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                Owner = this
+            };
+            partWindow.Closed += delegate
+            {
+                PartSearchButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             };
             partWindow.Show();
         }
@@ -831,8 +844,10 @@ namespace PartsManager
 
             var invoice = unitOfWork.Invoices.Get((int)button.Tag);
 
-            InvoiceInfoWindow invoiceInfoWindow = new InvoiceInfoWindow(invoice);
-            invoiceInfoWindow.Owner = this;
+            var invoiceInfoWindow = new InvoiceInfoWindow(invoice)
+            {
+                Owner = this
+            };
             invoiceInfoWindow.Show();
         }
         private void PaymentInvoiceOnClick(object sender, RoutedEventArgs e)
@@ -841,8 +856,10 @@ namespace PartsManager
 
             var invoice = unitOfWork.Invoices.Get((int)button.Tag);
 
-            PaymentWindow paymentWindow = new PaymentWindow(invoice);
-            paymentWindow.Owner = this;
+            var paymentWindow = new PaymentWindow(invoice)
+            {
+                Owner = this
+            };
             paymentWindow.Show();
         }
         private void BillInvoiceOnClick(object sender, RoutedEventArgs e)
@@ -890,7 +907,7 @@ namespace PartsManager
         {
             if (path != null)
             {
-                if (BackupHelper.AskRestore(System.IO.Path.GetFileName(path)) == true)
+                if (BackupHelper.AskRestore(Path.GetFileName(path)) == true)
                 {
                     var dbName = unitOfWork.Db.Database.Connection.Database;
                     var server = new Server(unitOfWork.Db.Database.Connection.DataSource);

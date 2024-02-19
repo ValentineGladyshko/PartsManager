@@ -1,35 +1,18 @@
-﻿using Microsoft.SqlServer.Management.Smo;
-using PartsManager.BaseHandlers;
-using PartsManager.Model.Entities;
+﻿using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Entity;
-using System.Data.SqlClient;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml.Linq;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for InvoiceWindow.xaml
-    /// </summary>
     public partial class InvoiceWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -243,7 +226,22 @@ namespace PartsManager
 
         public void SetHandlers()
         {
-            WorkButton.Click += (object sender, RoutedEventArgs e) =>
+            Closing += delegate
+            {
+                if (LocalInvoice.Residue <= 0 && LocalInvoice.IsPayed == false)
+                {
+                    LocalInvoice.IsPayed = true;
+                    unitOfWork.Invoices.Update(LocalInvoice);
+                    unitOfWork.Save();
+                }
+                else if (LocalInvoice.Residue > 0 && LocalInvoice.IsPayed == true)
+                {
+                    LocalInvoice.IsPayed = false;
+                    unitOfWork.Invoices.Update(LocalInvoice);
+                    unitOfWork.Save();
+                }
+            };
+            WorkButton.Click += delegate
             {
                 if (Action == ActionType.Create)
                 {
@@ -257,9 +255,9 @@ namespace PartsManager
                     unitOfWork.Save();
                 }
             };
-            SelectPartButton.Click += (object sender, RoutedEventArgs e) =>
+            SelectPartButton.Click += delegate
             {
-                PartSelectionWindow partSelectionWindow = new PartSelectionWindow();
+                var partSelectionWindow = new PartSelectionWindow();
                 bool? dialogResult = partSelectionWindow.ShowDialog();
                 if (dialogResult != true)
                     return;
@@ -279,7 +277,7 @@ namespace PartsManager
                     IsPartEditing = false;
                 }
             };
-            SelectCarButton.Click += (object sender, RoutedEventArgs e) =>
+            SelectCarButton.Click += delegate
             {
                 var carSelectionWindow = new CarSelectionWindow();
                 bool? dialogResult = carSelectionWindow.ShowDialog();
@@ -293,7 +291,7 @@ namespace PartsManager
                     WorkButton.IsEnabled = true;
                 }
             };
-            WorkInvoicePartButton.Click += (object sender, RoutedEventArgs e) =>
+            WorkInvoicePartButton.Click += delegate
             {
                 if (!IsPartEditing)
                 {
@@ -306,7 +304,7 @@ namespace PartsManager
                         {
                             string message = $"Ціна продажу: {LocalInvoicePart.PriceOut:C2} \nзначно більша за рекомендовану: {LocalInvoicePart.RecommendedPrice:C2}";
 
-                            DialogWindow dialogWindow = new DialogWindow(message);
+                            var dialogWindow = new DialogWindow(message);
                             bool? dialogResult = dialogWindow.ShowDialog();
 
                             if (dialogResult != true)
@@ -316,7 +314,7 @@ namespace PartsManager
                         {
                             string message = $"Ціна продажу: {LocalInvoicePart.PriceOut:C2} \nменша за ціну покупки: {LocalInvoicePart.PriceIn:C2}";
 
-                            DialogWindow dialogWindow = new DialogWindow(message);
+                            var dialogWindow = new DialogWindow(message);
                             bool? dialogResult = dialogWindow.ShowDialog();
 
                             if (dialogResult != true)
@@ -409,26 +407,26 @@ namespace PartsManager
                     IsPartEditing = false;
                 }
             };
-            CountBox.LostFocus += (object sender, RoutedEventArgs e) =>
+            CountBox.LostFocus += delegate
             {
                 SumInBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
                 SumOutBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
             };
-            PriceInBox.LostFocus += (object sender, RoutedEventArgs e) =>
+            PriceInBox.LostFocus += delegate
             {
                 RecommendedPriceBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
                 SumInBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
             };
-            PriceOutBox.LostFocus += (object sender, RoutedEventArgs e) =>
+            PriceOutBox.LostFocus += delegate
             {
                 SumOutBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
             };
             InvoicePartDataGrid.SelectionChanged += delegate
             {
-                var invoicePart = InvoicePartDataGrid.SelectedItem as InvoicePart;
-                if (invoicePart != null)
+                if (InvoicePartDataGrid.SelectedItem is InvoicePart invoicePart)
                 {
                     LocalInvoicePart = invoicePart;
+                    Clipboard.SetText(invoicePart.Part.Article);
                 }
                 IsPartSelected = true;
                 IsPartEditing = true;
@@ -448,7 +446,7 @@ namespace PartsManager
 
             string message = $"Ви впевнені що хочете видалити запчастину \"{partInvoiceToDelete.Part}\" з накладної?";
 
-            DialogWindow dialogWindow = new DialogWindow(message);
+            var dialogWindow = new DialogWindow(message);
             bool? dialogResult = dialogWindow.ShowDialog();
 
             if (dialogResult != true)

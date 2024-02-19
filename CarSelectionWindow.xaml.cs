@@ -1,25 +1,12 @@
 ﻿using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for CarSelectionWindow.xaml
-    /// </summary>
     public partial class CarSelectionWindow : Window
     {
         public Car LocalCar { get; private set; }
@@ -43,7 +30,7 @@ namespace PartsManager
         public void SetPartHandlers()
         {
             CarMarkNameBox.SetDropDownOpened(unitOfWork.Marks.GetAll());
-            CarModelNameBox.DropDownOpened += (object sender, EventArgs e) =>
+            CarModelNameBox.DropDownOpened += delegate
             {
                 var list = unitOfWork.Models.GetAll()
                     .Where(item => item.Name.Contains(CarModelNameBox.Text)
@@ -52,7 +39,7 @@ namespace PartsManager
                 list.Sort();
                 CarModelNameBox.ItemsSource = list;
             };
-            SearchCarButton.Click += (object sender, RoutedEventArgs args) =>
+            SearchCarButton.Click += delegate
             {
                 var list = unitOfWork.Cars.GetAll()
                     .Where(item => item.Info.Contains(LocalCar.Info)
@@ -63,25 +50,26 @@ namespace PartsManager
                 CarListBox.ItemsSource = list;
             };
 
-            CreateCarButton.Click += (object sender, RoutedEventArgs args) =>
+            CreateCarButton.Click += delegate
             {
                 LocalCar.Model.Name = CarModelNameBox.Text;
                 LocalCar.Model.Mark.Name = CarMarkNameBox.Text;
 
-                var carWindow = new CarWindow(LocalCar, ActionType.Create);
-                carWindow.Owner = this;
-                carWindow.Closed += (object o, EventArgs eventArgs) =>
+                var carWindow = new CarWindow(LocalCar, ActionType.Create)
                 {
-                    SearchCarButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    Owner = this
+                };
+                carWindow.Closed += delegate
+                {
+                    SearchCarButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                 };
 
                 carWindow.Show();
             };
 
-            CarListBox.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            CarListBox.SelectionChanged += delegate
             {
-                var car = CarListBox.SelectedItem as Car;
-                if (car != null)
+                if (CarListBox.SelectedItem is Car car)
                 {
                     LocalCar = car;
                     DialogResult = true;

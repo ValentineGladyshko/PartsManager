@@ -5,22 +5,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for PaymentWindow.xaml
-    /// </summary>
     public partial class PaymentWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -69,7 +58,7 @@ namespace PartsManager
 
         public void SetHandlers()
         {
-            CreatePaymentButton.Click += (object sender, RoutedEventArgs e) =>
+            CreatePaymentButton.Click += delegate
             {
                 if (LocalPayment.PaymentAmount <= 0)
                 {
@@ -77,7 +66,7 @@ namespace PartsManager
                 }
                 unitOfWork.Payments.Create(LocalPayment);
                 unitOfWork.Save();
-                if (LocalInvoice.Residue == 0)
+                if (LocalInvoice.Residue <= 0)
                 {
                     LocalInvoice.IsPayed = true;
                     unitOfWork.Invoices.Update(LocalInvoice);
@@ -107,7 +96,7 @@ namespace PartsManager
 
             string message = $"Ви впевнені що хочете видалити платіж сумою {paymentToDelete.PaymentAmount:C2} з накладної?";
 
-            DialogWindow dialogWindow = new DialogWindow(message);
+            var dialogWindow = new DialogWindow(message);
             bool? dialogResult = dialogWindow.ShowDialog();
 
             if (dialogResult != true)

@@ -1,23 +1,10 @@
 ﻿using PartsManager.Model.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for InvoiceSelectionWindow.xaml
-    /// </summary>
     public partial class InvoiceSelectionWindow : Window
     {
         public ICollection<Invoice> LocalInvoices { get; set; }
@@ -32,21 +19,24 @@ namespace PartsManager
 
         public void SetHandlers()
         {
-            CreateInvoiceButton.Click += (object sender, RoutedEventArgs e) =>
+            CreateInvoiceButton.Click += delegate
             {
-                InvoiceWindow invoiceWindow = new InvoiceWindow();
-                invoiceWindow.Owner = this;
+                var invoiceWindow = new InvoiceWindow
+                {
+                    Owner = this
+                };
 
                 invoiceWindow.Show();
             };
 
-            DataGridInvoices.SelectionChanged += (object sender, SelectionChangedEventArgs args) =>
+            DataGridInvoices.SelectionChanged += delegate
             {
-                var invoice = DataGridInvoices.SelectedItem as Invoice;
-                if (invoice != null)
+                if (DataGridInvoices.SelectedItem is Invoice invoice)
                 {
-                    InvoiceWindow invoiceWindow = new InvoiceWindow(invoice);
-                    invoiceWindow.Owner = this;
+                    var invoiceWindow = new InvoiceWindow(invoice)
+                    {
+                        Owner = this
+                    };
 
                     invoiceWindow.Show();
                 }

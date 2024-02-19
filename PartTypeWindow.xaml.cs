@@ -1,26 +1,10 @@
 ﻿using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PartsManager
 {
-    /// <summary>
-    /// Interaction logic for PartTypeWindow.xaml
-    /// </summary>
-
     public partial class PartTypeWindow : Window
     {
         private PartType LocalPartType { get; set; }
@@ -67,9 +51,9 @@ namespace PartsManager
 
         public void SetHandlers()
         {
-            CancelButton.Click += (object sender, RoutedEventArgs e) => { Close(); };
+            CancelButton.Click += delegate { Close(); };
 
-            WorkButton.Click += (object sender, RoutedEventArgs e) =>
+            WorkButton.Click += delegate
             {
                 LocalPartType.Name = NameBox.Text;
 
