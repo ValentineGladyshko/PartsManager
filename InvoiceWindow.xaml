@@ -79,10 +79,18 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" FontSize="14"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" FontSize="14"
                            Text="Авто:" Width="Auto"/>
-                <TextBox Name="CarBox" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
-                         FontSize="14" Text="{Binding Path=LocalInvoice.Car.FullInfo, Mode=OneWay}" MinWidth="100"/>
+                <TextBox Name="CarBox" Grid.Column="1" Grid.Row="0" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
+                         FontSize="14" Text="{Binding Path=LocalInvoice.Car.FullInfo2, Mode=OneWay}" MinWidth="100"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" FontSize="14"
+                           Text="VIN код:" Width="Auto"/>
+                <TextBox Name="CarBox1" Grid.Column="1" Grid.Row="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
+                         FontSize="14" Text="{Binding Path=LocalInvoice.Car.VINCode, Mode=OneWay}" MinWidth="100"/>
             </Grid>
             <Button MinWidth="100" Name="SelectCarButton" Grid.Row="1" Grid.Column="0"
                     Grid.ColumnSpan="2" Content="Обрати автомобіль" VerticalAlignment="Top"

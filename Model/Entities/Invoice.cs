@@ -24,6 +24,7 @@ namespace PartsManager.Model.Entities
         public bool IsPayed { get; set; } // 
         public bool IsPartnerPayed { get; set; } // розрахунок між партнерами можна змінити
         public bool IsBill { get; set; }
+        public bool IsMine { get; set; } 
 
 
         [Required]
@@ -81,12 +82,12 @@ namespace PartsManager.Model.Entities
 
         public string GetTable()
         {
-            return "INSERT INTO Invoices (Id, Info, Date, DeliveryPrice, IsPayed, IsPartnerPayed, IsBill, CarId) VALUES ";
+            return "INSERT INTO Invoices (Id, Info, Date, DeliveryPrice, IsPayed, IsPartnerPayed, IsBill, IsMine, CarId) VALUES ";
         }
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{CarId}')";
+            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{IsMine}', '{CarId}')";
         }
     }
 }

@@ -6,6 +6,7 @@ using Spire.Xls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.IO;
@@ -20,7 +21,8 @@ namespace PartsManager
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        public ObservableCollection<Invoice> LocalInvoices { get; set; }
+        public IEnumerable<Invoice> LocalInvoices => DatabaseInvoices.Where(item => !item.IsMine);
+        public ObservableCollection<Invoice> DatabaseInvoices { get; set; }
         public IEnumerable<Invoice> PayedInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && item.IsPayed && !item.IsBill);
         public IEnumerable<Invoice> UnpayedInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && !item.IsPayed && !item.IsBill);
         public IEnumerable<Invoice> PartnerInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && !item.IsBill);
@@ -42,8 +44,11 @@ namespace PartsManager
         {
             InitializeComponent();
             unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
-
-            LocalInvoices = unitOfWork.Db.Invoices.Local;
+            DatabaseInvoices = unitOfWork.Db.Invoices.Local;
+            DatabaseInvoices.CollectionChanged += delegate
+            {
+                Refresh();
+            };
             DataContext = this;
 
             SetMarkHandlers();
@@ -330,15 +335,13 @@ namespace PartsManager
 
             CreateInvoiceButton.Click += delegate
             {
-                var invoiceWindow = new InvoiceWindow
+                var invoiceWindow = new InvoiceWindow(false)
                 {
                     Owner = this
                 };
 
                 invoiceWindow.Closed += delegate
                 {
-                    DataGridInvoices.Items.SortDescriptions.Clear();
-                    DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
                     Refresh();
                 };
                 invoiceWindow.Show();
@@ -393,10 +396,6 @@ namespace PartsManager
         }
         public void SetReportHandlers()
         {
-            LocalInvoices.CollectionChanged += delegate
-            {
-                Refresh();
-            };
             PartnerReportButton.Click += delegate
             {
                 var workbook = new Workbook();
@@ -572,10 +571,11 @@ namespace PartsManager
                         }
                         unitOfWork.Reload();
                         unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
-                        LocalInvoices = unitOfWork.Db.Invoices.Local;
-                        DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
-                        DataGridInvoices.Items.SortDescriptions.Clear();
-                        DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+                        DatabaseInvoices = unitOfWork.Db.Invoices.Local;
+                        DatabaseInvoices.CollectionChanged += delegate
+                        {
+                            Refresh();
+                        };
                         Refresh();
                     };
                 }
@@ -939,10 +939,11 @@ namespace PartsManager
 
                     unitOfWork.Reload();
                     unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
-                    LocalInvoices = unitOfWork.Db.Invoices.Local;
-                    DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    DataGridInvoices.Items.SortDescriptions.Clear();
-                    DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+                    DatabaseInvoices = unitOfWork.Db.Invoices.Local;
+                    DatabaseInvoices.CollectionChanged += delegate
+                    {
+                        Refresh();
+                    };
                     Refresh();
                 }
             }
@@ -952,7 +953,10 @@ namespace PartsManager
 
         private void Refresh()
         {
-            DataGridInvoices.Items.Refresh();
+            OnPropertyChanged("LocalInvoices");
+            DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+            DataGridInvoices.Items.SortDescriptions.Clear();
+            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
             OnPropertyChanged("PartnerInvoices");
             OnPropertyChanged("UnpayedInvoices");
             OnPropertyChanged("PayedInvoices");

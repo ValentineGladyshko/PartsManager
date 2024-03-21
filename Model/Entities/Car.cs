@@ -31,6 +31,9 @@ namespace PartsManager.Model.Entities
         [NotMapped]
         [JsonIgnore]
         public string FullInfo => $"{Model.Mark.Name} {Model.Name} {VINCode} {Info}";
+        [NotMapped]
+        [JsonIgnore]
+        public string FullInfo2 => $"{Model.Mark.Name} {Model.Name} {Info}";
 
         public string GetTable()
         {

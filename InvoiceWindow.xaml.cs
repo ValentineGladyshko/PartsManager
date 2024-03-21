@@ -86,7 +86,7 @@ namespace PartsManager
         private ActionType Action { get; set; }
         private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
 
-        public InvoiceWindow()
+        public InvoiceWindow(bool isMine)
         {
             InitializeComponent();
             LocalInvoice = new Invoice()
@@ -102,6 +102,7 @@ namespace PartsManager
                 },
                 Date = DateTime.Now,
                 Info = string.Empty,
+                IsMine = isMine,
             };
             LocalInvoicePart = new InvoicePart()
             {
