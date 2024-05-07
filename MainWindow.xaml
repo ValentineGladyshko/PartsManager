@@ -138,6 +138,59 @@
                     </Grid>
                 </TabItem.Content>
             </TabItem>
+            <TabItem Name="MyInvoicesTab" Header="Мої Накладні">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0" Name="DataGridMyInvoices" AutoGenerateColumns="False" CanUserAddRows="false" IsReadOnly="True"
+                                  HeadersVisibility="Column" ItemsSource="{Binding Path=MyInvoices}" RowStyle="{StaticResource RowStateStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
+                                <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="150" Header="Опис" Binding="{Binding Path=Info, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
+                                <DataGridTextColumn Width ="60" Header="Доставка" Binding="{Binding Path=DeliveryPrice, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridCheckBoxColumn Width ="50" Header="Сплата" IsReadOnly="True" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="85" Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="85" Header="Оплата" Binding="{Binding Path=PaymentTotal, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTemplateColumn Width ="70">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="ViewInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Перегляд" Tag="{Binding Path=Id}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width ="70">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="PaymentInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Оплата" Tag="{Binding Path=Id}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="70" Header="Рахунок">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" Click="BillInvoiceOnClick" IsChecked="{Binding Path=IsBill, Mode=TwoWay}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width="70" Header="Партнери">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" Click="PartnerInvoiceOnClick" IsChecked="{Binding Path=IsPartnerPayed, Mode=TwoWay}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button Name="CreateMyInvoiceButton" Margin="0" 
+                                Content="Створити нову накладну" Grid.Row="1"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
             <TabItem Name="Utilities" Header="Утиліти">
                 <TabItem.Content>
                     <TabControl>

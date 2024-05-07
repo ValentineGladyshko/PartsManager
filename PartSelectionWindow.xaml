@@ -54,23 +54,23 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+            <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" Text="Артикул:" Width="Auto"/>
+            <TextBox Name="PartArticleBox" Grid.Row="0" Grid.Column="1" FontSize="14" MinWidth="100" Text="{Binding Path=Article}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
                                    Text="Тип:" Width="Auto"></TextBlock>
-            <ComboBox Name="PartPartTypeNameBox" Grid.Row="0" Grid.Column="1"
+            <ComboBox Name="PartPartTypeNameBox" Grid.Row="1" Grid.Column="1"
                                   FontSize="14" MinWidth="100" IsEditable="True" 
                                   ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-            <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
+            <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
                                    Text="Назва:" Width="Auto"></TextBlock>
-            <ComboBox Name="PartNameBox" Grid.Row="1" Grid.Column="1"
+            <ComboBox Name="PartNameBox" Grid.Row="2" Grid.Column="1"
                                   FontSize="14" MinWidth="100" IsEditable="True" Text="{Binding Path=Name, Mode=OneWayToSource}"
                                   ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-            <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14"
+            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
                                    Text="Повна назва:" Width="Auto"></TextBlock>
-            <ComboBox Name="PartFullNameBox" Grid.Row="2" Grid.Column="1"
+            <ComboBox Name="PartFullNameBox" Grid.Row="3" Grid.Column="1"
                                   FontSize="14" MinWidth="100" IsEditable="True" Text="{Binding Path=FullName, Mode=OneWayToSource}"
                                   ShouldPreserveUserEnteredPrefix="False"></ComboBox>
-            <TextBlock Grid.Row="3" Grid.Column="0" FontSize="14" Text="Артикул:" Width="Auto"/>
-            <TextBox Name="PartArticleBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100" Text="{Binding Path=Article}"/>
             <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Опис:" Width="Auto"/>
             <TextBox Name="PartDescriptionBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100" Text="{Binding Path=Description}"/>
 

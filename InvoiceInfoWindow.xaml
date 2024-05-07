@@ -5,51 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PartsManager"
         mc:Ignorable="d"
-        Title="InvoiceInfoWindow" Height="495" Width="530">
+        Title="InvoiceInfoWindow" Height="1123" Width="794">
     <Window.Resources>
-        <Style TargetType="ListBoxItem">
-            <Setter Property="Opacity" Value="1.0"/>
-            <Setter Property="Margin" Value="2"/>
-            <Setter Property="Background" Value="#0F000000"/>
-        </Style>
+        <local:RowNumberConverter x:Key="rowNumberConverter"/>
         <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        <Style TargetType="ComboBox">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Margin" Value="5"/>
-        </Style>
-        <Style TargetType="Button">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="Padding" Value="10 0 10 0"/>
-        </Style>
-        <Style TargetType="DatePicker">
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontFamily" Value="Helvetica Neue"/>
             <Setter Property="Margin" Value="5"/>
         </Style>
         <Style TargetType="GridSplitter">
-            <Setter Property="Background" Value="Gray" />
-        </Style>
-
-        <ControlTemplate x:Key="validationFailed">
-            <Border BorderBrush="Red" BorderThickness="1.5">
-                <AdornedElementPlaceholder />
-            </Border>
-        </ControlTemplate>
-
-        <Style TargetType="TextBox">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Margin" Value="5"/>
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="ToolTip"
-                            Value="{Binding RelativeSource={RelativeSource Self},
-                    Path=(Validation.Errors)[0].ErrorContent}" />
-                    <Setter Property="Foreground" Value="Red" />
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Background" Value="Black"/>
         </Style>
     </Window.Resources>
 
@@ -58,9 +23,170 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <DataGrid Grid.Row="0" BorderThickness="0" Name="DataGridInvoice" AutoGenerateColumns="False " ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        <TextBlock Grid.Row="0" Margin="40 60 40 30">
+            <Bold>Фізична особа-підприємець<LineBreak/>
+            Гладишко Юрій Анатолійович</Bold><LineBreak/>
+            <LineBreak /> 
+            <Bold>Реквізити для оплати:</Bold><LineBreak/>
+            IBAN: UA433220010000026005340079887<LineBreak/>
+            Акціонерне товариство: УНІВЕРСАЛ БАНК<LineBreak/>
+            МФО: 322001<LineBreak/>
+            ЄДРПОУ Банку: 21133352<LineBreak/>
+            Призначення платежу: запчастини до автотранспортних засобів
+        </TextBlock>
+        <TextBlock Name="InvoiceNumberTextBlock" Margin="5" Grid.Row="1" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+        <GridSplitter Grid.Row="2" ShowsPreview="False" Margin="35 5" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <Grid Margin="35 10" Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0">Виконавець:</TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0">Платник:</TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="0">Одержувач послуг:</TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="0">Автомобіль:</TextBlock>
+            <TextBlock Grid.Row="4" Grid.Column="0">VIN код:</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1">
+                <Bold>Фізична особа-підприємець<LineBreak />
+                Гладишко Юрій Анатолійович</Bold>
+            </TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="1"><Bold>він же</Bold></TextBlock>
+            <TextBlock Name="CarTextBlock" Grid.Row="3" Grid.Column="1" FontWeight="Bold"/>
+            <TextBlock Name="VINCodeTextBlock" Grid.Row="4" Grid.Column="1" FontWeight="Bold"/>
+        </Grid>
+        <Grid Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <DataGrid Grid.Column="1" Grid.Row="0" Name="HeadersDataGrid" BorderThickness="0" AutoGenerateColumns="False" 
+                      CanUserAddRows="false" HeadersVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="25" Binding="{Binding Path=Number, Mode=OneWay}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="BorderThickness" Value="1 1 0 0"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="375" Binding="{Binding Path=Part, Mode=OneWay}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="100" Binding="{Binding Path=Count, Mode=OneWay}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="100" Binding="{Binding Path=PriceOut, Mode=OneWay}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="100" Binding="{Binding Path=SumOut, Mode=OneWay}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Grid.Column="1" Grid.Row="1" Name="InvoicePartDataGrid" BorderThickness="0" AutoGenerateColumns="False" 
+                      CanUserAddRows="false" HeadersVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ItemsSource="{Binding Path=LocalInvoice.InvoiceParts}" AlternationCount="{Binding Items.Count, RelativeSource={RelativeSource Self}}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="25" Binding="{Binding AlternationIndex, Converter={StaticResource rowNumberConverter}, RelativeSource={RelativeSource AncestorType=DataGridRow}, Mode=OneWay}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="BorderThickness" Value="1 0 0 0"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="375" Binding="{Binding Path=Part.Name, Mode=OneWay}"/>
+                    <DataGridTextColumn Width="100" Binding="{Binding Path=Count, Mode=OneWay}"/>
+                    <DataGridTextColumn Width="100" Binding="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"/>
+                    <DataGridTextColumn Width="100" Binding="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Grid.Column="1" Grid.Row="2" Name="InvoiceDeliveryDataGrid" BorderThickness="0" AutoGenerateColumns="False" 
+                      CanUserAddRows="false" HeadersVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="25" Binding="{Binding Path=Number, Mode=OneWay}">
+                        <DataGridTextColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderBrush" Value="Black"/>
+                                <Setter Property="BorderThickness" Value="1 0 0 0"/>
+                            </Style>
+                        </DataGridTextColumn.CellStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Width="375" Binding="{Binding Path=Name, Mode=OneWay}"/>
+                    <DataGridTextColumn Width="100"/>
+                    <DataGridTextColumn Width="100"/>
+                    <DataGridTextColumn Width="100" Binding="{Binding Path=DeliveryPrice, Mode=OneWay, StringFormat=C2}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DockPanel Grid.Column="1" Grid.Row="3">
+                <DataGrid DockPanel.Dock="Right" BorderThickness="0" Name="DataGridInvoiceSum" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  CanUserAddRows="false" HeadersVisibility="None">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="101" MinWidth="101" MaxWidth="101" FontWeight="Bold" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="BorderBrush" Value="Black"/>
+                                    <Setter Property="BorderThickness" Value="1 0 0 0"/>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBlock DockPanel.Dock="Right" Margin="1" Text="Cума: " TextAlignment="Right"/>
+            </DockPanel>
+        </Grid>
+        <!--<DataGrid Grid.Row="9" BorderThickness="0" Name="DataGridInvoice" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   CanUserAddRows="false" HeadersVisibility="None" ItemsSource="{Binding Path=LocalInvoices}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width ="350" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
@@ -68,16 +194,16 @@
                 <DataGridTextColumn Width ="80" Binding="{Binding Path=DeliveryPrice, Mode=OneWay, StringFormat=C2}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid Grid.Row="1" BorderThickness="0" Name="DataGridInvoiceParts" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        <DataGrid Grid.Row="10" BorderThickness="0" Name="DataGridInvoiceParts" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   CanUserAddRows="false" HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoice.InvoiceParts}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width ="250" MaxWidth="250" MinWidth="250" Header="Запчастина" Binding="{Binding Path=Part.Name, Mode=OneWay}" />
                 <DataGridTextColumn Width ="100" MaxWidth="100" MinWidth="100" Header="К-ть" Binding="{Binding Path=Count, Mode=OneWay}"/>
                 <DataGridTextColumn Width ="80" MaxWidth="80" MinWidth="80" Header="Ціна" Binding="{Binding Path=PriceOut, Mode=OneWay, StringFormat=C2}"/>
-                <DataGridTextColumn Width ="80" MaxWidth="80" MinWidth="80" Header="Сума" Binding="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}"/>
+                <DataGridTextColumn Header="Сума" Binding="{Binding Path=SumOut, Mode=OneWay, StringFormat=C2}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid Grid.Row="2" BorderThickness="0" Name="DataGridInvoiceSum" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        <DataGrid Grid.Row="11" BorderThickness="0" Name="DataGridInvoiceSum" AutoGenerateColumns="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   CanUserAddRows="false" HeadersVisibility="None" ItemsSource="{Binding Path=LocalInvoices}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width ="250"/>
@@ -85,6 +211,6 @@
                 <DataGridTextColumn Width ="80"/>
                 <DataGridTextColumn Width ="80" FontWeight="Bold" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
             </DataGrid.Columns>
-        </DataGrid>
+        </DataGrid>-->
     </Grid>
 </Window>

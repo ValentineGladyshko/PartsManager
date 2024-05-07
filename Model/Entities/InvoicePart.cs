@@ -29,7 +29,7 @@ namespace PartsManager.Model.Entities
         public decimal SumOut => PriceOut * Count;
         [NotMapped]
         [JsonIgnore]
-        public decimal RecommendedPrice => decimal.Multiply(PriceIn, 1.2m);
+        public decimal RecommendedPrice => decimal.Multiply(PriceIn, 1.28m);
 
         [Index("IX_InvoiceAndPart", 1, IsUnique = true), Required]
         public int InvoiceId { get; set; }

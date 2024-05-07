@@ -2,6 +2,7 @@
 using PartsManager.BaseHandlers;
 using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
+using PdfSharp.Xps;
 using Spire.Xls;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Xps.Packaging;
 
 namespace PartsManager
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public IEnumerable<Invoice> LocalInvoices => DatabaseInvoices.Where(item => !item.IsMine);
+        public IEnumerable<Invoice> MyInvoices => DatabaseInvoices.Where(item => item.IsMine);
         public ObservableCollection<Invoice> DatabaseInvoices { get; set; }
         public IEnumerable<Invoice> PayedInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && item.IsPayed && !item.IsBill);
         public IEnumerable<Invoice> UnpayedInvoices => LocalInvoices.Where(item => !item.IsPartnerPayed && !item.IsPayed && !item.IsBill);
@@ -329,9 +332,7 @@ namespace PartsManager
         }
         public void SetInvoiceHandlers()
         {
-            DataGridInvoices.Items.SortDescriptions.Clear();
-            DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
-            DataGridInvoices.Items.Refresh();
+            Refresh();
 
             CreateInvoiceButton.Click += delegate
             {
@@ -346,7 +347,21 @@ namespace PartsManager
                 };
                 invoiceWindow.Show();
             };
-            
+            CreateMyInvoiceButton.Click += delegate
+            {
+                var invoiceWindow = new InvoiceWindow(true)
+                {
+                    Owner = this
+                };
+
+                invoiceWindow.Closed += delegate
+                {
+                    Refresh();
+                };
+                invoiceWindow.Show();
+            };
+
+
             DataGridInvoices.SelectionChanged += delegate
             {
                 if (DataGridInvoices.SelectedItem is Invoice invoice)
@@ -954,9 +969,13 @@ namespace PartsManager
         private void Refresh()
         {
             OnPropertyChanged("LocalInvoices");
+            OnPropertyChanged("MyInvoices");
             DataGridInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
             DataGridInvoices.Items.SortDescriptions.Clear();
             DataGridInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+            DataGridMyInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+            DataGridMyInvoices.Items.SortDescriptions.Clear();
+            DataGridMyInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
             OnPropertyChanged("PartnerInvoices");
             OnPropertyChanged("UnpayedInvoices");
             OnPropertyChanged("PayedInvoices");
