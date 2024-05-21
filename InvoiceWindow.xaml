@@ -91,7 +91,7 @@
                          FontSize="14" Text="{Binding Path=LocalInvoice.Car.FullInfo2, Mode=OneWay}" MinWidth="100"/>
                 <TextBlock Grid.Column="0" Grid.Row="1" FontSize="14"
                            Text="VIN код:" Width="Auto"/>
-                <TextBox Name="CarBox1" Grid.Column="1" Grid.Row="1" Background="LightGray" Foreground="Gray" IsReadOnly="True"
+                <TextBox Name="VINCodeBox" Grid.Column="1" Grid.Row="1" Background="LightGray" Foreground="Gray" IsReadOnly="True"
                          FontSize="14" Text="{Binding Path=LocalInvoice.Car.VINCode, Mode=OneWay}" MinWidth="100"/>
             </Grid>
             <Button MinWidth="100" Name="SelectCarButton" Grid.Row="1" Grid.Column="0"

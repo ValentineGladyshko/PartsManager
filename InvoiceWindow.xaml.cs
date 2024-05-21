@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace PartsManager
@@ -159,8 +158,8 @@ namespace PartsManager
         public void SetContent()
         {
             WorkInvoicePartButton.IsEnabled = false;
-            CarBox1.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xE9, 0xE9, 0xE9));
-            CarBox1.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xD5, 0xD6, 0xD9));
+            VINCodeBox.Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xE9, 0xE9, 0xE9));
+            VINCodeBox.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xD5, 0xD6, 0xD9));
             PropertyChanged += ChangeButtons;
         }
 
@@ -435,9 +434,9 @@ namespace PartsManager
                 IsPartEditing = true;
                 InvoicePartDataGrid.UnselectAll();
             };
-            CarBox1.PreviewMouseLeftButtonUp += delegate
+            VINCodeBox.PreviewMouseLeftButtonUp += delegate
             {
-                Clipboard.SetText(CarBox1.Text);
+                Clipboard.SetText(VINCodeBox.Text);
             };
         }
 

@@ -9,41 +9,98 @@ using Spire.Xls;
 using System.Reflection;
 using System.Globalization;
 using System.Windows.Data;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Linq;
+using PartsManager.Model.ViewModels;
+using System.Windows.Markup;
+using System.Windows.Input;
+using System.IO.Packaging;
 
 namespace PartsManager
 {
     public partial class InvoiceInfoWindow : Window
     {
-        public Invoice LocalInvoice { get; set; }
         public InvoiceInfoWindow(Invoice invoice)
         {
-            InitializeComponent();
-            LocalInvoice = invoice;       
-            DataContext = this;
+            int index = 1;
+            var invoiceParts = (from invoicePart in invoice.InvoiceParts.ToList()
+                         select new InvoicePartInfo
+                         {
+                             Index = index++.ToString(),
+                             PartName = invoicePart.Part.Name,
+                             Count = invoicePart.Count.ToString(),
+                             PriceOut = invoicePart.PriceOut.ToString("C2"),
+                             SumOut = invoicePart.SumOut.ToString("C2"),
+                         }).ToList();
+            invoiceParts.Add(new InvoicePartInfo 
+            { 
+                Index = index.ToString(),
+                PartName = "Доставка",
+                SumOut = invoice.DeliveryPrice.ToString("C2") 
+            });
+            var document = new FixedDocument();
+            document.DocumentPaginator.PageSize = new Size(794, 1123);
+            var mainPage = new FixedPage
+            {
+                Height = document.DocumentPaginator.PageSize.Height,
+                Width = document.DocumentPaginator.PageSize.Width
+            };
+            var reportPage = new InvoiceReportPage();
+            const int RowsPerFirstPage = 30;
+            const int RowsPerPage = 50;
+            if (invoiceParts.Count() > RowsPerFirstPage)
+            {
+                var firstPartSegment = invoiceParts.GetRange(0, RowsPerFirstPage);
+                reportPage = new InvoiceReportPage(firstPartSegment, invoice, false);
 
-            InvoiceNumberTextBlock.Text = $"Рахунок №{LocalInvoice.Id}\nвід {LocalInvoice.Date:dd MMMM yyyy}";
-            CarTextBlock.Text = $"{invoice.Car.Model.Mark.Name} {invoice.Car.Model.Name}";
-            VINCodeTextBlock.Text = invoice.Car.VINCode;
-            HeadersDataGrid.ItemsSource = new[]
+                mainPage.Children.Add(reportPage);
+                PageContent pageContent = new PageContent();
+                ((IAddChild)pageContent).AddChild(mainPage);
+                document.Pages.Add(pageContent);
+
+                var invoicePartsSegments = new List<List<InvoicePartInfo>>();
+                for (int i = RowsPerFirstPage; i < invoiceParts.Count; i += RowsPerPage)
+                {
+                    invoicePartsSegments.Add(invoiceParts.GetRange(i, Math.Min(RowsPerPage, invoiceParts.Count - i)));
+                }
+
+                var partGrids = invoicePartsSegments.GetRange(0, invoicePartsSegments.Count - 1).ConvertAll(item => new InvoicePartGrid(item, invoice.SumTotal, false));
+                partGrids.Add(new InvoicePartGrid(invoicePartsSegments.Last(), invoice.SumTotal, true));
+
+                foreach (var partGrid in partGrids)
+                {
+                    var gridPage = new FixedPage
+                    {
+                        Height = document.DocumentPaginator.PageSize.Height,
+                        Width = document.DocumentPaginator.PageSize.Width
+                    };
+                    gridPage.Children.Add(partGrid);
+                    PageContent gridPageContent = new PageContent();
+                    ((IAddChild)gridPageContent).AddChild(gridPage);
+                    document.Pages.Add(gridPageContent);
+                }
+            }
+            else
             {
-                new {Number = "№", Part = "Запчастина", Count = "Кількість", PriceOut = "Ціна", SumOut = "Сума" },
-            };
-            DataGridInvoiceSum.ItemsSource = new[]
-            {
-                new { LocalInvoice.SumTotal },
-            };
-            InvoiceDeliveryDataGrid.ItemsSource = new[]
-            {
-                new {Number = LocalInvoice.InvoiceParts.Count + 1, Name = "Доставка", LocalInvoice.DeliveryPrice },
-            };
+                reportPage = new InvoiceReportPage(invoiceParts, invoice, true);
+                mainPage.Children.Add(reportPage);
+                PageContent pageContent = new PageContent();
+                ((IAddChild)pageContent).AddChild(mainPage);
+                document.Pages.Add(pageContent);
+            }
+
+            InitializeComponent();
+
 
             var directory = AppDomain.CurrentDomain.BaseDirectory + "reports";
             Directory.CreateDirectory(directory);
             var xpsDocument = new XpsDocument("output.xps", FileAccess.Write);
-            var xpsdw = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
-            xpsdw.Write(MainGrid);
+            var xpsDocumentWriter = XpsDocument.CreateXpsDocumentWriter(xpsDocument);
+            xpsDocumentWriter.Write(document);
             xpsDocument.Close();
-            XpsConverter.Convert("output.xps", $"reports/invoice{LocalInvoice.Id}.pdf", 1);
+            DocumentInvoice.Document = document;
+            XpsConverter.Convert("output.xps", $"reports/invoice{invoice.Id}.pdf", 1);
             var workbook = new Workbook();
             var worksheet = workbook.Worksheets[0];
             var range = worksheet.Range[1, 1, 1, 2];
@@ -56,25 +113,26 @@ namespace PartsManager
             worksheet.Range[2, 3].Value = "Ціна";
             worksheet.Range[2, 4].Value = "Сума";
 
-            for (int i = 0; i < LocalInvoice.InvoiceParts.Count; i++)
+            for (int i = 0; i < invoice.InvoiceParts.Count; i++)
             {
-                worksheet.Range[i + 3, 1].Value = LocalInvoice.InvoiceParts[i].Part.Name;
-                worksheet.Range[i + 3, 2].Value = LocalInvoice.InvoiceParts[i].Count.ToString();
-                worksheet.Range[i + 3, 3].Value = LocalInvoice.InvoiceParts[i].PriceOut.ToString("C2");
-                worksheet.Range[i + 3, 4].Value = LocalInvoice.InvoiceParts[i].SumOut.ToString("C2");
+                worksheet.Range[i + 3, 1].Value = invoice.InvoiceParts[i].Part.Name;
+                worksheet.Range[i + 3, 2].Value = invoice.InvoiceParts[i].Count.ToString();
+                worksheet.Range[i + 3, 3].Value = invoice.InvoiceParts[i].PriceOut.ToString("C2");
+                worksheet.Range[i + 3, 4].Value = invoice.InvoiceParts[i].SumOut.ToString("C2");
             }
 
-            var formula = $"=Sheet1!$D$1+SUM(Sheet1!$D$3:D${LocalInvoice.InvoiceParts.Count + 2})";
-            worksheet.Range[LocalInvoice.InvoiceParts.Count + 3, 4].Formula = formula;
+            var formula = $"=Sheet1!$D$1+SUM(Sheet1!$D$3:D${invoice.InvoiceParts.Count + 2})";
+            worksheet.Range[invoice.InvoiceParts.Count + 3, 4].Formula = formula;
             worksheet.SetColumnWidth(1, 25);
             worksheet.SetColumnWidth(2, 10);
             worksheet.SetColumnWidth(3, 15);
             worksheet.SetColumnWidth(4, 15);
             worksheet.SetRowHeight(1, 25);
             worksheet.Range[2, 1, 2, 4].Style.Color = System.Drawing.Color.LightGray;
-            worksheet.Range[1, 1, LocalInvoice.InvoiceParts.Count + 3, 4].Borders.Color = System.Drawing.Color.DarkGray;
+            worksheet.Range[1, 1, invoice.InvoiceParts.Count + 3, 4].Borders.Color = System.Drawing.Color.DarkGray;
 
-            workbook.SaveToFile($"reports/invoice{LocalInvoice.Id}.xlsx", ExcelVersion.Version2016);
+            workbook.SaveToFile($"reports/invoice{invoice.Id}.xlsx", ExcelVersion.Version2016);
+
         }
     }
 }

@@ -325,6 +325,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="InvoicePartGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InvoiceReportPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="InvoiceSelectionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -356,6 +364,12 @@
     </Compile>
     <Compile Include="InvoiceInfoWindow.xaml.cs">
       <DependentUpon>InvoiceInfoWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InvoicePartGrid.xaml.cs">
+      <DependentUpon>InvoicePartGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReportPage.xaml.cs">
+      <DependentUpon>InvoiceReportPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="InvoiceSelectionWindow.xaml.cs">
       <DependentUpon>InvoiceSelectionWindow.xaml</DependentUpon>
@@ -443,6 +457,7 @@
     <Compile Include="Model\Repositories\PartTypeRepository.cs" />
     <Compile Include="Model\Repositories\PaymentRepository.cs" />
     <Compile Include="Model\Repositories\SaeQualityStandardRepository.cs" />
+    <Compile Include="Model\ViewModels\InvoicePartInfo.cs" />
     <Compile Include="OilPartWindow.xaml.cs">
       <DependentUpon>OilPartWindow.xaml</DependentUpon>
     </Compile>
