@@ -613,18 +613,59 @@
                                                         <TextBlock DockPanel.Dock="Left" FontSize="14"
                                                                    Text="{Binding Path=Name}" 
                                                                    VerticalAlignment="Center" Margin="2"/>
-                                                        <!--<Button Click="PartTypeDeleteButtonOnClick" MinWidth="100"
-                                                                DockPanel.Dock="Right" Name="DeleteButton"
-                                                                Tag="{Binding Path=Id}" Content="Видалити" Margin="2"/>
-                                                        <Button Click="PartTypeEditButtonOnClick" MinWidth="100"
-                                                                DockPanel.Dock="Right" Name="EditButton"
-                                                                Tag="{Binding Path=Id}" Content="Редагувати" Margin="2"/>-->
                                                     </DockPanel>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
                                         </ListBox>
                                         <Button Name="LoadBackupButton2" Margin="2 0 0 0" 
                                                 Content="Завантажити локальні резервні копії" Grid.Row="1"/>
+                                    </Grid>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="AdditionalUtilities" Header="Додаткові утиліти">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.475*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid Grid.Column="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" Text="Останній правильний ID накладної:" Width="Auto"/>
+                                        <TextBox Name="InvoiceLastCorrectIdBox" Grid.Row="0" Grid.Column="1"
+                                                 FontSize="14" Text="{Binding Path=InvoiceLastCorrectId, Mode=TwoWay, StringFormat=D}" MinWidth="100"/>
+                                        <Button MinWidth="270" MinHeight="25" Name="RearrangeIDButton" 
+                                                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                Content="Перевпорядкувати ID" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center" Margin="4"/>
+
+                                        <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                                            <StatusBarItem HorizontalContentAlignment="Center">
+                                                <DockPanel>
+                                                    <TextBlock DockPanel.Dock="Left" Name="StatusAdditionalUtilitiesTextBlock" Margin="10 2"/>
+                                                </DockPanel>
+                                            </StatusBarItem>
+                                        </StatusBar>
+                                    </Grid>
+                                    <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                                    <Grid Grid.Column="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
                                     </Grid>
                                 </Grid>
                             </TabItem.Content>

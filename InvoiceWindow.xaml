@@ -67,6 +67,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -131,10 +135,21 @@
             <TextBlock Grid.Row="6" Grid.Column="0" FontSize="14" Text="Сума накладної:" Width="Auto"/>
             <TextBox Name="InvoiceSumTotalBox" Grid.Row="6" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
                          FontSize="14" Text="{Binding Path=LocalInvoice.SumTotal, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
-
-            <TextBlock Name="InvoiceNotificationBlock" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
+            <TextBlock Grid.Row="7" Grid.Column="0" FontSize="14" Text="Відсоток податку:" Width="Auto"/>
+            <TextBox Name="InvoiceTaxInterestBox" Grid.Row="7" Grid.Column="1"
+                         FontSize="14" Text="{Binding Path=LocalInvoice.TaxInterest, Mode=TwoWay, StringFormat=F}" MinWidth="100"/>
+            <TextBlock Grid.Row="8" Grid.Column="0" FontSize="14" Text="Відсоток партнерам:" Width="Auto"/>
+            <TextBox Name="InvoicPartnerInterestBox" Grid.Row="8" Grid.Column="1"
+                         FontSize="14" Text="{Binding Path=LocalInvoice.PartnerInterest, Mode=TwoWay, StringFormat=F}" MinWidth="100"/>
+            <TextBlock Grid.Row="9" Grid.Column="0" FontSize="14" Text="Чистий дохід:" Width="Auto"/>
+            <TextBox Name="InvoiceIncomeBox" Grid.Row="9" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
+                         FontSize="14" Text="{Binding Path=LocalInvoice.Income, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
+            <TextBlock Grid.Row="10" Grid.Column="0" FontSize="14" Text="Сума партнерам:" Width="Auto"/>
+            <TextBox Name="InvoicePartnerSumBox" Grid.Row="10" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
+                         FontSize="14" Text="{Binding Path=LocalInvoice.PartnerSum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
+            <TextBlock Name="InvoiceNotificationBlock" Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2"
                        TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Width="Auto"/>
-            <Button MinWidth="100" Name="WorkButton" Grid.Row="9" Grid.Column="0" 
+            <Button MinWidth="100" Name="WorkButton" Grid.Row="13" Grid.Column="0" 
                     Grid.ColumnSpan="2" Content="Створити накладну" VerticalAlignment="Top"
                     HorizontalAlignment="Center"></Button>
 

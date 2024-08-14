@@ -14,6 +14,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace PartsManager.BaseHandlers
@@ -111,20 +112,41 @@ namespace PartsManager.BaseHandlers
         {
             if (list != null && list.Count > 0)
             {
-                var query = new StringBuilder($"{list[0].GetTable()}\n");
-                query.Append(list[0].GetQuery());
-                for (int i = 1; i < list.Count; i++)
+                var chunks = list.SplitIntoSets(950);
+                var queries = new List<StringBuilder>();
+                foreach (var chunk in chunks)
                 {
-                    query.Append(", \n");
-                    query.Append(list[i].GetQuery());
+                    var localList = chunk.ToList();
+                    var query = new StringBuilder($"{localList[0].GetTable()}\n");
+                    query.Append(localList[0].GetQuery());
+                    for (int i = 1; i < localList.Count; i++)
+                    {
+                        query.Append(", \n");
+                        query.Append(localList[i].GetQuery());
+                    }
+                    query.Append(";");
+                    queries.Add(query);
                 }
-                query.Append(";");
-
                 server.ConnectionContext.ExecuteNonQuery($"SET IDENTITY_INSERT [{tableName}] ON");
-                server.ConnectionContext.ExecuteNonQuery(query.ToString());
+                foreach (var query in queries)
+                {
+                    server.ConnectionContext.ExecuteNonQuery(query.ToString());
+                }
                 server.ConnectionContext.ExecuteNonQuery($"SET IDENTITY_INSERT [{tableName}] OFF");
 
-                query.Clear();
+                foreach (var query in queries)
+                {
+                    query.Clear();
+                }
+            }
+        }
+
+        public static IEnumerable<IEnumerable<T>> SplitIntoSets<T> (this IEnumerable<T> source, int itemsPerSet)
+        {
+            var sourceList = source as List<T> ?? source.ToList();
+            for (var index = 0; index < sourceList.Count; index += itemsPerSet)
+            {
+                yield return sourceList.Skip(index).Take(itemsPerSet);
             }
         }
     }

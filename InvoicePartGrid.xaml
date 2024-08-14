@@ -36,7 +36,7 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderBrush" Value="Black"/>
                             <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="BorderThickness" Value="1 1 0 0"/>
+                            <Setter Property="BorderThickness" Value="1.001 1.001 0 0"/>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
@@ -45,7 +45,7 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderBrush" Value="Black"/>
                             <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                            <Setter Property="BorderThickness" Value="0 1.001 0 0"/>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
@@ -54,7 +54,7 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderBrush" Value="Black"/>
                             <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                            <Setter Property="BorderThickness" Value="0 1.001 0 0"/>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
@@ -63,7 +63,7 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderBrush" Value="Black"/>
                             <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                            <Setter Property="BorderThickness" Value="0 1.001 0 0"/>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
@@ -72,7 +72,7 @@
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderBrush" Value="Black"/>
                             <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="BorderThickness" Value="0 1 0 0"/>
+                            <Setter Property="BorderThickness" Value="0 1.001 0 0"/>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
@@ -85,7 +85,7 @@
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell">
                             <Setter Property="BorderBrush" Value="Black"/>
-                            <Setter Property="BorderThickness" Value="1 0 0 0"/>
+                            <Setter Property="BorderThickness" Value="1.001 0 0 0"/>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
@@ -103,7 +103,7 @@
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="DataGridCell">
                                 <Setter Property="BorderBrush" Value="Black"/>
-                                <Setter Property="BorderThickness" Value="1 0 0 0"/>
+                                <Setter Property="BorderThickness" Value="1.001 0 0 0"/>
                             </Style>
                         </DataGridTextColumn.CellStyle>
                     </DataGridTextColumn>

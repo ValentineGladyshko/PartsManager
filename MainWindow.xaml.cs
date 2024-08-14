@@ -1,5 +1,6 @@
 ﻿using Microsoft.SqlServer.Management.Smo;
 using PartsManager.BaseHandlers;
+using PartsManager.Model.Context;
 using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
 using PdfSharp.Xps;
@@ -18,6 +19,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Xps.Packaging;
+using System.Text.Json;
+using PartsManager.Model.Interfaces;
 
 namespace PartsManager
 {
@@ -34,6 +37,7 @@ namespace PartsManager
         public decimal UnpayedInvoicesSumInDelivery => UnpayedInvoices.Sum(item => item.SumInDelivery);
         public decimal PartnerInvoicesPartnerSum => PartnerInvoices.Sum(item => item.PartnerSum);
         public decimal PayedInvoicesPartnerSum => PayedInvoices.Sum(item => item.PartnerSum);
+        public int InvoiceLastCorrectId { get; set; }
 
         private readonly EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
 
@@ -615,6 +619,32 @@ namespace PartsManager
                 {
                     Restore(fileInfo.FullName);
                 }
+            };
+            RearrangeIDButton.Click += delegate
+            {
+                var date = DateTime.Now.ToString(" yyyy-MM-dd HH-mm-ss");
+                var path = JsonBackupHelper.ChooseRestore();
+                if (path != null)
+                {
+                    var jsonString = File.ReadAllText(path);
+                    var databaseBackup = JsonSerializer.Deserialize<DatabaseBackup>(jsonString);
+                    var jsonDatabase = new JsonDatabase(databaseBackup);
+                    var ty = jsonDatabase.Parts;
+                    jsonDatabase.RearrangeID(1000);
+                    ty = jsonDatabase.Parts;
+                    var tu = databaseBackup.Parts;
+                    var backupName = $"jsonBackup{date}";
+                    var directory = AppDomain.CurrentDomain.BaseDirectory + "jsonBackups";
+
+                    Directory.CreateDirectory(directory);
+                    var path1 = Path.Combine(directory, backupName);
+                    path1 = Path.ChangeExtension(path1, "json");
+
+
+                    string jsonString1 = JsonSerializer.Serialize(databaseBackup);
+
+                    File.WriteAllText(path1, jsonString1);
+                }                
             };
         }
         public void SetOilPartHandlers()

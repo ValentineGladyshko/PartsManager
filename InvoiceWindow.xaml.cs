@@ -250,11 +250,15 @@ namespace PartsManager
                     unitOfWork.Invoices.Create(LocalInvoice);
                     unitOfWork.Save();
                     IsInvoiceCreated = true;
+                    InvoiceIncomeBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+                    InvoicePartnerSumBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
                 }
                 else if (Action == ActionType.Edit)
                 {
                     unitOfWork.Invoices.Update(LocalInvoice);
                     unitOfWork.Save();
+                    InvoiceIncomeBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+                    InvoicePartnerSumBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
                 }
             };
             SelectPartButton.Click += delegate

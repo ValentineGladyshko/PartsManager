@@ -418,6 +418,7 @@
       <DependentUpon>ModelWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Context\DataContext.cs" />
+    <Compile Include="Model\Context\JsonDataContext.cs" />
     <Compile Include="Model\Entities\ActionType.cs" />
     <Compile Include="Model\Entities\AdditionalInfo.cs" />
     <Compile Include="Model\Entities\ApiStandard.cs" />

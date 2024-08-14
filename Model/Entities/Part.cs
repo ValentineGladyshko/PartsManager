@@ -34,6 +34,8 @@ namespace PartsManager.Model.Entities
         [JsonIgnore]
         public virtual ICollection<InvoicePart> InvoiceParts { get; set; }
         [JsonIgnore]
+        public virtual ICollection<AdditionalInfo> AdditionalInfos { get; set; }
+        [JsonIgnore]
         public virtual ICollection<PartApiStandard> PartApiStandards { get; set; }
         [JsonIgnore]
         public virtual ICollection<PartManufacturerStandard> PartManufacturerStandards { get; set; }

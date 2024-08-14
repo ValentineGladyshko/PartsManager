@@ -45,5 +45,13 @@ namespace PartsManager.Model.Entities
             Payments = unitOfWork.Payments.GetAll().ToList();
             SaeQualityStandards = unitOfWork.SaeQualityStandards.GetAll().ToList();
         }
+
+        public void LoadContext()
+        {
+            foreach(var t in Models)
+            {
+                t.Mark = Marks.First(item => item.Id == t.MarkId);
+            }
+        }
     }
 }
