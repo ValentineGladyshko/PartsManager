@@ -35,8 +35,8 @@ namespace PartsManager
         public IEnumerable<Invoice> ReportInvoices => LocalInvoices.Where(item => !item.IsBill);
         public decimal UnpayedInvoicesResidueSum => UnpayedInvoices.Sum(item => item.Residue);
         public decimal UnpayedInvoicesSumInDelivery => UnpayedInvoices.Sum(item => item.SumInDelivery);
-        public decimal PartnerInvoicesPartnerSum => PartnerInvoices.Sum(item => item.PartnerSum);
-        public decimal PayedInvoicesPartnerSum => PayedInvoices.Sum(item => item.PartnerSum);
+        public decimal PartnerInvoicesPartnerSum => PartnerInvoices.Sum(item => item.PartnerUnpayed);
+        public decimal PayedInvoicesPartnerSum => PayedInvoices.Sum(item => item.PartnerUnpayed);
         public int InvoiceLastCorrectId { get; set; }
 
         private readonly EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
@@ -393,9 +393,6 @@ namespace PartsManager
                     else if (DataGridInvoices.CurrentColumn.DisplayIndex == 10)
                     {
                     }
-                    else if (DataGridInvoices.CurrentColumn.DisplayIndex == 11)
-                    {
-                    }
                     else
                     {
                         var invoiceWindow = new InvoiceWindow(invoice)
@@ -411,6 +408,77 @@ namespace PartsManager
                     }
                 }
                 DataGridInvoices.UnselectAll();
+            };
+            DataGridMyInvoices.SelectionChanged += delegate
+            {
+                if (DataGridMyInvoices.SelectedItem is Invoice invoice)
+                {
+                    if (DataGridMyInvoices.CurrentColumn.DisplayIndex == 8)
+                    {
+                        var invoiceInfoWindow = new MyInvoiceInfoWindow(invoice)
+                        {
+                            Owner = this
+                        };
+                        invoiceInfoWindow.Show();
+                    }
+                    else if (DataGridMyInvoices.CurrentColumn.DisplayIndex == 9)
+                    {
+                        var paymentWindow = new PaymentWindow(invoice)
+                        {
+                            Owner = this
+                        };
+                        paymentWindow.Closed += delegate
+                        {
+                            Refresh();
+                        };
+                        paymentWindow.Show();
+                    }
+                    else if (DataGridMyInvoices.CurrentColumn.DisplayIndex == 10)
+                    {
+                    }
+                    else
+                    {
+                        var invoiceWindow = new MyInvoiceWindow(invoice)
+                        {
+                            Owner = this
+                        };
+
+                        invoiceWindow.Closed += delegate
+                        {
+                            Refresh();
+                        };
+                        invoiceWindow.Show();
+                    }
+                }
+                DataGridMyInvoices.UnselectAll();
+            };
+            DataGridPartnerInvoices.SelectionChanged += delegate
+            {
+                if (DataGridPartnerInvoices.SelectedItem is Invoice invoice)
+                {
+                    if (DataGridPartnerInvoices.CurrentColumn.DisplayIndex == 7)
+                    {
+                        var invoiceInfoWindow = new InvoiceInfoWindow(invoice)
+                        {
+                            Owner = this
+                        };
+                        invoiceInfoWindow.Show();
+                    }
+                    else
+                    {
+                        var invoiceWindow = new InvoiceWindow(invoice)
+                        {
+                            Owner = this
+                        };
+
+                        invoiceWindow.Closed += delegate
+                        {
+                            Refresh();
+                        };
+                        invoiceWindow.Show();
+                    }
+                }
+                DataGridPartnerInvoices.UnselectAll();
             };
         }
         public void SetReportHandlers()
@@ -546,7 +614,7 @@ namespace PartsManager
 
                 backup.SqlBackup(server);
             };
-            ChooseBackupButton.Click +=  delegate
+            ChooseBackupButton.Click += delegate
             {
                 var path = BackupHelper.ChooseRestore();
                 Restore(path);
@@ -630,7 +698,7 @@ namespace PartsManager
                     var databaseBackup = JsonSerializer.Deserialize<DatabaseBackup>(jsonString);
                     var jsonDatabase = new JsonDatabase(databaseBackup);
                     var ty = jsonDatabase.Parts;
-                    jsonDatabase.RearrangeID(1000);
+                    jsonDatabase.RearrangeID(InvoiceLastCorrectId);
                     ty = jsonDatabase.Parts;
                     var tu = databaseBackup.Parts;
                     var backupName = $"jsonBackup{date}";
@@ -644,7 +712,43 @@ namespace PartsManager
                     string jsonString1 = JsonSerializer.Serialize(databaseBackup);
 
                     File.WriteAllText(path1, jsonString1);
-                }                
+                }
+            };
+            FixPartnerPayedButton.Click += delegate
+            {
+                foreach (var invoice in ReportInvoices)
+                {
+                    if (invoice != null)
+                    {
+                        if (invoice.IsPartnerPayed)
+                        {
+                            invoice.PartnerPayed = invoice.PartnerSum;
+                            unitOfWork.Invoices.Update(invoice);
+                        }
+                    }
+                };
+                unitOfWork.Save();
+                Refresh();
+            };
+            PayPartnersButton.Click += delegate
+            {
+                var payPartnerWindow = new PayPartnerWindow()
+                {
+                    Owner = this
+                };
+
+                payPartnerWindow.Closed += delegate
+                {
+                    unitOfWork.Reload();
+                    unitOfWork.Db.Invoices.Include(item => item.Car).Include(item => item.InvoiceParts).Include(item => item.Payments).Load();
+                    DatabaseInvoices = unitOfWork.Db.Invoices.Local;
+                    DatabaseInvoices.CollectionChanged += delegate
+                    {
+                        Refresh();
+                    };
+                    Refresh();
+                };
+                payPartnerWindow.Show();
             };
         }
         public void SetOilPartHandlers()
@@ -1006,6 +1110,9 @@ namespace PartsManager
             DataGridMyInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
             DataGridMyInvoices.Items.SortDescriptions.Clear();
             DataGridMyInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
+            DataGridPartnerInvoices.GetBindingExpression(ItemsControl.ItemsSourceProperty).UpdateTarget();
+            DataGridPartnerInvoices.Items.SortDescriptions.Clear();
+            DataGridPartnerInvoices.Items.SortDescriptions.Add(new SortDescription("Id", ListSortDirection.Descending));
             OnPropertyChanged("PartnerInvoices");
             OnPropertyChanged("UnpayedInvoices");
             OnPropertyChanged("PayedInvoices");

@@ -124,13 +124,6 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Width="70" Header="Партнери">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox HorizontalAlignment="Center" Click="PartnerInvoiceOnClick" IsChecked="{Binding Path=IsPartnerPayed, Mode=TwoWay}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <Button Name="CreateInvoiceButton" Margin="0" 
@@ -177,17 +170,44 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Width="70" Header="Партнери">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox HorizontalAlignment="Center" Click="PartnerInvoiceOnClick" IsChecked="{Binding Path=IsPartnerPayed, Mode=TwoWay}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <Button Name="CreateMyInvoiceButton" Margin="0" 
                                 Content="Створити нову накладну" Grid.Row="1"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Name="PartnerInvoicesTab" Header="Розрахунок">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0" Name="DataGridPartnerInvoices" AutoGenerateColumns="False" CanUserAddRows="false" IsReadOnly="True"
+                      HeadersVisibility="Column" ItemsSource="{Binding Path=ReportInvoices}" RowStyle="{StaticResource RowStateStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
+                                <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
+                                <DataGridTextColumn Width ="85" Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="85" Header="Оплата" Binding="{Binding Path=PaymentTotal, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="85" Header="Партнерам" Binding="{Binding Path=PartnerSum, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="135" Header="Заплачено партнерам" Binding="{Binding Path=PartnerPayed, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="85" Header="Залишок" Binding="{Binding Path=PartnerUnpayed, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTemplateColumn Width ="70">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="ViewInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Перегляд" Tag="{Binding Path=Id}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                
+                                
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button Name="PayPartnersButton" Margin="0" 
+                    Content="Заплатити партнерам" Grid.Row="1"/>
                     </Grid>
                 </TabItem.Content>
             </TabItem>
@@ -635,6 +655,8 @@
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="*"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
@@ -650,8 +672,13 @@
                                                 Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                                                 Content="Перевпорядкувати ID" VerticalAlignment="Center"
                                                 HorizontalAlignment="Center" Margin="4"/>
-
-                                        <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                                        <GridSplitter Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ShowsPreview="False" Height="5"
+                                            HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                        <Button MinWidth="270" MinHeight="25" Name="FixPartnerPayedButton" 
+                                            Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                                            Content="Виправити заплачено партнерам" VerticalAlignment="Center"
+                                            HorizontalAlignment="Center" Margin="4"/>
+                                        <StatusBar Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
                                             <StatusBarItem HorizontalContentAlignment="Center">
                                                 <DockPanel>
                                                     <TextBlock DockPanel.Dock="Left" Name="StatusAdditionalUtilitiesTextBlock" Margin="10 2"/>

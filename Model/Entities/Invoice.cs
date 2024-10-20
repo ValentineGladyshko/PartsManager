@@ -23,6 +23,7 @@ namespace PartsManager.Model.Entities
         public decimal DeliveryPrice { get; set; }
         public decimal PartnerInterest { get; set; }
         public decimal TaxInterest { get; set; }
+        public decimal PartnerPayed { get; set; }
         public bool IsPayed { get; set; } // 
         public bool IsPartnerPayed { get; set; } // розрахунок між партнерами можна змінити
         public bool IsBill { get; set; }
@@ -61,6 +62,16 @@ namespace PartsManager.Model.Entities
         }
         [NotMapped]
         [JsonIgnore]
+        public decimal SumTotal2
+        {
+            get
+            {
+                if (InvoiceParts == null) return 0;
+                else return InvoiceParts.Sum(x => x.SumOutWithDelivery);
+            }
+        }
+        [NotMapped]
+        [JsonIgnore]
         public decimal SumTotal => SumOut + DeliveryPrice;
         [NotMapped]
         [JsonIgnore]
@@ -87,15 +98,18 @@ namespace PartsManager.Model.Entities
         [NotMapped]
         [JsonIgnore]
         public decimal PartnerSum => Income * PartnerInterest / 100;
+        [NotMapped]
+        [JsonIgnore]
+        public decimal PartnerUnpayed => PartnerSum - PartnerPayed;
 
         public string GetTable()
         {
-            return "INSERT INTO Invoices (Id, Info, Date, DeliveryPrice, PartnerInterest, TaxInterest, IsPayed, IsPartnerPayed, IsBill, IsMine, CarId) VALUES ";
+            return "INSERT INTO Invoices (Id, Info, Date, DeliveryPrice, PartnerInterest, TaxInterest, PartnerPayed, IsPayed, IsPartnerPayed, IsBill, IsMine, CarId) VALUES ";
         }
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{PartnerInterest.ToString(CultureInfo.InvariantCulture)}', '{TaxInterest.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{IsMine}', '{CarId}')";
+            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{PartnerInterest.ToString(CultureInfo.InvariantCulture)}', '{TaxInterest.ToString(CultureInfo.InvariantCulture)}', '{PartnerPayed.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{IsMine}', '{CarId}')";
         }
     }
 }

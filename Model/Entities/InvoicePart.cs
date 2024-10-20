@@ -23,13 +23,24 @@ namespace PartsManager.Model.Entities
         public decimal PriceOut { get; set; }
         [NotMapped]
         [JsonIgnore]
+        public decimal PriceOutWithDelivery => PriceOut + (DeliveryPrice / Count);
+        [Required]
+        public decimal DeliveryPrice { get; set; }
+        [NotMapped]
+        [JsonIgnore]
         public decimal SumIn => PriceIn * Count;
         [NotMapped]
         [JsonIgnore]
         public decimal SumOut => PriceOut * Count;
         [NotMapped]
         [JsonIgnore]
-        public decimal RecommendedPrice => decimal.Multiply(PriceIn, 1.28m);
+        public decimal SumOutWithDelivery => PriceOutWithDelivery * Count;
+        [NotMapped]
+        [JsonIgnore]
+        public decimal RecommendedPrice => decimal.Multiply(PriceIn, 1.32m);
+        [NotMapped]
+        [JsonIgnore]
+        public decimal RecommendedPrice2 => decimal.Multiply(PriceIn, 1.065m);
 
         [Index("IX_InvoiceAndPart", 1, IsUnique = true), Required]
         public int InvoiceId { get; set; }
@@ -42,12 +53,12 @@ namespace PartsManager.Model.Entities
 
         public string GetTable()
         {
-            return "INSERT INTO InvoiceParts (Id, Count, PriceIn, PriceOut, InvoiceId, PartId) VALUES ";
+            return "INSERT INTO InvoiceParts (Id, Count, PriceIn, PriceOut, DeliveryPrice, InvoiceId, PartId) VALUES ";
         }
 
         public string GetQuery()
         {
-            return $"('{Id}', '{Count}', '{PriceIn.ToString(CultureInfo.InvariantCulture)}', '{PriceOut.ToString(CultureInfo.InvariantCulture)}', '{InvoiceId}', '{PartId}')";
+            return $"('{Id}', '{Count}', '{PriceIn.ToString(CultureInfo.InvariantCulture)}', '{PriceOut.ToString(CultureInfo.InvariantCulture)}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{InvoiceId}', '{PartId}')";
         }
     }
 }

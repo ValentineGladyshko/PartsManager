@@ -1,0 +1,107 @@
+﻿<Window x:Class="PartsManager.PayPartnerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PartsManager"
+        mc:Ignorable="d"
+        Title="PayPartnerWindow" Height="235" Width="520">
+    <Window.Resources>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Opacity" Value="1.0"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Background" Value="#0F000000"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="10 0 10 0"/>
+        </Style>
+        <Style TargetType="DatePicker">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <ControlTemplate x:Key="validationFailed">
+            <Border BorderBrush="Red" BorderThickness="1.5">
+                <AdornedElementPlaceholder />
+            </Border>
+        </ControlTemplate>
+
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="5"/>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                        Value="{Binding RelativeSource={RelativeSource Self},
+                Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
+            Text="Сума партнерам по всім накладним:" Width="Auto"/>
+        <TextBox Name="PartnerInvoicesPartnerSumBox" Grid.Row="0" Grid.Column="1" Background="LightGray" IsReadOnly="True" IsEnabled="False"
+            FontSize="14" Text="{Binding Path=PartnerInvoicesPartnerSum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
+            Text="Сума партнерам по сплаченим накладним:" Width="Auto"/>
+        <TextBox Name="PayedInvoicesPartnerSumBox" Grid.Row="1" Grid.Column="1" Background="LightGray" IsReadOnly="True" IsEnabled="False"
+            FontSize="14" Text="{Binding Path=PayedInvoicesPartnerSum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Заплатити партнерам:" Width="Auto"/>
+        <TextBox Name="PaySumBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100">
+            <TextBox.Text>
+                <Binding Path="PaySum" StringFormat="N2">
+                    <Binding.ValidationRules>
+                        <ExceptionValidationRule />
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <!--<TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
+            Text="Розрахований залишок по сплаченим:" Width="Auto"/>
+        <TextBox Name="SumBox" Grid.Row="3" Grid.Column="1" Background="LightGray" IsReadOnly="True" IsEnabled="False"
+            FontSize="14" Text="{Binding Path=Sum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14"
+            Text="Розрахований залишок по всім:" Width="Auto"/>
+        <TextBox Name="UnpayedSumBox" Grid.Row="4" Grid.Column="1" Background="LightGray" IsReadOnly="True" IsEnabled="False"
+            FontSize="14" Text="{Binding Path=UnpayedSum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>-->
+        <GridSplitter Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" ShowsPreview="False" Height="5"
+            HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+        <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" FontSize="14" IsChecked="{Binding Path=IsPartnerPayOnlyPayed, Mode=TwoWay}">
+            Платити тільки по сплаченим накладним
+        </CheckBox>
+        <GridSplitter Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" ShowsPreview="False" Height="5"
+            HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+        <Button MinWidth="100" Name="PayButton" Grid.Row="9" Grid.Column="0" 
+        Grid.ColumnSpan="2" Content="Заплатити партнерам" VerticalAlignment="Top"
+        HorizontalAlignment="Center"></Button>
+    </Grid>
+</Window>
