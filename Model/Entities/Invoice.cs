@@ -20,6 +20,10 @@ namespace PartsManager.Model.Entities
         [MaxLength(255)]
         public string Info { get; set; } // можна змінити
         public DateTime Date { get; set; } // можна змінити
+        [MaxLength(1023)]
+        public string Payer { get; set; }
+        [MaxLength(1023)]
+        public string Recipient { get; set; }
         public decimal DeliveryPrice { get; set; }
         public decimal PartnerInterest { get; set; }
         public decimal TaxInterest { get; set; }
@@ -27,9 +31,8 @@ namespace PartsManager.Model.Entities
         public bool IsPayed { get; set; } // 
         public bool IsPartnerPayed { get; set; } // розрахунок між партнерами можна змінити
         public bool IsBill { get; set; }
-        public bool IsMine { get; set; } 
-
-
+        public bool IsMine { get; set; }
+        
         [Required]
         public int CarId { get; set; }
         [JsonIgnore]
@@ -104,12 +107,12 @@ namespace PartsManager.Model.Entities
 
         public string GetTable()
         {
-            return "INSERT INTO Invoices (Id, Info, Date, DeliveryPrice, PartnerInterest, TaxInterest, PartnerPayed, IsPayed, IsPartnerPayed, IsBill, IsMine, CarId) VALUES ";
+            return "INSERT INTO Invoices (Id, Info, Date, Payer, Recipient, DeliveryPrice, PartnerInterest, TaxInterest, PartnerPayed, IsPayed, IsPartnerPayed, IsBill, IsMine, CarId) VALUES ";
         }
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{PartnerInterest.ToString(CultureInfo.InvariantCulture)}', '{TaxInterest.ToString(CultureInfo.InvariantCulture)}', '{PartnerPayed.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{IsMine}', '{CarId}')";
+            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', N'{Payer}', N'{Recipient}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{PartnerInterest.ToString(CultureInfo.InvariantCulture)}', '{TaxInterest.ToString(CultureInfo.InvariantCulture)}', '{PartnerPayed.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{IsMine}', '{CarId}')";
         }
     }
 }

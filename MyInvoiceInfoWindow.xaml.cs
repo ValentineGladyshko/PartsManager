@@ -46,7 +46,7 @@ namespace PartsManager
             if (invoiceParts.Count() > RowsPerFirstPage)
             {
                 var firstPartSegment = invoiceParts.GetRange(0, RowsPerFirstPage);
-                reportPage = new InvoiceReportPage(firstPartSegment, invoice, false, "<Bold>БО \"БФ \"ВШ - ДРУГИЙ ФРОНТ\"<LineBreak/>Код: 44758089<LineBreak/>Адреса: Україна, 65005, Одеська обл., місто Одеса, вулиця Болгарська, будинок 45</Bold>");
+                reportPage = new InvoiceReportPage(firstPartSegment, invoice, false);
                 mainPage.Children.Add(reportPage);
                 PageContent pageContent = new PageContent();
                 ((IAddChild)pageContent).AddChild(mainPage);
@@ -76,7 +76,7 @@ namespace PartsManager
             }
             else
             {
-                reportPage = new InvoiceReportPage(invoiceParts, invoice, true, "<Bold>БО \"БФ \"ВШ - ДРУГИЙ ФРОНТ\"<LineBreak/>Код: 44758089<LineBreak/>Адреса: Україна, 65005, Одеська обл., місто Одеса, вулиця Болгарська, будинок 45</Bold>");
+                reportPage = new InvoiceReportPage(invoiceParts, invoice, true);
                 mainPage.Children.Add(reportPage);
                 PageContent pageContent = new PageContent();
                 ((IAddChild)pageContent).AddChild(mainPage);

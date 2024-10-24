@@ -71,6 +71,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -147,9 +151,17 @@
             <TextBlock Grid.Row="10" Grid.Column="0" FontSize="14" Text="Сума партнерам:" Width="Auto"/>
             <TextBox Name="InvoicePartnerSumBox" Grid.Row="10" Grid.Column="1" Background="LightGray" IsReadOnly ="True" IsEnabled="False"
                          FontSize="14" Text="{Binding Path=LocalInvoice.PartnerSum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
-            <TextBlock Name="InvoiceNotificationBlock" Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2"
+            <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2"
+                       TextAlignment="Center" Text="Платник:" FontSize="14" Width="Auto" Margin="1 1"/>
+            <TextBox Name="InvoicePayerBox" Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"
+                         FontSize="14" Text="{Binding Path=LocalInvoice.Payer, Mode=TwoWay}" MinWidth="100" MaxLines="4"/>
+            <TextBlock Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2"
+                        TextAlignment="Center" Text="Одержувач:" FontSize="14" Width="Auto" Margin="1 1"/>
+            <TextBox Name="InvoiceRecipientBox" Grid.Row="14" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"
+                     FontSize="14" Text="{Binding Path=LocalInvoice.Recipient, Mode=TwoWay}" MinWidth="100" MaxLines="4"/>
+            <TextBlock Name="InvoiceNotificationBlock" Grid.Row="16" Grid.Column="0" Grid.ColumnSpan="2"
                        TextAlignment="Center" TextWrapping="Wrap" FontSize="14" Width="Auto"/>
-            <Button MinWidth="100" Name="WorkButton" Grid.Row="13" Grid.Column="0" 
+            <Button MinWidth="100" Name="WorkButton" Grid.Row="17" Grid.Column="0" 
                     Grid.ColumnSpan="2" Content="Створити накладну" VerticalAlignment="Top"
                     HorizontalAlignment="Center"></Button>
 

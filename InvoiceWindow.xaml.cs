@@ -66,7 +66,6 @@ namespace PartsManager
             {
                 localInvoicePart = value;
                 OnPropertyChanged("LocalInvoicePart");
-                OnPropertyChanged("PartPrices");
             }
         }
 
@@ -107,6 +106,7 @@ namespace PartsManager
                     IsMine = isMine,
                     TaxInterest = 5,
                     PartnerInterest = 0,
+                    Recipient = "він же",
                 };
             }
             else
@@ -127,6 +127,7 @@ namespace PartsManager
                     IsMine = isMine,
                     TaxInterest = 5,
                     PartnerInterest = 50,
+                    Recipient = "він же",
                 };
             }
             LocalInvoicePart = new InvoicePart()
