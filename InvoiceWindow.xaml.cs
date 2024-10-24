@@ -89,21 +89,46 @@ namespace PartsManager
         public InvoiceWindow(bool isMine)
         {
             InitializeComponent();
-            LocalInvoice = new Invoice()
+            if (isMine)
             {
-                Car = new Car()
+                LocalInvoice = new Invoice()
                 {
-                    Model = new Model.Entities.Model()
+                    Car = new Car()
                     {
-                        Mark = new Mark()
+                        Model = new Model.Entities.Model()
+                        {
+                            Mark = new Mark()
+                        },
+                        VINCode = string.Empty,
+                        Info = string.Empty,
                     },
-                    VINCode = string.Empty,
+                    Date = DateTime.Now,
                     Info = string.Empty,
-                },
-                Date = DateTime.Now,
-                Info = string.Empty,
-                IsMine = isMine,
-            };
+                    IsMine = isMine,
+                    TaxInterest = 5,
+                    PartnerInterest = 0,
+                };
+            }
+            else
+            {
+                LocalInvoice = new Invoice()
+                {
+                    Car = new Car()
+                    {
+                        Model = new Model.Entities.Model()
+                        {
+                            Mark = new Mark()
+                        },
+                        VINCode = string.Empty,
+                        Info = string.Empty,
+                    },
+                    Date = DateTime.Now,
+                    Info = string.Empty,
+                    IsMine = isMine,
+                    TaxInterest = 5,
+                    PartnerInterest = 50,
+                };
+            }
             LocalInvoicePart = new InvoicePart()
             {
                 Part = new Part(),

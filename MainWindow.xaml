@@ -131,7 +131,7 @@
                     </Grid>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Name="MyInvoicesTab" Header="Мої Накладні">
+            <TabItem Name="MyInvoicesTab" Header="Накладні Азов">
                 <TabItem.Content>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -793,6 +793,7 @@
                                             <DataGridTextColumn Width ="85" Header="Закупка" Binding="{Binding Path=SumIn, Mode=OneWay, StringFormat=C2}"/>
                                             <DataGridTextColumn Width ="85" Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
                                             <DataGridTextColumn Width ="85" Header="Оплата" Binding="{Binding Path=PaymentTotal, Mode=OneWay, StringFormat=C2}"/>
+                                            <DataGridTextColumn Width ="85" Header="Податок" Binding="{Binding Path=TaxInterest, Mode=OneWay, StringFormat=N2}"/>
                                             <DataGridTemplateColumn Width ="70">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>

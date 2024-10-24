@@ -65,7 +65,8 @@
                 <Bold>Фізична особа-підприємець<LineBreak />
                 Гладишко Юрій Анатолійович</Bold>
                 </TextBlock>
-                <TextBlock Grid.Row="2" Grid.Column="1"><Bold>він же</Bold></TextBlock>
+                <TextBlock Name="RecipientTextBlock" Grid.Row="2" Grid.Column="1">
+                </TextBlock>
                 <TextBlock Name="CarTextBlock" Grid.Row="3" Grid.Column="1" FontWeight="Bold"/>
                 <TextBlock Name="VINCodeTextBlock" Grid.Row="4" Grid.Column="1" FontWeight="Bold"/>
             </Grid>

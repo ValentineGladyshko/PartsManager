@@ -353,7 +353,7 @@ namespace PartsManager
             };
             CreateMyInvoiceButton.Click += delegate
             {
-                var invoiceWindow = new InvoiceWindow(true)
+                var invoiceWindow = new MyInvoiceWindow(true)
                 {
                     Owner = this
                 };
