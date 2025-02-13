@@ -56,6 +56,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -81,7 +82,9 @@
         <TextBox Name="VINCodeBox" Grid.Row="3" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="17"/>
         <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14" Text="Опис:" Width="Auto"/>
         <TextBox Name="InfoBox" Grid.Row="4" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255"/>
-        <DockPanel Grid.Row="6" Grid.ColumnSpan="2" LastChildFill="False" Background="#FFF0F0F0">
+        <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" Text="Парковий номер:" Width="Auto"/>
+        <TextBox Name="ParkNumberBox" Grid.Row="5" Grid.Column="1" FontSize="14" MinWidth="100" MaxLength="255"/>
+        <DockPanel Grid.Row="7" Grid.ColumnSpan="2" LastChildFill="False" Background="#FFF0F0F0">
             <Button Name="CancelButton" MinWidth="100" Margin="0 10 10 10" Content="Відміна" DockPanel.Dock="Right"></Button>
             <Button Name="WorkButton" MinWidth="100" DockPanel.Dock="Right"></Button>
         </DockPanel>

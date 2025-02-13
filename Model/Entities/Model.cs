@@ -1,4 +1,5 @@
-﻿using PartsManager.Model.Interfaces;
+﻿using PartsManager.BaseHandlers;
+using PartsManager.Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,7 +34,7 @@ namespace PartsManager.Model.Entities
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Name}', N'{MarkId}')";
+            return $"('{Id}', N'{Name.Screen()}', N'{MarkId}')";
         }
     }
 }

@@ -58,6 +58,7 @@ namespace PartsManager.BaseHandlers
                 "Cars",
                 "Models",
                 "Marks",
+                "PartnerPayments",
             };
             SqlConnection connection = new SqlConnection(unitOfWork.Db.Database.Connection.ConnectionString);
             ServerConnection serverConnection = new ServerConnection(connection);
@@ -85,6 +86,7 @@ namespace PartsManager.BaseHandlers
                 InsertToTable(databaseBackup.AdditionalInfos, server, "AdditionalInfoes");
                 InsertToTable(databaseBackup.PartApiStandards, server, "PartApiStandards");
                 InsertToTable(databaseBackup.PartManufacturerStandards, server, "PartManufacturerStandards");
+                InsertToTable(databaseBackup.PartnerPayments, server, "PartnerPayments");
                 serverConnection.CommitTransaction();
             }
             catch
@@ -130,6 +132,8 @@ namespace PartsManager.BaseHandlers
                 server.ConnectionContext.ExecuteNonQuery($"SET IDENTITY_INSERT [{tableName}] ON");
                 foreach (var query in queries)
                 {
+                    var t = query.ToString();
+
                     server.ConnectionContext.ExecuteNonQuery(query.ToString());
                 }
                 server.ConnectionContext.ExecuteNonQuery($"SET IDENTITY_INSERT [{tableName}] OFF");

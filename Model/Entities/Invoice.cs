@@ -1,4 +1,5 @@
-﻿using PartsManager.Model.Interfaces;
+﻿using PartsManager.BaseHandlers;
+using PartsManager.Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,7 +28,7 @@ namespace PartsManager.Model.Entities
         public decimal DeliveryPrice { get; set; }
         public decimal PartnerInterest { get; set; }
         public decimal TaxInterest { get; set; }
-        public decimal PartnerPayed { get; set; }
+        public decimal PartnerPayed { get; set; } // to delete
         public bool IsPayed { get; set; } // 
         public bool IsPartnerPayed { get; set; } // розрахунок між партнерами можна змінити
         public bool IsBill { get; set; }
@@ -103,7 +104,7 @@ namespace PartsManager.Model.Entities
         public decimal PartnerSum => Income * PartnerInterest / 100;
         [NotMapped]
         [JsonIgnore]
-        public decimal PartnerUnpayed => PartnerSum - PartnerPayed;
+        public decimal PartnerUnpayed => PartnerSum;
 
         public string GetTable()
         {
@@ -112,7 +113,7 @@ namespace PartsManager.Model.Entities
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Info}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', N'{Payer}', N'{Recipient}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{PartnerInterest.ToString(CultureInfo.InvariantCulture)}', '{TaxInterest.ToString(CultureInfo.InvariantCulture)}', '{PartnerPayed.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{IsMine}', '{CarId}')";
+            return $"('{Id}', N'{Info.Screen()}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', N'{Payer.Screen()}', N'{Recipient.Screen()}', '{DeliveryPrice.ToString(CultureInfo.InvariantCulture)}', '{PartnerInterest.ToString(CultureInfo.InvariantCulture)}', '{TaxInterest.ToString(CultureInfo.InvariantCulture)}', '{PartnerPayed.ToString(CultureInfo.InvariantCulture)}', '{IsPayed}', '{IsPartnerPayed}', '{IsBill}', '{IsMine}', '{CarId}')";
         }
     }
 }

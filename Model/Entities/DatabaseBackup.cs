@@ -24,6 +24,7 @@ namespace PartsManager.Model.Entities
         public List<PartType> PartTypes { get; set; }
         public List<Payment> Payments { get; set; }
         public List<SaeQualityStandard> SaeQualityStandards { get; set; }
+        public List<PartnerPayment> PartnerPayments { get; set; }
 
         public DatabaseBackup() 
         {
@@ -44,6 +45,7 @@ namespace PartsManager.Model.Entities
             PartTypes = unitOfWork.PartTypes.GetAll().ToList();
             Payments = unitOfWork.Payments.GetAll().ToList();
             SaeQualityStandards = unitOfWork.SaeQualityStandards.GetAll().ToList();
+            PartnerPayments = unitOfWork.PartnerPayments.GetAll().ToList();
         }
 
         public void LoadContext()

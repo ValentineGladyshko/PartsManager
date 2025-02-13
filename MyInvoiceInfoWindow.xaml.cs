@@ -31,7 +31,7 @@ namespace PartsManager
                              PartName = invoicePart.Part.Name,
                              Count = invoicePart.Count.ToString(),
                              PriceOut = invoicePart.PriceOutWithDelivery.ToString("C2"),
-                             SumOut = (invoicePart.PriceOut * invoicePart.Count).ToString("C2"),
+                             SumOut = (invoicePart.PriceOutWithDelivery * invoicePart.Count).ToString("C2"),
                          }).ToList();
             var document = new FixedDocument();
             document.DocumentPaginator.PageSize = new Size(794, 1123);
@@ -46,7 +46,7 @@ namespace PartsManager
             if (invoiceParts.Count() > RowsPerFirstPage)
             {
                 var firstPartSegment = invoiceParts.GetRange(0, RowsPerFirstPage);
-                reportPage = new InvoiceReportPage(firstPartSegment, invoice, false);
+                reportPage = new InvoiceReportPage(firstPartSegment, invoice, false, true);
                 mainPage.Children.Add(reportPage);
                 PageContent pageContent = new PageContent();
                 ((IAddChild)pageContent).AddChild(mainPage);
@@ -76,7 +76,7 @@ namespace PartsManager
             }
             else
             {
-                reportPage = new InvoiceReportPage(invoiceParts, invoice, true);
+                reportPage = new InvoiceReportPage(invoiceParts, invoice, true, true);
                 mainPage.Children.Add(reportPage);
                 PageContent pageContent = new PageContent();
                 ((IAddChild)pageContent).AddChild(mainPage);

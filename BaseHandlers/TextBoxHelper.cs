@@ -93,5 +93,21 @@ namespace PartsManager.BaseHandlers
                 return result;
             }
         }
+
+        public static string Screen(this string s)
+        {
+            string tmp = s;
+            if (s != null)
+            {
+                if (s.Contains("'"))
+                {
+                    if (!s.Contains("''"))//Already been fixed previously so skip here
+                        tmp = s.Replace("'", "''");
+
+                    s = tmp;
+                }
+            }
+            return tmp;
+        }
     }
 }

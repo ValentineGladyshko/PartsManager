@@ -75,13 +75,13 @@
                         <TextBlock Grid.Column="1" Grid.Row="1" FontSize="50" FontWeight="DemiBold" Foreground="DarkGreen" HorizontalAlignment="Center"
                                                 Text="{Binding Path=UnpayedInvoicesSumInDelivery, Mode=OneWay, StringFormat=C2}" Width="Auto"/>
                         <TextBlock Grid.Column="0" Grid.Row="2" FontSize="30" Margin="5 30 5 5" HorizontalAlignment="Center"
-                                                Text="Розрахунок по сплачених накладних:" Width="Auto"/>
+                                                Text="Баланс:" Width="Auto"/>
                         <TextBlock Grid.Column="0" Grid.Row="3" FontSize="50" FontWeight="DemiBold" Foreground="DarkGreen" HorizontalAlignment="Center"
-                                                Text="{Binding Path=PayedInvoicesPartnerSum, Mode=OneWay, StringFormat=C2}" Width="Auto"/>
-                        <TextBlock Grid.Column="1" Grid.Row="2" FontSize="30" Margin="5 30 5 5" HorizontalAlignment="Center"
-                                                Text="Загальний розрахунок" Width="Auto"/>
-                        <TextBlock Grid.Column="1" Grid.Row="3" FontSize="50" FontWeight="DemiBold" Foreground="DarkGreen" HorizontalAlignment="Center"
                                                 Text="{Binding Path=PartnerInvoicesPartnerSum, Mode=OneWay, StringFormat=C2}" Width="Auto"/>
+                        <TextBlock Grid.Column="1" Grid.Row="2" FontSize="30" Margin="5 30 5 5" HorizontalAlignment="Center"
+                                                Text="Нерознесена сума:" Width="Auto"/>
+                        <TextBlock Grid.Column="1" Grid.Row="3" FontSize="50" FontWeight="DemiBold" Foreground="DarkGreen" HorizontalAlignment="Center"
+                                                Text="{Binding Path=PaymentAmountOutSum, Mode=OneWay, StringFormat=C2}" Width="Auto"/>
                     </Grid>
                 </TabItem.Content>
             </TabItem>
@@ -117,6 +117,13 @@
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width ="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="ViewPackingListOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Пакувальний лист" Tag="{Binding Path=Id}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Width="70" Header="Рахунок">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
@@ -142,12 +149,13 @@
                                   HeadersVisibility="Column" ItemsSource="{Binding Path=MyInvoices}" RowStyle="{StaticResource RowStateStyle}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
-                                <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo3, Mode=OneWay}"/>
                                 <DataGridTextColumn Width ="150" Header="Опис" Binding="{Binding Path=Info, Mode=OneWay}"/>
                                 <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=Date, Mode=OneWay, StringFormat=d}"/>
                                 <DataGridTextColumn Width ="60" Header="Доставка" Binding="{Binding Path=DeliveryPrice, Mode=OneWay, StringFormat=C2}"/>
                                 <DataGridCheckBoxColumn Width ="50" Header="Сплата" IsReadOnly="True" Binding="{Binding Path=IsPayed, Mode=OneWay}"/>
                                 <DataGridTextColumn Width ="85" Header="Сума" Binding="{Binding Path=SumTotal, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="85" Header="Сума" Binding="{Binding Path=SumTotal2, Mode=OneWay, StringFormat=C2}"/>
                                 <DataGridTextColumn Width ="85" Header="Оплата" Binding="{Binding Path=PaymentTotal, Mode=OneWay, StringFormat=C2}"/>
                                 <DataGridTemplateColumn Width ="70">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -160,6 +168,13 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button Click="PaymentInvoiceOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Оплата" Tag="{Binding Path=Id}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Width ="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="ViewPackingListOnClick" Margin="0" Padding="2 0 2 0" FontSize="12" Content="Пакувальний лист" Tag="{Binding Path=Id}"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -177,7 +192,40 @@
                     </Grid>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Name="PartnerInvoicesTab" Header="Розрахунок">
+            <TabItem Name="PartnerPaymentsTab" Header="Купив">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0" Name="DataGridPartnerPayments" AutoGenerateColumns="False" CanUserAddRows="false"
+                                  HeadersVisibility="Column" ItemsSource="{Binding Path=PartnerPayments}" RowStyle="{StaticResource RowStateStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
+                                <DataGridTextColumn Width ="500" Header="Опис" Binding="{Binding Path=Info, Mode=OneWay}"/>
+                                <DataGridTextColumn Width ="70" Header="Купив" Binding="{Binding Path=PaymentAmountOut, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=DateOut, Mode=OneWay, StringFormat=d}"/>
+                                <DataGridTextColumn Width ="80" Header="Розрахунок" Binding="{Binding Path=PaymentAmountIn, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=DateIn, Mode=OneWay, StringFormat=d}"/>
+                                <DataGridTextColumn Width ="120" Header="Повернення коштів" Binding="{Binding Path=BackPayment, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTextColumn Width ="100" Header="Списання боргу" Binding="{Binding Path=InvoicePayment, Mode=OneWay, StringFormat=C2}"/>
+                                <DataGridTemplateColumn Width="80" Header="Застосовано">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox HorizontalAlignment="Center" Click="PartnerPaymentOnClick" IsChecked="{Binding Path=IsActive, Mode=TwoWay}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Button Name="CreatePartnerPaymentButton" Margin="0" 
+                                Content="Створити платіж" Grid.Row="1"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+            <!--<TabItem Name="PartnerInvoicesTab" Header="Розрахунок">
                 <TabItem.Content>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -210,7 +258,7 @@
                     Content="Заплатити партнерам" Grid.Row="1"/>
                     </Grid>
                 </TabItem.Content>
-            </TabItem>
+            </TabItem>-->
             <TabItem Name="Utilities" Header="Утиліти">
                 <TabItem.Content>
                     <TabControl>
@@ -678,6 +726,15 @@
                                             Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                                             Content="Виправити заплачено партнерам" VerticalAlignment="Center"
                                             HorizontalAlignment="Center" Margin="4"/>
+                                        <GridSplitter Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" ShowsPreview="False" Height="5"
+                                            HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Row="5" Grid.Column="0" FontSize="14" Text="Останній правильний ID накладної:" Width="Auto"/>
+                                        <TextBox Name="InvoiceRecipientBox" Grid.Row="0" Grid.Column="1"
+                                            FontSize="14" Text="{Binding Path=InvoiceRecipient, Mode=TwoWay}" MinWidth="100"/>
+                                        <Button MinWidth="270" MinHeight="25" Name="AddRecipientToInvoicesButton" 
+                                            Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                                            Content="Виправити заплачено партнерам" VerticalAlignment="Center"
+                                            HorizontalAlignment="Center" Margin="4"/>
                                         <StatusBar Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
                                             <StatusBarItem HorizontalContentAlignment="Center">
                                                 <DockPanel>
@@ -711,7 +768,7 @@
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <DataGrid Grid.Row="0" Name="DataGridPartnerReport"  AutoGenerateColumns="False" CanUserAddRows="false"
-                                              HeadersVisibility="Column" ItemsSource="{Binding Path=PayedInvoices}">
+                                              HeadersVisibility="Column" ItemsSource="{Binding Path=LocalInvoices}">
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Width ="35" Header="Код" Binding="{Binding Path=Id, Mode=OneWay}" />
                                             <DataGridTextColumn Width ="350" Header="Автомобіль" Binding="{Binding Path=Car.FullInfo, Mode=OneWay}"/>
@@ -805,6 +862,26 @@
                                     </DataGrid>
                                     <Button Name="ReportButton" Margin="0" 
                                             Content="Створити документ" Grid.Row="1"/>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                        <TabItem Name="PaymentReport" Header="Звіт по нерознесеним покупкам">
+                            <TabItem.Content>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <DataGrid Grid.Row="0" Name="DataGridPaymentReport" AutoGenerateColumns="False" CanUserAddRows="false"
+                                        HeadersVisibility="Column" ItemsSource="{Binding Path=ReportPartnerPayments}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Width ="500" Header="Опис" Binding="{Binding Path=Info, Mode=OneWay}"/>
+                                            <DataGridTextColumn Width ="70" Header="Купив" Binding="{Binding Path=PaymentAmountOut, Mode=OneWay, StringFormat=C2}"/>
+                                            <DataGridTextColumn Width ="70" Header="Дата" Binding="{Binding Path=DateOut, Mode=OneWay, StringFormat=d}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <Button Name="PaymentReportButton" Margin="0" 
+                                        Content="Створити документ" Grid.Row="1"/>
                                 </Grid>
                             </TabItem.Content>
                         </TabItem>

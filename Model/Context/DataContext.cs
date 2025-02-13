@@ -27,6 +27,7 @@ namespace PartsManager.Model.Context
         public DbSet<AdditionalInfo> AdditionalInfos { get; set; }
         public DbSet<PartApiStandard> PartApiStandards { get; set; }
         public DbSet<PartManufacturerStandard> PartManufacturerStandards { get; set; }
+        public DbSet<PartnerPayment> PartnerPayments { get; set; }
 
         public DataContext(string connectionString) : base(connectionString) 
         {

@@ -60,7 +60,7 @@ namespace PartsManager.Model.Entities
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Name}', N'{FullName}', N'{Article}', N'{Description}', '{PartTypeId}')";
+            return $"('{Id}', N'{Name.Screen()}', N'{FullName.Screen()}', N'{Article.Screen()}', N'{Description.Screen()}', '{PartTypeId}')";
         }
     }
 }

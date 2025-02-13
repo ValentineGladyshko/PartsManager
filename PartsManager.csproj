@@ -318,6 +318,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="InvoicePackingListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackingListPartGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackingListWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SmallDialogWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -371,6 +383,18 @@
     </Compile>
     <Compile Include="CarWindow.xaml.cs">
       <DependentUpon>CarWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InvoicePackingListPage.xaml.cs">
+      <DependentUpon>InvoicePackingListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Entities\PartnerPayment.cs" />
+    <Compile Include="Model\Repositories\PartnerPaymentRepository.cs" />
+    <Compile Include="Model\ViewModels\PackingListPartInfo.cs" />
+    <Compile Include="PackingListPartGrid.xaml.cs">
+      <DependentUpon>PackingListPartGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PackingListWindow.xaml.cs">
+      <DependentUpon>PackingListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SmallDialogWindow.xaml.cs">
       <DependentUpon>SmallDialogWindow.xaml</DependentUpon>
@@ -528,9 +552,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="PdfSharp.SharpZipLib\ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

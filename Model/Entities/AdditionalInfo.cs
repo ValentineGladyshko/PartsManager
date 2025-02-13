@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Serialization;
 using PartsManager.Model.Interfaces;
+using PartsManager.BaseHandlers;
 
 namespace PartsManager.Model.Entities
 {
@@ -37,7 +38,7 @@ namespace PartsManager.Model.Entities
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Info}', '{PartId}', '{SaeQualityStandardId}', '{ManufacturerId}')";
+            return $"('{Id}', N'{Info.Screen()}', '{PartId}', '{SaeQualityStandardId}', '{ManufacturerId}')";
         }
     }
 }

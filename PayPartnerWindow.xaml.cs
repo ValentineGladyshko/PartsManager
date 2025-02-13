@@ -26,65 +26,40 @@ namespace PartsManager
     public partial class PayPartnerWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private bool isPartnerPayOnlyPayed;
-        private decimal paySum;
-        private decimal sum;
-        private decimal unpayedSum;
-
-        public IEnumerable<Invoice> Invoices => DatabaseInvoices.Where(item => !item.IsMine && !item.IsBill);
-        public IEnumerable<Invoice> DatabaseInvoices;
-        public IEnumerable<Invoice> PayedInvoices => Invoices.Where(item => !item.IsPartnerPayed && item.IsPayed);
-        public IEnumerable<Invoice> UnpayedInvoices => Invoices.Where(item => !item.IsPartnerPayed && !item.IsPayed);
-        public IEnumerable<Invoice> PartnerInvoices => Invoices.Where(item => !item.IsPartnerPayed);
-        public decimal PartnerInvoicesPartnerSum => PartnerInvoices.Sum(item => item.PartnerUnpayed);
-        public decimal PayedInvoicesPartnerSum => PayedInvoices.Sum(item => item.PartnerUnpayed);
-        public bool IsPartnerPayOnlyPayed
+        public PartnerPayment LocalPartnerPayment { get; set; }
+        private bool isPartnerPaymentCreated;
+        public bool IsPartnerPaymentCreated
         {
-            get { return isPartnerPayOnlyPayed; }
+            get { return isPartnerPaymentCreated; }
             set
             {
-                isPartnerPayOnlyPayed = value;
-                OnPropertyChanged("IsPartnerPayUnpayed");
+                isPartnerPaymentCreated = value;
+                OnPropertyChanged("IsPartnerPaymentCreated");
             }
         }
-        public decimal PaySum
-        {
-            get { return paySum; }
-            set
-            {
-                paySum = value;
-                OnPropertyChanged("PaySum");
-            }
-        }
-        public decimal UnpayedSum
-        {
-            get { return unpayedSum; }
-            set
-            {
-                unpayedSum = value;
-                OnPropertyChanged("UnpayedSum");
-            }
-        }
-        public decimal Sum
-        {
-            get { return sum; }
-            set
-            {
-                sum = value;
-                OnPropertyChanged("Sum");
-            }
-        }
+        private ActionType Action { get; set; }
 
         private EFUnitOfWork unitOfWork = EFUnitOfWork.GetUnitOfWork("DataContext");
         public PayPartnerWindow()
         {
             InitializeComponent();
+            LocalPartnerPayment = new PartnerPayment()
+            {
+                DateIn = DateTime.Now,
+                DateOut = DateTime.Now,
+            };
             PropertyChanged += EventHandlers;
-            DatabaseInvoices = unitOfWork.Invoices.GetAll();
+            IsPartnerPaymentCreated = false;
             DataContext = this;
-            IsPartnerPayOnlyPayed = true;
-            PaySum = 0;
+            SetHandlers();
+        }
+        public PayPartnerWindow(PartnerPayment partnerPayment)
+        {
+            InitializeComponent();
+            LocalPartnerPayment = partnerPayment;
+            PropertyChanged += EventHandlers;
+            IsPartnerPaymentCreated = true;
+            DataContext = this;
             SetHandlers();
         }
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -94,97 +69,53 @@ namespace PartsManager
 
         public void EventHandlers(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "PaySum")
+            if (e.PropertyName == "IsPartnerPaymentCreated")
             {
-                Sum = PayedInvoicesPartnerSum - PaySum;
-                UnpayedSum = PartnerInvoicesPartnerSum - PaySum;
+                if (!IsPartnerPaymentCreated)
+                {
+                    SaveButton.Content = "Створити платіж";
+                    Action = ActionType.Create;
+                }
+                else
+                {
+                    SaveButton.Content = "Редагувати платіж";
+                    Action = ActionType.Edit;                   
+                }
             }
         }
         public void SetHandlers()
         {
-            PayButton.Click += delegate
+            SaveButton.Click += delegate
             {
-                var date = DateTime.Now.ToString(" yyyy-MM-dd HH-mm-ss");
-                JsonBackupHelper.Backup($"jsonBackup{date}");
-                if (PaySum > PartnerInvoicesPartnerSum)
+                if (LocalPartnerPayment.BackPayment > 0 && LocalPartnerPayment.InvoicePayment > 0)
                 {
-                    string message = $"Сума партнерам: {PaySum:C2} \nперевищує рахунок по всім накладним: {PartnerInvoicesPartnerSum:C2}\nЗмініть суму";
-
-                    SmallDialogWindow dialogWindow = new SmallDialogWindow(message);
-                    bool? dialogResult = dialogWindow.ShowDialog();
+                    var dialogWindow = new SmallDialogWindow("Повернення коштів та Списання боргу більше за 0");
+                    dialogWindow.ShowDialog();
                     return;
                 }
-                if (PaySum > PayedInvoicesPartnerSum && IsPartnerPayOnlyPayed)
+                else if (LocalPartnerPayment.PaymentAmountIn < 0)
                 {
-                    string message = $"Сума партнерам: {PaySum:C2} \nперевищує рахунок по сплаченим накладним: {PayedInvoicesPartnerSum:C2}\nЗмініть суму чи натисніть галочку";
-
-                    SmallDialogWindow dialogWindow = new SmallDialogWindow(message);
-                    bool? dialogResult = dialogWindow.ShowDialog();
+                    var dialogWindow = new SmallDialogWindow("Розрахунок менше за 0");
+                    dialogWindow.ShowDialog();
                     return;
                 }
                 else
                 {
-                    var payedInvoices = PayedInvoices.ToList();
-                    var leftover = PaySum;
-                    payedInvoices.Sort((x, y) => x.Id.CompareTo(y.Id));
-                    for (int i = 0; i < payedInvoices.Count && leftover >= 0; i++)
+                    if (Action == ActionType.Create)
                     {
-                        if (leftover >= payedInvoices[i].PartnerUnpayed)
-                        {
-                            leftover -= payedInvoices[i].PartnerUnpayed;
-                            payedInvoices[i].PartnerPayed = payedInvoices[i].PartnerSum;
-                            payedInvoices[i].IsPartnerPayed = true;
-                            unitOfWork.Invoices.Update(payedInvoices[i]);
-                        }
-                        else
-                        {
-                            payedInvoices[i].PartnerPayed += leftover;
-                            leftover = 0;
-                            unitOfWork.Invoices.Update(payedInvoices[i]);
-                        }
+                        unitOfWork.PartnerPayments.Create(LocalPartnerPayment);
+                        unitOfWork.Save();
+                        IsPartnerPaymentCreated = true;
+                        Close();
                     }
-
-                    if(!IsPartnerPayOnlyPayed)
+                    else if (Action == ActionType.Edit)
                     {
-                        var unpayedInvoices = UnpayedInvoices.ToList();
-                        unpayedInvoices.Sort((x, y) => x.Id.CompareTo(y.Id));
-                        for (int i = 0; i < unpayedInvoices.Count && leftover >= 0; i++)
-                        {
-                            if (leftover >= unpayedInvoices[i].PartnerUnpayed)
-                            {
-                                leftover -= unpayedInvoices[i].PartnerUnpayed;
-                                unpayedInvoices[i].PartnerPayed = unpayedInvoices[i].PartnerSum;
-                                unpayedInvoices[i].IsPartnerPayed = true;
-                                unitOfWork.Invoices.Update(unpayedInvoices[i]);
-                            }
-                            else
-                            {
-                                unpayedInvoices[i].PartnerPayed += leftover;
-                                leftover = 0;
-                                unitOfWork.Invoices.Update(unpayedInvoices[i]);
-                            }
-                        }
+                        unitOfWork.PartnerPayments.Update(LocalPartnerPayment);
+                        unitOfWork.Save();
+                        Close();
                     }
-                    unitOfWork.Save();
-
-                    if (leftover > 0)
-                    {
-                        string message2 = $"!";
-                    }
-
-                    string message = $"Суму партнерам успішно заплачено!";
-
-                    SmallDialogWindow dialogWindow = new SmallDialogWindow(message);
-                    bool? dialogResult = dialogWindow.ShowDialog();
-                    Close();
                 }
-
             };
-            PaySumBox.LostFocus += delegate
-            {
-                OnPropertyChanged("PaySum");
-            };
-            
         }
     }
 }

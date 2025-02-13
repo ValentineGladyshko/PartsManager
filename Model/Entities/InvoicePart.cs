@@ -40,7 +40,7 @@ namespace PartsManager.Model.Entities
         public decimal RecommendedPrice => decimal.Multiply(PriceIn, 1.32m);
         [NotMapped]
         [JsonIgnore]
-        public decimal RecommendedPrice2 => decimal.Multiply(PriceIn, 1.065m);
+        public decimal RecommendedPrice2 => decimal.Multiply(PriceIn, 1.095m);
 
         [Index("IX_InvoiceAndPart", 1, IsUnique = true), Required]
         public int InvoiceId { get; set; }

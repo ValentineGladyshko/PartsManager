@@ -1,4 +1,5 @@
-﻿using PartsManager.Model.Interfaces;
+﻿using PartsManager.BaseHandlers;
+using PartsManager.Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,7 +32,7 @@ namespace PartsManager.Model.Entities
 
         public string GetQuery()
         {
-            return $"('{Id}', '{PaymentAmount.ToString(CultureInfo.InvariantCulture)}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', N'{Info}', '{InvoiceId}')";
+            return $"('{Id}', '{PaymentAmount.ToString(CultureInfo.InvariantCulture)}', '{Date.ToString("yyyy-MM-ddTHH:mm:ss")}', N'{Info.Screen()}', '{InvoiceId}')";
         }
     }
 }

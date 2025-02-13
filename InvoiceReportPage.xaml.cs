@@ -23,7 +23,7 @@ namespace PartsManager
     /// </summary>
     public partial class InvoiceReportPage : UserControl
     {
-        public InvoiceReportPage(IEnumerable<InvoicePartInfo> invoiceParts, Invoice invoice, bool isLastPage)
+        public InvoiceReportPage(IEnumerable<InvoicePartInfo> invoiceParts, Invoice invoice, bool isLastPage, bool isMyInvoice)
         {
             InitializeComponent();
             InvoiceNumberTextBlock.Text = $"Рахунок №{invoice.Id}\nвід {invoice.Date:dd MMMM yyyy}";
@@ -31,8 +31,11 @@ namespace PartsManager
             VINCodeTextBlock.Text = invoice.Car.VINCode;
             PayerTextBlock.Text = invoice.Payer;
             RecipientTextBlock.Text = invoice.Recipient;
-
             var invoicePartGrid = new InvoicePartGrid(invoiceParts, invoice.SumTotal, isLastPage);
+            if (isMyInvoice)
+            {
+                invoicePartGrid = new InvoicePartGrid(invoiceParts, invoice.SumTotal2, isLastPage);
+            }
             Grid.SetRow(invoicePartGrid, 4);
             MainGrid.Children.Add(invoicePartGrid);
         }

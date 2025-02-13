@@ -1,5 +1,6 @@
 ﻿using PartsManager.Model.Entities;
 using PartsManager.Model.Repositories;
+using PartsManager.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -104,7 +105,7 @@ namespace PartsManager
                     Date = DateTime.Now,
                     Info = string.Empty,
                     IsMine = isMine,
-                    TaxInterest = 5,
+                    TaxInterest = Settings.Default.TaxInterest,
                     PartnerInterest = 0,
                     Recipient = "він же",
                 };
@@ -125,8 +126,8 @@ namespace PartsManager
                     Date = DateTime.Now,
                     Info = string.Empty,
                     IsMine = isMine,
-                    TaxInterest = 5,
-                    PartnerInterest = 50,
+                    TaxInterest = Settings.Default.TaxInterest,
+                    PartnerInterest = Settings.Default.PartnerInterest,
                     Recipient = "він же",
                 };
             }

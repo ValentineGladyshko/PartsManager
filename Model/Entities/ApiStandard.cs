@@ -1,4 +1,5 @@
-﻿using PartsManager.Model.Interfaces;
+﻿using PartsManager.BaseHandlers;
+using PartsManager.Model.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -21,7 +22,7 @@ namespace PartsManager.Model.Entities
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{Name}', N'{Info}')";
+            return $"('{Id}', N'{Name.Screen()}', N'{Info.Screen()}')";
         }
     }
 }

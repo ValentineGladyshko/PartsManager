@@ -23,6 +23,7 @@ namespace PartsManager.Model.Repositories
         private SaeQualityStandardRepository saeQualityStandardRepository;
         private PartApiStandardRepository partApiStandardRepository;
         private PartManufacturerStandardRepository partManufacturerStandardRepository;
+        private PartnerPaymentRepository partnerPaymentRepository;
 
         private static EFUnitOfWork unitOfWork;
 
@@ -73,6 +74,8 @@ namespace PartsManager.Model.Repositories
             => partApiStandardRepository ?? (partApiStandardRepository = new PartApiStandardRepository(db));
         public IRepository<PartManufacturerStandard> PartManufacturerStandards
             => partManufacturerStandardRepository ?? (partManufacturerStandardRepository = new PartManufacturerStandardRepository(db));
+        public IRepository<PartnerPayment> PartnerPayments
+            => partnerPaymentRepository ?? (partnerPaymentRepository = new PartnerPaymentRepository(db));
 
         public void Save()
         {
@@ -97,6 +100,7 @@ namespace PartsManager.Model.Repositories
             saeQualityStandardRepository = new SaeQualityStandardRepository(db);
             partApiStandardRepository = new PartApiStandardRepository(db);
             partManufacturerStandardRepository = new PartManufacturerStandardRepository(db);
+            partnerPaymentRepository = new PartnerPaymentRepository(db);
         }
 
         public void Dispose()

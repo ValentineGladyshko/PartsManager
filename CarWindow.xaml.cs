@@ -55,6 +55,8 @@ namespace PartsManager
             VINCodeBox.Text = LocalCar.VINCode.ToUpper(); 
             CarModelNameBox.Text = LocalCar.Model.Name.FirstCharToUpper();
             CarMarkNameBox.Text = LocalCar.Model.Mark.Name.FirstCharToUpper();
+            InfoBox.Text = LocalCar.Info;
+            ParkNumberBox.Text = LocalCar.ParkNumber;
         }
 
         public void SetHandlers()
@@ -134,6 +136,7 @@ namespace PartsManager
                 LocalCar.ModelId = LocalCar.Model.Id;
                 LocalCar.VINCode = VINCodeBox.Text;
                 LocalCar.Info = InfoBox.Text;
+                LocalCar.ParkNumber = ParkNumberBox.Text;
 
                 if (Action == ActionType.Edit)
                 {

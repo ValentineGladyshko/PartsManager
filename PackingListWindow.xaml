@@ -1,0 +1,22 @@
+﻿<Window x:Class="PartsManager.PackingListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PartsManager"
+        mc:Ignorable="d"
+        Title="PackingListWindow" Height="1200" Width="900">
+    <Window.Resources>
+        <local:RowNumberConverter x:Key="rowNumberConverter"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontFamily" Value="Helvetica Neue"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style TargetType="GridSplitter">
+            <Setter Property="Background" Value="Black"/>
+        </Style>
+    </Window.Resources>
+    <DocumentViewer x:Name="DocumentPackingList">
+    </DocumentViewer>
+</Window>

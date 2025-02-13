@@ -52,7 +52,7 @@ namespace PartsManager
             if (invoiceParts.Count() > RowsPerFirstPage)
             {
                 var firstPartSegment = invoiceParts.GetRange(0, RowsPerFirstPage);
-                reportPage = new InvoiceReportPage(firstPartSegment, invoice, false);
+                reportPage = new InvoiceReportPage(firstPartSegment, invoice, false, false);
 
                 mainPage.Children.Add(reportPage);
                 PageContent pageContent = new PageContent();
@@ -83,7 +83,7 @@ namespace PartsManager
             }
             else
             {
-                reportPage = new InvoiceReportPage(invoiceParts, invoice, true);
+                reportPage = new InvoiceReportPage(invoiceParts, invoice, true, false);
                 mainPage.Children.Add(reportPage);
                 PageContent pageContent = new PageContent();
                 ((IAddChild)pageContent).AddChild(mainPage);

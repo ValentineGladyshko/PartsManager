@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using System.Text.Json.Serialization;
 using PartsManager.Model.Interfaces;
 using System.IO.Ports;
+using PartsManager.BaseHandlers;
 
 namespace PartsManager.Model.Entities
 {
@@ -19,6 +20,8 @@ namespace PartsManager.Model.Entities
         public int Id { get; set; }       
         [Index(IsUnique = true), Required, MaxLength(17)]
         public string VINCode { get; set; }
+        [MaxLength(255)]
+        public string ParkNumber { get; set; }
         [MaxLength(255)]
         public string Info { get; set; }
 
@@ -34,15 +37,18 @@ namespace PartsManager.Model.Entities
         [NotMapped]
         [JsonIgnore]
         public string FullInfo2 => $"{Model.Mark.Name} {Model.Name} {Info}";
+        [NotMapped]
+        [JsonIgnore]
+        public string FullInfo3 => $"{Model.Mark.Name} {Model.Name} {VINCode} {ParkNumber} {Info}";
 
         public string GetTable()
         {
-            return "INSERT INTO Cars (Id, VINCode, Info, ModelId) VALUES ";
+            return "INSERT INTO Cars (Id, VINCode, ParkNumber, Info, ModelId) VALUES ";
         }
 
         public string GetQuery()
         {
-            return $"('{Id}', N'{VINCode}', N'{Info}', '{ModelId}')";
+            return $"('{Id}', N'{VINCode.Screen()}', N'{ParkNumber.Screen()}', N'{Info.Screen()}', '{ModelId}')";
         }
     }
 }

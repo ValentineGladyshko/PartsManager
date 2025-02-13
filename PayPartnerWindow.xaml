@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PartsManager"
         mc:Ignorable="d"
-        Title="PayPartnerWindow" Height="235" Width="520">
+        Title="PayPartnerWindow" Height="350" Width="520">
     <Window.Resources>
         <Style TargetType="ListBoxItem">
             <Setter Property="Opacity" Value="1.0"/>
@@ -57,27 +57,18 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14"
-            Text="Сума партнерам по всім накладним:" Width="Auto"/>
-        <TextBox Name="PartnerInvoicesPartnerSumBox" Grid.Row="0" Grid.Column="1" Background="LightGray" IsReadOnly="True" IsEnabled="False"
-            FontSize="14" Text="{Binding Path=PartnerInvoicesPartnerSum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
-        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14"
-            Text="Сума партнерам по сплаченим накладним:" Width="Auto"/>
-        <TextBox Name="PayedInvoicesPartnerSumBox" Grid.Row="1" Grid.Column="1" Background="LightGray" IsReadOnly="True" IsEnabled="False"
-            FontSize="14" Text="{Binding Path=PayedInvoicesPartnerSum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
-        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Заплатити партнерам:" Width="Auto"/>
-        <TextBox Name="PaySumBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100">
+        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" Text="Купив:" Width="Auto"/>
+        <TextBox Name="PaymentAmountOutBox" Grid.Row="0" Grid.Column="1" FontSize="14" MinWidth="100">
             <TextBox.Text>
-                <Binding Path="PaySum" StringFormat="N2">
+                <Binding Path="LocalPartnerPayment.PaymentAmountOut" StringFormat="N2">
                     <Binding.ValidationRules>
                         <ExceptionValidationRule />
                         <DataErrorValidationRule />
@@ -85,23 +76,39 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
-        <!--<TextBlock Grid.Row="3" Grid.Column="0" FontSize="14"
-            Text="Розрахований залишок по сплаченим:" Width="Auto"/>
-        <TextBox Name="SumBox" Grid.Row="3" Grid.Column="1" Background="LightGray" IsReadOnly="True" IsEnabled="False"
-            FontSize="14" Text="{Binding Path=Sum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>
-        <TextBlock Grid.Row="4" Grid.Column="0" FontSize="14"
-            Text="Розрахований залишок по всім:" Width="Auto"/>
-        <TextBox Name="UnpayedSumBox" Grid.Row="4" Grid.Column="1" Background="LightGray" IsReadOnly="True" IsEnabled="False"
-            FontSize="14" Text="{Binding Path=UnpayedSum, Mode=OneWay, StringFormat=C2}" MinWidth="100"/>-->
-        <GridSplitter Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" ShowsPreview="False" Height="5"
+        <DatePicker Name="DateOutPicker" Grid.Row="0" Grid.Column="3" Language="uk-UA" 
+            SelectedDate="{Binding Path=LocalPartnerPayment.DateOut, Mode=TwoWay}"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" FontSize="14" Text="Повернення коштів:" Width="Auto"/>
+        <TextBox Name="BackPaymentBox" Grid.Row="1" Grid.Column="1" FontSize="14" MinWidth="100">
+            <TextBox.Text>
+                <Binding Path="LocalPartnerPayment.BackPayment" StringFormat="N2">
+                    <Binding.ValidationRules>
+                        <ExceptionValidationRule />
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <DatePicker Name="DateInPicker" Grid.Row="1" Grid.Column="3" Language="uk-UA" 
+    SelectedDate="{Binding Path=LocalPartnerPayment.DateIn, Mode=TwoWay}"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" FontSize="14" Text="Списання боргу:" Width="Auto"/>
+        <TextBox Name="InvoicePaymentBox" Grid.Row="2" Grid.Column="1" FontSize="14" MinWidth="100">
+            <TextBox.Text>
+                <Binding Path="LocalPartnerPayment.InvoicePayment" StringFormat="N2">
+                    <Binding.ValidationRules>
+                        <ExceptionValidationRule />
+                        <DataErrorValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" FontSize="14" Text="Опис:" Width="Auto"/>
+        <TextBox Name="PartnerPaymentInfoBox" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"
+                     FontSize="14" Text="{Binding Path=LocalPartnerPayment.Info, Mode=TwoWay}" MinWidth="100" MaxLines="4" MinLines="4" MinHeight="100"/>
+        <GridSplitter Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" ShowsPreview="False" Height="5"
             HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-        <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" FontSize="14" IsChecked="{Binding Path=IsPartnerPayOnlyPayed, Mode=TwoWay}">
-            Платити тільки по сплаченим накладним
-        </CheckBox>
-        <GridSplitter Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" ShowsPreview="False" Height="5"
-            HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-        <Button MinWidth="100" Name="PayButton" Grid.Row="9" Grid.Column="0" 
-        Grid.ColumnSpan="2" Content="Заплатити партнерам" VerticalAlignment="Top"
+        <Button MinWidth="100" Name="SaveButton" Grid.Row="7" Grid.Column="0" 
+        Grid.ColumnSpan="3" VerticalAlignment="Top"
         HorizontalAlignment="Center"></Button>
     </Grid>
 </Window>
